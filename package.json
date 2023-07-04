@@ -1,0 +1,17 @@
+{
+  "name": "tetris-ai-typescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/sketch.js",
+  "scripts": {
+    "build": "tsc --watch"
+  },
+  "author": "barzeli",
+  "license": "ISC",
+  "dependencies": {
+    "p5": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/p5": "^1.6.2"
+  }
+}
