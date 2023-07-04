@@ -1,3 +1,5 @@
+import p5 from "p5";
+
 let currentShape;
 
 let deadBlocks = [];
@@ -26,228 +28,232 @@ let possibleAIMoveCounter = 0;
 let population;
 let populationSize = 160;
 
-function preload() {
-  font = loadFont("tetris font/Square.ttf");
-}
+const sketch = (p5: p5) => {
+  p5.preload = function preload() {
+    font = p5.loadFont("tetris font/Square.ttf");
+  };
 
-function setup() {
-  window.canvas = createCanvas(800, 800);
-  window.canvas.parent("canvas");
+  p5.setup = function setup() {
+    window.canvas = p5.createCanvas(800, 800);
+    window.canvas.parent("canvas");
 
-  population = new Population(populationSize);
-  // game = new Game(gameWidthBlocks, gameHeightBlocks);
-  // ai = new AI();
-  // ai.calculateMovementPlan2(game.currentShape, game.heldShape, game.nextShape, game.deadBlocksMatrix);
-  frameRate(10);
-  textFont(font);
-}
+    population = new Population(populationSize);
+    // game = new Game(gameWidthBlocks, gameHeightBlocks);
+    // ai = new AI();
+    // ai.calculateMovementPlan2(game.currentShape, game.heldShape, game.nextShape, game.deadBlocksMatrix);
+    p5.frameRate(10);
+    p5.textFont(font);
+  };
 
-function draw() {
-  push();
+  p5.draw = function draw() {
+    p5.push();
 
-  if (!population.areAllPlayersDead()) {
-    population.show();
-    if (!paused) population.update();
-  } else {
-    population.naturalSelection();
-    population.show();
-    population.update();
+    if (!population.areAllPlayersDead()) {
+      population.show();
+      if (!paused) population.update();
+    } else {
+      population.naturalSelection();
+      population.show();
+      population.update();
+    }
+    // game.draw();
+
+    // writeCurrentOptimisations();
+    // writeCurrentMatrixStats();
+
+    // ai.showPossibleMoveNo(possibleAIMoveCounter);
+    // if (ai.possibleEndPositions.length > 0 && frameCount % 5 === 0) {
+    //     possibleAIMoveCounter = (possibleAIMoveCounter + 1) % ai.possibleEndPositions.length;
+    // }
+    // ai.showBestMove();
+    // checkInput();
+
+    // if (game.justTetrised) {
+    //     return;
+    // }
+    // for (let i = 0; i < 1; i++) {
+    //     // move the shape down at a rate of (shape Fall Rate) drops per second
+    //     if (!paused && frameCount % int(30 / shapeFallRate) === 0) {
+    //         if (ai.movementPlan === null) {
+    //             ai.calculateMovementPlan2(game.currentShape, game.heldShape, game.nextShape, game.deadBlocksMatrix);
+    //         }
+    //
+    //         let nextMove = ai.getNextMove();
+    //
+    //         switch (nextMove) {
+    //             case "ALL DOWN":
+    //                 let downMoveMultiplier = 2;
+    //                 // let downMoveMultiplier = 2;
+    //                 while (ai.movementPlan.moveHistoryList.length > 0 && downMoveMultiplier > 0) {
+    //                     ai.movementPlan.moveHistoryList.splice(0, 1);
+    //                     game.moveShapeDown();
+    //                     downMoveMultiplier -= 1;
+    //                 }
+    //                 break;
+    //             case "HOLD":
+    //                 game.holdShape();
+    //                 break;
+    //             case "ROTATE":
+    //                 game.rotateShape();
+    //                 break;
+    //             case "RIGHT":
+    //                 game.moveShapeRight();
+    //                 break;
+    //             case "LEFT":
+    //                 game.moveShapeLeft();
+    //                 break;
+    //             case "DOWN":
+    //                 game.moveShapeDown();
+    //                 break;
+    //         }
+    //     }
+    //     pop();
+    // }
+  };
+
+  function writeCurrentMatrixStats() {
+    let currentMatrix = new BlockMatrix(game.gameWidth, game.gameHeight);
+
+    currentMatrix.copyFromMatrix(game.deadBlocksMatrix);
+    currentMatrix.clearFullRows();
+    currentMatrix.countHoles();
+    currentMatrix.countPillars();
+    currentMatrix.calculateMaximumLineHeight();
+    currentMatrix.countNumberOfBlocksInRightmostLane();
+    currentMatrix.calculateBumpiness();
+    currentMatrix.calculateCost();
+
+    let matrixStats = [
+      `Hole Count: ${currentMatrix.holeCount}`,
+      `Open Hole Count: ${currentMatrix.openHoleCount}`,
+      `Pillar Count: ${currentMatrix.pillarCount}`,
+      `Max Height: ${currentMatrix.maximumLineHeight}`,
+      `Blocks in Right Lane: ${currentMatrix.blocksInRightLane}`,
+      `Blocks above Holes: ${currentMatrix.blocksAboveHoles}`,
+      `Bumpiness: ${currentMatrix.bumpiness}`,
+      `Total cost: ${currentMatrix.cost}`,
+    ];
+
+    p5.textAlign(p5.LEFT, p5.CENTER);
+    p5.fill(100);
+    p5.stroke(0);
+    p5.strokeWeight(1);
+
+    let startingY = 400;
+    let startingX = 720;
+    let textGap = 30;
+
+    p5.textSize(20);
+    p5.noStroke();
+
+    p5.text("Current Stats", startingX, startingY);
+    p5.textSize(15);
+    p5.noStroke();
+    for (let i = 0; i < matrixStats.length; i++) {
+      p5.text("---" + matrixStats[i], startingX, startingY + (i + 1) * textGap);
+    }
   }
-  // game.draw();
 
-  // writeCurrentOptimisations();
-  // writeCurrentMatrixStats();
+  function writeCurrentOptimisations() {
+    let implementedOptimisations = [
+      "Minimise Global Holes",
+      "Minimise Height",
+      "Check Held Piece",
+      "Minimise Empty Pillars",
+    ];
 
-  // ai.showPossibleMoveNo(possibleAIMoveCounter);
-  // if (ai.possibleEndPositions.length > 0 && frameCount % 5 === 0) {
-  //     possibleAIMoveCounter = (possibleAIMoveCounter + 1) % ai.possibleEndPositions.length;
-  // }
-  // ai.showBestMove();
-  // checkInput();
+    p5.textAlign(p5.LEFT, p5.CENTER);
+    p5.fill(100);
+    p5.stroke(0);
+    p5.strokeWeight(1);
 
-  // if (game.justTetrised) {
-  //     return;
-  // }
-  // for (let i = 0; i < 1; i++) {
-  //     // move the shape down at a rate of (shape Fall Rate) drops per second
-  //     if (!paused && frameCount % int(30 / shapeFallRate) === 0) {
-  //         if (ai.movementPlan === null) {
-  //             ai.calculateMovementPlan2(game.currentShape, game.heldShape, game.nextShape, game.deadBlocksMatrix);
-  //         }
-  //
-  //         let nextMove = ai.getNextMove();
-  //
-  //         switch (nextMove) {
-  //             case "ALL DOWN":
-  //                 let downMoveMultiplier = 2;
-  //                 // let downMoveMultiplier = 2;
-  //                 while (ai.movementPlan.moveHistoryList.length > 0 && downMoveMultiplier > 0) {
-  //                     ai.movementPlan.moveHistoryList.splice(0, 1);
-  //                     game.moveShapeDown();
-  //                     downMoveMultiplier -= 1;
-  //                 }
-  //                 break;
-  //             case "HOLD":
-  //                 game.holdShape();
-  //                 break;
-  //             case "ROTATE":
-  //                 game.rotateShape();
-  //                 break;
-  //             case "RIGHT":
-  //                 game.moveShapeRight();
-  //                 break;
-  //             case "LEFT":
-  //                 game.moveShapeLeft();
-  //                 break;
-  //             case "DOWN":
-  //                 game.moveShapeDown();
-  //                 break;
-  //         }
-  //     }
-  //     pop();
-  // }
-}
+    let startingY = 400;
+    let startingX = 30;
+    let textGap = 30;
 
-function writeCurrentMatrixStats() {
-  let currentMatrix = new BlockMatrix(game.gameWidth, game.gameHeight);
+    p5.textSize(20);
+    p5.noStroke();
 
-  currentMatrix.copyFromMatrix(game.deadBlocksMatrix);
-  currentMatrix.clearFullRows();
-  currentMatrix.countHoles();
-  currentMatrix.countPillars();
-  currentMatrix.calculateMaximumLineHeight();
-  currentMatrix.countNumberOfBlocksInRightmostLane();
-  currentMatrix.calculateBumpiness();
-  currentMatrix.calculateCost();
-
-  let matrixStats = [
-    `Hole Count: ${currentMatrix.holeCount}`,
-    `Open Hole Count: ${currentMatrix.openHoleCount}`,
-    `Pillar Count: ${currentMatrix.pillarCount}`,
-    `Max Height: ${currentMatrix.maximumLineHeight}`,
-    `Blocks in Right Lane: ${currentMatrix.blocksInRightLane}`,
-    `Blocks above Holes: ${currentMatrix.blocksAboveHoles}`,
-    `Bumpiness: ${currentMatrix.bumpiness}`,
-    `Total cost: ${currentMatrix.cost}`,
-  ];
-
-  textAlign(LEFT, CENTER);
-  fill(100);
-  stroke(0);
-  strokeWeight(1);
-
-  let startingY = 400;
-  let startingX = 720;
-  let textGap = 30;
-
-  textSize(20);
-  noStroke();
-
-  text("Current Stats", startingX, startingY);
-  textSize(15);
-  noStroke();
-  for (let i = 0; i < matrixStats.length; i++) {
-    text("---" + matrixStats[i], startingX, startingY + (i + 1) * textGap);
+    // text("Implemented Optimisations",startingX, startingY);
+    p5.textSize(15);
+    p5.noStroke();
+    for (let i = 0; i < implementedOptimisations.length; i++) {
+      // text("---" + implementedOptimisations[i],startingX, startingY + (i+1) * textGap);
+    }
   }
-}
 
-function writeCurrentOptimisations() {
-  let implementedOptimisations = [
-    "Minimise Global Holes",
-    "Minimise Height",
-    "Check Held Piece",
-    "Minimise Empty Pillars",
-  ];
+  let leftKeyIsDown = false;
+  let upKeyIsDown = false;
+  let rightKeyIsDown = false;
+  let downKeyIsDown = false;
 
-  textAlign(LEFT, CENTER);
-  fill(100);
-  stroke(0);
-  strokeWeight(1);
+  let replayingMove = false;
 
-  let startingY = 400;
-  let startingX = 30;
-  let textGap = 30;
+  function checkInput() {
+    if (leftKeyIsDown || rightKeyIsDown) {
+      if (horizontalMoveCounter >= horizontalMoveEveryXFrames) {
+        leftKeyIsDown ? game.moveShapeLeft() : game.moveShapeRight();
+        horizontalMoveCounter = 0;
+      }
+      horizontalMoveCounter++;
+    }
 
-  textSize(20);
-  noStroke();
-
-  // text("Implemented Optimisations",startingX, startingY);
-  textSize(15);
-  noStroke();
-  for (let i = 0; i < implementedOptimisations.length; i++) {
-    // text("---" + implementedOptimisations[i],startingX, startingY + (i+1) * textGap);
+    if (downKeyIsDown) {
+      if (verticalMoveCounter >= verticalMoveEveryXFrames) {
+        game.moveShapeDown(replayingMove);
+        verticalMoveCounter = 0;
+      }
+      verticalMoveCounter++;
+    }
   }
-}
 
-let leftKeyIsDown = false;
-let upKeyIsDown = false;
-let rightKeyIsDown = false;
-let downKeyIsDown = false;
-
-let replayingMove = false;
-
-function checkInput() {
-  if (leftKeyIsDown || rightKeyIsDown) {
-    if (horizontalMoveCounter >= horizontalMoveEveryXFrames) {
-      leftKeyIsDown ? game.moveShapeLeft() : game.moveShapeRight();
+  p5.keyPressed = function keyPressed() {
+    if (p5.keyCode === p5.UP_ARROW) {
+      game.rotateShape();
+      upKeyIsDown = true;
+    } else if (p5.keyCode === p5.DOWN_ARROW) {
+      downKeyIsDown = true;
+    }
+    if (p5.keyCode === p5.LEFT_ARROW) {
+      game.moveShapeLeft();
+      leftKeyIsDown = true;
+      horizontalMoveCounter = 0;
+    } else if (p5.keyCode === p5.RIGHT_ARROW) {
+      game.moveShapeRight();
+      rightKeyIsDown = true;
       horizontalMoveCounter = 0;
     }
-    horizontalMoveCounter++;
-  }
-
-  if (downKeyIsDown) {
-    if (verticalMoveCounter >= verticalMoveEveryXFrames) {
-      game.moveShapeDown(replayingMove);
-      verticalMoveCounter = 0;
+    if (p5.key === "C") {
+      game.holdShape();
     }
-    verticalMoveCounter++;
-  }
-}
+    if (p5.key === " ") {
+      paused = !paused;
+    }
+    if (p5.key === "A") {
+      ai.getMove(
+        game.currentShape,
+        game.heldShape,
+        game.nextShape,
+        game.deadBlocksMatrix
+      );
+    }
+    if (p5.key == "R") {
+      replayingMove = !replayingMove;
+    }
+  };
 
-function keyPressed() {
-  if (keyCode === UP_ARROW) {
-    game.rotateShape();
-    upKeyIsDown = true;
-  } else if (keyCode === DOWN_ARROW) {
-    downKeyIsDown = true;
-  }
-  if (keyCode === LEFT_ARROW) {
-    game.moveShapeLeft();
-    leftKeyIsDown = true;
-    horizontalMoveCounter = 0;
-  } else if (keyCode === RIGHT_ARROW) {
-    game.moveShapeRight();
-    rightKeyIsDown = true;
-    horizontalMoveCounter = 0;
-  }
-  if (key === "C") {
-    game.holdShape();
-  }
-  if (key === " ") {
-    paused = !paused;
-  }
-  if (key === "A") {
-    ai.getMove(
-      game.currentShape,
-      game.heldShape,
-      game.nextShape,
-      game.deadBlocksMatrix
-    );
-  }
-  if (key == "R") {
-    replayingMove = !replayingMove;
-  }
-}
+  p5.keyReleased = function keyReleased() {
+    if (p5.keyCode === p5.UP_ARROW) {
+      upKeyIsDown = false;
+    } else if (p5.keyCode === p5.DOWN_ARROW) {
+      downKeyIsDown = false;
+    }
+    if (p5.keyCode === p5.LEFT_ARROW) {
+      leftKeyIsDown = false;
+    } else if (p5.keyCode === p5.RIGHT_ARROW) {
+      rightKeyIsDown = false;
+    }
+  };
+};
 
-function keyReleased() {
-  if (keyCode === UP_ARROW) {
-    upKeyIsDown = false;
-  } else if (keyCode === DOWN_ARROW) {
-    downKeyIsDown = false;
-  }
-  if (keyCode === LEFT_ARROW) {
-    leftKeyIsDown = false;
-  } else if (keyCode === RIGHT_ARROW) {
-    rightKeyIsDown = false;
-  }
-}
+export const p5Sketch = new p5(sketch);
