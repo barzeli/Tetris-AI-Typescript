@@ -21,7 +21,7 @@ export class BlockMatrix {
   cost = 0; //the cost of this matrix essentially how bad it is, determined by the number of holes and added shape height,
   movementHistory = new MoveHistory(); //the movements required to reach this block matrix, usually is empty
 
-  blocksInRightLane: number;
+  blocksInRightLane: number = 0;
 
   constructor(width: any, height: any) {
     this.width = width;

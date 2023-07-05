@@ -304,7 +304,7 @@ class AI {
     this.resetCheckedPositions();
     this.resetPossibleEndPositions();
 
-    this.calculateShortestPathsToAllEndPositions(startingShape);
+    // this.calculateShortestPathsToAllEndPositions(startingShape);
 
     //since some shape can look the same when rotated we need to remove repeats
     this.removeRepeatsInPossibleEndPositions();

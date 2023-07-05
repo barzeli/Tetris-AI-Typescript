@@ -1,6 +1,7 @@
 import p5 from "p5";
 import { BlockMatrix } from "./BlockMatrix";
 import { MoveHistory } from "./MoveHistory";
+import { CheckedPositionsArray } from "./CheckedPositionsArray";
 
 export class AI {
   movementPlan = new MoveHistory();
