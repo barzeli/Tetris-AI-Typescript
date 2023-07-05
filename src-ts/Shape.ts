@@ -1,12 +1,26 @@
-class Shape {
-  constructor(shapeID, startingPos, game) {
+import p5 from "p5";
+import { Block } from "./Block";
+import { MoveHistory } from "./MoveHistory";
+import { BLOCK_SIZE, p5Sketch } from "./sketch";
+
+export class Shape {
+  game: any;
+  shapeID: any;
+  currentPos: p5.Vector;
+  startingPos: p5.Vector;
+  blocks: any[] = [];
+  isDead: boolean;
+  currentRotationCount: number;
+  moveHistory: MoveHistory;
+  constructor(shapeID: any, startingPos: any, game: any) {
     this.game = game;
     this.shapeID = shapeID;
-    this.currentPos = createVector(startingPos.x, startingPos.y);
-    this.startingPos = createVector(startingPos.x, startingPos.y);
-    this.blocks = [];
+    this.currentPos = p5Sketch.createVector(startingPos.x, startingPos.y);
+    this.startingPos = p5Sketch.createVector(startingPos.x, startingPos.y);
     for (let pos of shapeID.blockPositions) {
-      this.blocks.push(new Block(createVector(pos.x, pos.y), shapeID.color));
+      this.blocks.push(
+        new Block(p5Sketch.createVector(pos.x, pos.y), shapeID.color)
+      );
     }
     this.isDead = false;
     this.currentRotationCount = 0;
@@ -29,12 +43,15 @@ class Shape {
   }
 
   draw() {
-    push();
-    translate(this.currentPos.x * BLOCK_SIZE, this.currentPos.y * BLOCK_SIZE);
+    p5Sketch.push();
+    p5Sketch.translate(
+      this.currentPos.x * BLOCK_SIZE,
+      this.currentPos.y * BLOCK_SIZE
+    );
     for (let block of this.blocks) {
       block.draw();
     }
-    pop();
+    p5Sketch.pop();
   }
 
   //draws the shape with its CENTER at 0,0
@@ -46,22 +63,22 @@ class Shape {
       sumX += block.currentGridPos.x + 0.5;
       sumY += block.currentGridPos.y + 0.5;
     }
-    let midpoint = createVector(
+    let midpoint = p5Sketch.createVector(
       sumX / this.blocks.length,
       sumY / this.blocks.length
     );
-    push();
+    p5Sketch.push();
 
     //translate so that the midpoint is at 0,0
-    translate(-midpoint.x * BLOCK_SIZE, -midpoint.y * BLOCK_SIZE);
+    p5Sketch.translate(-midpoint.x * BLOCK_SIZE, -midpoint.y * BLOCK_SIZE);
 
     for (let block of this.blocks) {
       block.draw();
     }
-    pop();
+    p5Sketch.pop();
   }
 
-  moveShape(x, y, blockMatrix) {
+  moveShape(x: any, y: any, blockMatrix: any) {
     if (blockMatrix) {
       if (this.canMoveInDirection(x, y, blockMatrix)) {
         this.currentPos.x += x;
@@ -75,7 +92,7 @@ class Shape {
     }
   }
 
-  moveDown(resetAfterDeath) {
+  moveDown(resetAfterDeath: any) {
     if (this.canMoveDown()) {
       this.currentPos.y += 1;
     } else {
@@ -84,10 +101,13 @@ class Shape {
   }
 
   resetPosition() {
-    this.currentPos = createVector(this.startingPos.x, this.startingPos.y);
+    this.currentPos = p5Sketch.createVector(
+      this.startingPos.x,
+      this.startingPos.y
+    );
   }
 
-  killShape(resetAfterDeath) {
+  killShape(resetAfterDeath: any) {
     this.isDead = true;
     if (!resetAfterDeath) {
       for (let block of this.blocks) {
@@ -101,7 +121,7 @@ class Shape {
     }
   }
 
-  canMoveDown(blockMatrix) {
+  canMoveDown(blockMatrix?: any) {
     for (let block of this.blocks) {
       let futureBlockPosition = p5.Vector.add(
         this.currentPos,
@@ -122,7 +142,7 @@ class Shape {
     return true;
   }
 
-  canMoveInDirection(x, y, blockMatrix) {
+  canMoveInDirection(x: any, y: any, blockMatrix?: any) {
     //look at the future position of each block in the shape and if all those positions are vacant then we good
     for (let block of this.blocks) {
       let futureBlockPosition = p5.Vector.add(
@@ -146,7 +166,7 @@ class Shape {
     return true;
   }
 
-  canRotateShape(isClockwise, blockMatrix) {
+  canRotateShape(isClockwise: any, blockMatrix?: any) {
     for (let i = 0; i < this.blocks.length; i++) {
       let newPosition = this.getBlockPositionAfterShapeIsRotated(
         this.blocks[i],
@@ -167,7 +187,7 @@ class Shape {
     return true;
   }
 
-  getBlockPositionAfterShapeIsRotated(block, isClockwise) {
+  getBlockPositionAfterShapeIsRotated(block: any, isClockwise: any) {
     let startingPos = block.currentGridPos;
     let rotationPoint = this.shapeID.rotationPoint;
     let startingPosRelativeToRotationPoint = p5.Vector.sub(
@@ -183,7 +203,7 @@ class Shape {
     return newPosition;
   }
 
-  rotateShape(isClockwise, blockMatrix) {
+  rotateShape(isClockwise: any, blockMatrix: any) {
     if (blockMatrix) {
       if (this.canRotateShape(isClockwise, blockMatrix)) {
         for (let i = 0; i < this.blocks.length; i++) {

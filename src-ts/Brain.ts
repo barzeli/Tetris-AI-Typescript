@@ -1,6 +1,9 @@
-class Brain {
-  constructor(isFirst) {
-    this.multipliers = {};
+import { p5Sketch } from "./sketch";
+
+export class Brain {
+  multipliers: any = {};
+
+  constructor(isFirst?: any) {
     if (isFirst) {
       this.setAsMyMultipliers();
     } else {
@@ -10,16 +13,16 @@ class Brain {
 
   randomizeMultipliers() {
     this.multipliers = {
-      holeCountMultiplier: 100 * random(0, 2),
-      openHoleCountMultiplier: 70 * random(0, 2),
-      maximumLineHeightMultiplier: 1 * random(0, 2),
-      addedShapeHeightMultiplier: 1 * random(0, 2),
-      pillarCountMultiplier: 4 * random(0, 2),
-      blocksInRightMostLaneMultiplier: 10 * random(0, 2),
-      nonTetrisClearPenalty: 20 * random(0, 2),
-      blocksAboveHolesMultiplier: 5 * random(0, 2),
-      bumpinessMultiplier: 5 * random(0, 2),
-      tetrisRewardMultiplier: -10 * random(0, 2),
+      holeCountMultiplier: 100 * p5Sketch.random(0, 2),
+      openHoleCountMultiplier: 70 * p5Sketch.random(0, 2),
+      maximumLineHeightMultiplier: 1 * p5Sketch.random(0, 2),
+      addedShapeHeightMultiplier: 1 * p5Sketch.random(0, 2),
+      pillarCountMultiplier: 4 * p5Sketch.random(0, 2),
+      blocksInRightMostLaneMultiplier: 10 * p5Sketch.random(0, 2),
+      nonTetrisClearPenalty: 20 * p5Sketch.random(0, 2),
+      blocksAboveHolesMultiplier: 5 * p5Sketch.random(0, 2),
+      bumpinessMultiplier: 5 * p5Sketch.random(0, 2),
+      tetrisRewardMultiplier: -10 * p5Sketch.random(0, 2),
     };
   }
 
@@ -41,25 +44,25 @@ class Brain {
   mutate() {
     let mutationRate = 0.1;
     this.multipliers.holeCountMultiplier *=
-      random(1.0) < mutationRate ? random(0.95, 1.05) : 1;
+      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
     this.multipliers.multipliersopenHoleCountMultiplier *=
-      random(1.0) < mutationRate ? random(0.95, 1.05) : 1;
+      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
     this.multipliers.multipliersmaximumLineHeightMultiplier *=
-      random(1.0) < mutationRate ? random(0.95, 1.05) : 1;
+      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
     this.multipliers.multipliersaddedShapeHeightMultiplier *=
-      random(1.0) < mutationRate ? random(0.95, 1.05) : 1;
+      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
     this.multipliers.multiplierspillarCountMultiplier *=
-      random(1.0) < mutationRate ? random(0.95, 1.05) : 1;
+      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
     this.multipliers.multipliersblocksInRightMostLaneMultiplier *=
-      random(1.0) < mutationRate ? random(0.95, 1.05) : 1;
+      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
     this.multipliers.multipliersnonTetrisClearPenalty *=
-      random(1.0) < mutationRate ? random(0.95, 1.05) : 1;
+      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
     this.multipliers.multipliersblocksAboveHolesMultiplier *=
-      random(1.0) < mutationRate ? random(0.95, 1.05) : 1;
+      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
     this.multipliers.multipliersbumpinessMultiplier *=
-      random(1.0) < mutationRate ? random(0.95, 1.05) : 1;
+      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
     this.multipliers.multiplierstetrisRewardMultiplier *=
-      random(1.0) < mutationRate ? random(0.95, 1.05) : 1;
+      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
   }
 
   clone() {
@@ -68,7 +71,7 @@ class Brain {
     return clone;
   }
 
-  getCostOfMatrix(blockMatrix) {
+  getCostOfMatrix(blockMatrix: any) {
     let linesClearedWhichArentTetrises =
       blockMatrix.linesCleared > 0 && blockMatrix.linesCleared < 4 ? 1 : 0;
     let tetrises = blockMatrix.linesCleared === 4 ? 1 : 0;
@@ -92,8 +95,8 @@ class Brain {
     return blockMatrix.cost;
   }
 
-  writeMultipliers(startingX, startingY) {
-    push();
+  writeMultipliers(startingX: any, startingY: any) {
+    p5Sketch.push();
 
     let multiplierStats = [
       `Hole Count: ${this.multipliers.holeCountMultiplier.toFixed(2)}`,
@@ -116,23 +119,27 @@ class Brain {
       `Bumpiness: ${this.multipliers.bumpinessMultiplier.toFixed(2)}`,
     ];
 
-    textAlign(LEFT, CENTER);
-    fill(100);
-    stroke(0);
-    strokeWeight(1);
+    p5Sketch.textAlign(p5Sketch.LEFT, p5Sketch.CENTER);
+    p5Sketch.fill(100);
+    p5Sketch.stroke(0);
+    p5Sketch.strokeWeight(1);
 
     let textGap = 30;
 
-    textSize(20);
-    noStroke();
+    p5Sketch.textSize(20);
+    p5Sketch.noStroke();
 
-    text("Multipliers", startingX, startingY);
-    textSize(15);
-    noStroke();
+    p5Sketch.text("Multipliers", startingX, startingY);
+    p5Sketch.textSize(15);
+    p5Sketch.noStroke();
     for (let i = 0; i < multiplierStats.length; i++) {
-      text(multiplierStats[i], startingX, startingY + (i + 1) * textGap);
+      p5Sketch.text(
+        multiplierStats[i],
+        startingX,
+        startingY + (i + 1) * textGap
+      );
     }
 
-    pop();
+    p5Sketch.pop();
   }
 }

@@ -1,10 +1,15 @@
+import { Node } from "./Node";
+import { Path } from "./Path";
+import { game } from "./sketch";
+
 class AStar {
+  nodes: any[] = [];
+  gameWidth = game.gameWidth;
+  gameHeight = game.gameHeight;
+
   constructor() {
-    this.nodes = [];
     this.createNodes();
     this.addEdges();
-    this.gameWidth = game.gameWidth;
-    this.gameHeight = game.gameHeight;
   }
 
   createNodes() {
@@ -19,7 +24,7 @@ class AStar {
   }
 
   addEdges() {
-    let connectEdges = (node1, node2) => {
+    let connectEdges = (node1: any, node2: any) => {
       node1.edges.push(node2);
       node2.edges.push(node1);
     };
@@ -63,7 +68,7 @@ class AStar {
     }
   }
 
-  getNodeAtPosition(x, y, r) {
+  getNodeAtPosition(x: number, y: number, r: number) {
     return this.nodes[
       x + this.gameWidth * y + this.gameWidth * this.gameHeight * r
     ];

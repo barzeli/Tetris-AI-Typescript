@@ -1,4 +1,6 @@
 import p5 from "p5";
+import { Population } from "./Population";
+import { BlockMatrix } from "./BlockMatrix";
 
 let currentShape;
 
@@ -13,20 +15,22 @@ let horizontalMoveEveryXFrames = 2; // the speed the blocks move when the left o
 let horizontalMoveCounter = 0;
 let verticalMoveEveryXFrames = 1; // the speed the blocks move when the left or right key is down
 let verticalMoveCounter = 0;
-let game;
-let BLOCK_SIZE = 35;
+export let game: any;
+export let BLOCK_SIZE = 35;
 let gameWidthBlocks = 10;
 let gameHeightBlocks = 20;
 
-let font;
-let ai;
+let font: any;
+let ai: any;
 let paused = false;
 
 let possibleAIMoveCounter = 0;
 
 //------------------------------------------------------------- ai learning stuff
-let population;
+let population: Population;
 let populationSize = 160;
+
+export let canvas: any;
 
 const sketch = (p5: p5) => {
   p5.preload = function preload() {
@@ -34,8 +38,8 @@ const sketch = (p5: p5) => {
   };
 
   p5.setup = function setup() {
-    window.canvas = p5.createCanvas(800, 800);
-    window.canvas.parent("canvas");
+    canvas = p5.createCanvas(800, 800);
+    canvas.parent("canvas");
 
     population = new Population(populationSize);
     // game = new Game(gameWidthBlocks, gameHeightBlocks);

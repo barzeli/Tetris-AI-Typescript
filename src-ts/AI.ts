@@ -1,14 +1,28 @@
-class AI {
-  constructor(gameWidth, gameHeight, brain) {
+import p5 from "p5";
+import { BlockMatrix } from "./BlockMatrix";
+import { MoveHistory } from "./MoveHistory";
+
+export class AI {
+  movementPlan = new MoveHistory();
+  gameWidth: any;
+  gameHeight: any;
+  brain: any;
+  chosenEndPosition: any;
+
+  constructor(gameWidth: any, gameHeight: any, brain: any) {
     this.gameWidth = gameWidth;
     this.gameHeight = gameHeight;
-    this.movementPlan = new MoveHistory();
     this.brain = brain;
   }
 
   //Main function
   //Given the state of the matrix returns a string of instructions to get the block into position.
-  calculateMovementPlan(currentShape_, heldShape_, nextShape_, blockMatrix_) {
+  calculateMovementPlan(
+    currentShape_: any,
+    heldShape_: any,
+    nextShape_: any,
+    blockMatrix_: any
+  ) {
     //clone all the input so we dont fuck it up
     let currentShape = currentShape_.clone();
     let heldShape = heldShape_ ? heldShape_.clone() : null;
@@ -45,7 +59,12 @@ class AI {
   }
 
   //ok so this ones going to look at the next shape to see what were working with
-  calculateMovementPlan2(currentShape_, heldShape_, nextShape_, blockMatrix_) {
+  calculateMovementPlan2(
+    currentShape_: any,
+    heldShape_: any,
+    nextShape_: any,
+    blockMatrix_: any
+  ) {
     //clone all the input so we dont fuck it up
     let currentShape = currentShape_.clone();
     let heldShape = heldShape_ ? heldShape_.clone() : null;
@@ -192,7 +211,7 @@ class AI {
   }
 
   //not in JS arrays are passed by reference
-  removeRepeatsInPossibleEndPositions(endPositions) {
+  removeRepeatsInPossibleEndPositions(endPositions: any) {
     for (let i = 0; i < endPositions.length; i++) {
       for (let j = i + 1; j < endPositions.length; j++) {
         //comparing block i to block j
@@ -229,7 +248,7 @@ class AI {
     }
   }
 
-  calculateShapeCost(shape, blockMatrix_) {
+  calculateShapeCost(shape: any, blockMatrix_: any) {
     let blockMatrix = blockMatrix_.clone();
     blockMatrix.addShapeToMatrix(shape);
     blockMatrix.clearFullRows();
@@ -242,7 +261,7 @@ class AI {
     return blockMatrix.cost;
   }
 
-  getAllEndPositions(startingShape, blockMatrix_) {
+  getAllEndPositions(startingShape: any, blockMatrix_: any) {
     //so now we need to run a loop to hit all the possible positions
     let endPositions = this.getShortestPathsToAllEndPositions(
       startingShape,
@@ -253,7 +272,7 @@ class AI {
     return endPositions;
   }
 
-  getBestEndPosition(startingShape, blockMatrix_) {
+  getBestEndPosition(startingShape: any, blockMatrix_: any) {
     let endPositions = this.getAllEndPositions(startingShape, blockMatrix_);
     //now lets count all the holes for each shape option and pick the lowest hole count
     let minShapeCost = 100000;
@@ -292,11 +311,17 @@ class AI {
   }
 
   //returns a list of all the possible end positions from this starting shape
-  getShortestPathsToAllEndPositions(startingShape, blockMatrix) {
+  getShortestPathsToAllEndPositions(startingShape: any, blockMatrix: any) {
     let counter = 0;
     let endPositions = [];
     let checkedPositions = new CheckedPositionsArray(blockMatrix);
-    let checkInDirection = (queue, shape, x, y, r) => {
+    let checkInDirection = (
+      queue: any,
+      shape: any,
+      x: any,
+      y: any,
+      r?: any
+    ) => {
       if (r) {
         if (shape.canRotateShape(true, blockMatrix)) {
           let rotatedShape = shape.clone();
@@ -358,7 +383,7 @@ class AI {
     return endPositions;
   }
 
-  countNumberOfBlocksInRightmostLane(shape) {
+  countNumberOfBlocksInRightmostLane(shape: any) {
     let blockPositions = [];
     let blocksInRightLaneCounter = 0;
     for (let block of shape.blocks) {
@@ -374,7 +399,11 @@ class AI {
     return blocksInRightLaneCounter;
   }
 
-  convertEndPositionsToMatrices(endPositions, currentMatrix, hasHeld) {
+  convertEndPositionsToMatrices(
+    endPositions: any,
+    currentMatrix: any,
+    hasHeld: any
+  ) {
     let endMatrices = [];
     for (let shape of endPositions) {
       let newMatrix = currentMatrix.clone();

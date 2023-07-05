@@ -1,14 +1,15 @@
 class CheckedPositionsArray {
   //an array which stores whether each position and rotation of a shape has already been checked for this matrix.
+  blockMatrix: any;
+  checkedPositions: boolean[] = [];
+  checkedPositionShapes: any[] = [];
 
-  constructor(blockMatrix) {
+  constructor(blockMatrix: any) {
     this.blockMatrix = blockMatrix;
-    this.checkedPositions = [];
-    this.checkedPositionShapes = [];
     this.setAllPositionsToFalse();
   }
 
-  getIndexOfCoordinates(x, y, r) {
+  getIndexOfCoordinates(x: number, y: number, r: number) {
     return (
       x +
       this.blockMatrix.width * y +
@@ -39,15 +40,20 @@ class CheckedPositionsArray {
     }
   }
 
-  hasPositionBeenChecked(x, y, r) {
+  hasPositionBeenChecked(x: number, y: number, r: number) {
     return this.checkedPositions[this.getIndexOfCoordinates(x, y, r)];
   }
 
-  setCheckedPositionsArrayValue(x, y, r, value) {
+  setCheckedPositionsArrayValue(
+    x: number,
+    y: number,
+    r: number,
+    value: boolean
+  ) {
     this.checkedPositions[this.getIndexOfCoordinates(x, y, r)] = value;
   }
 
-  hasShapesPositionBeenChecked(shape) {
+  hasShapesPositionBeenChecked(shape: any) {
     return this.checkedPositions[
       this.getIndexOfCoordinates(
         shape.currentPos.x,
@@ -56,7 +62,7 @@ class CheckedPositionsArray {
       )
     ];
   }
-  getShapeFromPosition(shape) {
+  getShapeFromPosition(shape: any) {
     return this.checkedPositionShapes[
       this.getIndexOfCoordinates(
         shape.currentPos.x,
@@ -65,7 +71,7 @@ class CheckedPositionsArray {
       )
     ];
   }
-  setCheckedPositionsArrayValueAtShapesPosition(shape, value) {
+  setCheckedPositionsArrayValueAtShapesPosition(shape: any, value: boolean) {
     this.checkedPositions[
       this.getIndexOfCoordinates(
         shape.currentPos.x,

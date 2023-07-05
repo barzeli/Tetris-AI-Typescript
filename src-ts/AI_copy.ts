@@ -1,16 +1,17 @@
-class AI {
-  constructor() {
-    this.checkedPositions = [];
-    this.gameWidth = game.gameWidth;
-    this.gameHeight = game.gameHeight;
-    this.possibleEndPositions = [];
-    this.chosenEndPosition = null;
-    this.movementPlan = [];
+import p5 from "p5";
+import { BLOCK_SIZE, canvas, game, p5Sketch } from "./sketch";
 
-    //this shit is for showing all the current moves
-    this.endPosCounter = 0;
-    this.tempEndPos = null;
-  }
+class AI {
+  checkedPositions: any[] = [];
+  gameWidth = game.gameWidth;
+  gameHeight = game.gameHeight;
+  possibleEndPositions: any[] = [];
+  chosenEndPosition: any = null;
+  movementPlan: any[] = [];
+
+  //this shit is for showing all the current moves
+  endPosCounter = 0;
+  tempEndPos: any = null;
 
   resetCheckedPositions() {
     this.checkedPositions = [];
@@ -56,24 +57,24 @@ class AI {
     }
   }
 
-  showPossibleMoveNo(moveNo) {
+  showPossibleMoveNo(moveNo: any) {
     if (moveNo >= this.possibleEndPositions.length) {
       return;
     }
-    push();
+    p5Sketch.push();
     {
       //translate so that the game is in the center of the canvas
       let gameWidthInPixels = this.gameWidth * BLOCK_SIZE;
       let gameHeightInPixels = this.gameHeight * BLOCK_SIZE;
-      translate(
+      p5Sketch.translate(
         (canvas.width - gameWidthInPixels) / 2,
         (canvas.height - gameHeightInPixels) / 2
       );
       for (let block of this.possibleEndPositions[moveNo].blocks) {
-        block.color = color(0, 0, 0, 0);
+        block.color = p5Sketch.color(0, 0, 0, 0);
       }
       this.possibleEndPositions[moveNo].draw();
-      pop();
+      p5Sketch.pop();
     }
   }
 
@@ -87,25 +88,25 @@ class AI {
 
   showBestMove() {
     if (this.chosenEndPosition != null) {
-      push();
+      p5Sketch.push();
       {
         //translate so that the game is in the center of the canvas
         let gameWidthInPixels = this.gameWidth * BLOCK_SIZE;
         let gameHeightInPixels = this.gameHeight * BLOCK_SIZE;
-        translate(
+        p5Sketch.translate(
           (canvas.width - gameWidthInPixels) / 2,
           (canvas.height - gameHeightInPixels) / 2
         );
         for (let block of this.chosenEndPosition.blocks) {
-          block.color = color(0, 0, 0, 0);
+          block.color = p5Sketch.color(0, 0, 0, 0);
         }
         this.chosenEndPosition.draw();
-        pop();
+        p5Sketch.pop();
       }
     }
   }
 
-  calculateTotalWorldHoles(shape, blockMatrix_) {
+  calculateTotalWorldHoles(shape: any, blockMatrix_: any) {
     //clone the block matrix
     let blockMatrix = [];
 
@@ -175,7 +176,7 @@ class AI {
     return holeCount;
   }
 
-  calculateHoles(shape) {
+  calculateHoles(shape: any) {
     let blockPositions = [];
     let holeCounter = 0;
     for (let block of shape.blocks) {
@@ -185,7 +186,10 @@ class AI {
     }
 
     for (let pos of blockPositions) {
-      let posBelow = createVector(round(pos.x), round(pos.y + 1));
+      let posBelow = p5Sketch.createVector(
+        p5Sketch.round(pos.x),
+        p5Sketch.round(pos.y + 1)
+      );
       if (game.isPositionVacant(posBelow)) {
         let isInCurrentShape = false;
         for (let pos2 of blockPositions) {
@@ -202,7 +206,7 @@ class AI {
     return holeCounter;
   }
 
-  calculateShapeCost(shape, blockMatrix) {
+  calculateShapeCost(shape: any, blockMatrix: any) {
     // let holeCountMultiplier = 100;
     let holeCountMultiplier = 100;
     let shapeHeightMultiplier = 1;
@@ -227,7 +231,7 @@ class AI {
     return costOfShape;
   }
 
-  cloneBlockMatrix(blockMatrix_) {
+  cloneBlockMatrix(blockMatrix_: any) {
     let blockMatrix = [];
 
     for (let i = 0; i < game.gameWidth; i++) {
@@ -245,7 +249,12 @@ class AI {
   }
 
   //Given the state of the matrix returns a string of instructions to get the block into position.
-  calculateMovementPlan(currentShape_, heldShape_, nextShape_, blockMatrix_) {
+  calculateMovementPlan(
+    currentShape_: any,
+    heldShape_: any,
+    nextShape_: any,
+    blockMatrix_: any
+  ) {
     //clone all the input so we dont fuck it up
     let currentShape = currentShape_.clone();
     let heldShape = heldShape_ ? heldShape_.clone() : null;
@@ -280,10 +289,10 @@ class AI {
   }
   //Given the state of the matrix returns a string of instructions to get the block into position.
   calculateMovementPlanByConsideringNextShape(
-    currentShape_,
-    heldShape_,
-    nextShape_,
-    blockMatrix_
+    currentShape_: any,
+    heldShape_: any,
+    nextShape_: any,
+    blockMatrix_: any
   ) {
     //clone all the input so we dont fuck it up
     let currentShape = currentShape_.clone();
@@ -349,7 +358,7 @@ class AI {
     this.movementPlan = this.chosenEndPosition.moveHistory;
   }
 
-  getBestEndPosition(startingShape, blockMatrix_) {
+  getBestEndPosition(startingShape: any, blockMatrix_: any) {
     //populate the array with falses since we haven't found any yet
     this.resetCheckedPositions();
     this.resetPossibleEndPositions();
@@ -386,7 +395,7 @@ class AI {
       //if all the remaining moves are downs then snap it down
       let allDown = true;
       for (let move of this.movementPlan) {
-        if (move === "hold" || !move.equals(createVector(0, 1, 0))) {
+        if (move === "hold" || !move.equals(p5Sketch.createVector(0, 1, 0))) {
           allDown = false;
           break;
         }
@@ -396,23 +405,23 @@ class AI {
       }
       return this.movementPlan.splice(0, 1)[0];
     } else {
-      return createVector(0, 1, 0);
+      return p5Sketch.createVector(0, 1, 0);
     }
   }
 
-  hasPositionBeenChecked(x, y, r) {
+  hasPositionBeenChecked(x: number, y: number, r: number) {
     return this.checkedPositions[
       game.gameWidth * y + x + game.gameWidth * game.gameHeight * r
     ];
   }
 
-  setCheckedPositionsArrayValue(x, y, r, value) {
+  setCheckedPositionsArrayValue(x: number, y: number, r: number, value: any) {
     this.checkedPositions[
       game.gameWidth * y + x + game.gameWidth * game.gameHeight * r
     ] = value;
   }
 
-  hasShapesPositionBeenChecked(shape) {
+  hasShapesPositionBeenChecked(shape: any) {
     return this.hasPositionBeenChecked(
       shape.currentPos.x,
       shape.currentPos.y,
@@ -420,7 +429,7 @@ class AI {
     );
   }
 
-  setCheckedPositionsArrayValueAtShapesPosition(shape, value) {
+  setCheckedPositionsArrayValueAtShapesPosition(shape: any, value: any) {
     this.setCheckedPositionsArrayValue(
       shape.currentPos.x,
       shape.currentPos.y,
@@ -429,9 +438,15 @@ class AI {
     );
   }
 
-  calculateShortestPathsToAllEndPositions(startingShape, _blockMatrix) {
+  calculateShortestPathsToAllEndPositions(startingShape: any) {
     let counter = 0;
-    let checkInDirection = (queue, shape, x, y, r) => {
+    let checkInDirection = (
+      queue: any,
+      shape: any,
+      x: any,
+      y: any,
+      r?: any
+    ) => {
       if (r && shape.canRotateShape(true)) {
         let rotatedShape = shape.clone();
         rotatedShape.rotateShape(true);
@@ -479,11 +494,11 @@ class AI {
       checkInDirection(queue, shape, 0, 1); //check down
     }
 
-    print("counter is " + counter);
+    p5Sketch.print("counter is " + counter);
   }
 
-  checkAllPositionsReachableFrom(startingShape) {
-    let checkInDirection = (x, y, r) => {
+  checkAllPositionsReachableFrom(startingShape: any) {
+    let checkInDirection = (x: any, y: any, r?: any) => {
       if (r && startingShape.canRotateShape(true)) {
         let rotatedShape = startingShape.clone();
         rotatedShape.rotateShape(true);
@@ -526,7 +541,7 @@ class AI {
 
   //a pillar is an area which is reliant on a line piece, i.e. a formation of 3 or more blocks high with and empty space next to each
   //note will probably allow it for pillars on the right side so you can get some sweet tetrises
-  countNumberAndHeightOfPillars(shape, blockMatrix_) {
+  countNumberAndHeightOfPillars(shape: any, blockMatrix_: any) {
     let blockMatrix = this.cloneBlockMatrix(blockMatrix_);
 
     //add the shape to the block matrix
@@ -619,7 +634,7 @@ class AI {
     return pillarCount;
   }
 
-  countNumberOfBlocksInRightmostLane(shape) {
+  countNumberOfBlocksInRightmostLane(shape: any) {
     let blockPositions = [];
     let blocksInRightLaneCounter = 0;
     for (let block of shape.blocks) {

@@ -1,10 +1,23 @@
-class Player {
-  constructor(firstPlayer) {
+import { AI } from "./AI";
+import { Brain } from "./Brain";
+import { Game } from "./Game";
+import { canvas, p5Sketch } from "./sketch";
+
+export class Player {
+  windowWidth: any;
+  windowHeight: any;
+
+  fitness = 0;
+  score = 0;
+  tetrisRate = 0;
+  currentGame = new Game(10, 20);
+  brain: Brain;
+  ai: AI;
+  isDead = false;
+
+  constructor(firstPlayer?: any) {
     this.brain = new Brain(firstPlayer);
-    this.fitness = 0;
-    this.score = 0;
-    this.tetrisRate = 0;
-    this.currentGame = new Game(10, 20);
+
     this.ai = new AI(
       this.currentGame.gameWidth,
       this.currentGame.gameHeight,
@@ -18,7 +31,6 @@ class Player {
     );
     this.windowHeight = canvas.height / 2;
     this.windowWidth = canvas.width / 2;
-    this.isDead = false;
   }
 
   calculateMovementPlan() {
@@ -45,12 +57,15 @@ class Player {
   }
 
   show() {
-    push();
+    p5Sketch.push();
     // translate(this.windowPosition.x, this.windowPosition.y);
-    scale(this.windowWidth / canvas.width, this.windowHeight / canvas.height);
+    p5Sketch.scale(
+      this.windowWidth / canvas.width,
+      this.windowHeight / canvas.height
+    );
     this.currentGame.draw();
     this.brain.writeMultipliers(600, 300);
-    pop();
+    p5Sketch.pop();
   }
 
   update() {

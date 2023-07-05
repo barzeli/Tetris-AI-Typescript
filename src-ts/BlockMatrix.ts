@@ -1,26 +1,36 @@
-class BlockMatrix {
-  constructor(width, height) {
+import p5 from "p5";
+import { MoveHistory } from "./MoveHistory";
+import { p5Sketch } from "./sketch";
+
+export class BlockMatrix {
+  width: any;
+  height: any;
+
+  matrix: any[][] = [];
+
+  holeCount = 0;
+  openHoleCount = 0;
+  blocksAboveHoles = 0;
+  pillarCount = 0;
+  addedShapeHeight = 0;
+  maximumLineHeight = 0;
+  bumpiness = 0;
+
+  linesCleared = 0;
+
+  cost = 0; //the cost of this matrix essentially how bad it is, determined by the number of holes and added shape height,
+  movementHistory = new MoveHistory(); //the movements required to reach this block matrix, usually is empty
+
+  blocksInRightLane: number;
+
+  constructor(width: any, height: any) {
     this.width = width;
     this.height = height;
 
-    this.matrix = [];
     this.resetMatrix();
-
-    this.holeCount = 0;
-    this.openHoleCount = 0;
-    this.blocksAboveHoles = 0;
-    this.pillarCount = 0;
-    this.addedShapeHeight = 0;
-    this.maximumLineHeight = 0;
-    this.bumpiness = 0;
-
-    this.linesCleared = 0;
-
-    this.cost = 0; //the cost of this matrix essentially how bad it is, determined by the number of holes and added shape height,
-    this.movementHistory = new MoveHistory(); //the movements required to reach this block matrix, usually is empty
   }
 
-  addMovementHistory(movementHistory) {
+  addMovementHistory(movementHistory: any) {
     this.movementHistory = movementHistory.clone();
   }
 
@@ -43,7 +53,7 @@ class BlockMatrix {
   }
 
   //returns a copy of the block matrix
-  copyFromMatrix(matrixToCopyFrom) {
+  copyFromMatrix(matrixToCopyFrom: any) {
     //clone the matrix
     for (let i = 0; i < this.width; i++) {
       for (let j = 0; j < this.height; j++) {
@@ -67,7 +77,7 @@ class BlockMatrix {
 
   //adds the parameter shape to the matrix
   //DOES NOT CLEAR LINES
-  addShapeToMatrix(shape) {
+  addShapeToMatrix(shape: any) {
     //add the shape to the block matrix
     for (let block of shape.blocks) {
       //the block becomes disconnected from the shape and therefore the current grid position is no longer relative to the shape
@@ -95,7 +105,7 @@ class BlockMatrix {
     }
   }
 
-  isPositionVacant(position) {
+  isPositionVacant(position: any) {
     //check the position is within the matrix, for example -1,4 is not in the matrix and therefore is not vacant
     if (
       position.y >= 0 &&
@@ -168,7 +178,7 @@ class BlockMatrix {
         printString += "\n";
       }
     }
-    print(printString);
+    p5Sketch.print(printString);
   }
 
   //counts the number of holes in the matrix
@@ -318,7 +328,7 @@ class BlockMatrix {
   }
 
   //assumes a shape has been added, the lines have been cleared, the holes are counted and the pillars are counted
-  calculateCost(brain) {
+  calculateCost(brain?: any) {
     if (brain) {
       this.cost = brain.getCostOfMatrix(this);
       return;

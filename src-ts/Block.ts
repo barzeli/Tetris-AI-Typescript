@@ -1,9 +1,15 @@
-class Block {
-  constructor(startingGridPos, color) {
+import { BLOCK_SIZE, p5Sketch } from "./sketch";
+
+export class Block {
+  isDead = false;
+  startingGridPos: any;
+  currentGridPos: any;
+  color: any;
+
+  constructor(startingGridPos: any, color: any) {
     this.startingGridPos = startingGridPos;
     this.currentGridPos = startingGridPos;
     this.color = color;
-    this.isDead = false;
   }
 
   clone() {
@@ -13,19 +19,24 @@ class Block {
     return clone;
   }
 
-  draw(tetrised = false, linesToBeCleared = []) {
+  draw(tetrised = false, linesToBeCleared: any[] = []) {
     if (this.isDead) return;
-    push();
+    p5Sketch.push();
     let pos = this.currentGridPos;
     if (tetrised && linesToBeCleared.includes(this.currentGridPos.y)) {
-      stroke(0);
-      fill(255);
+      p5Sketch.stroke(0);
+      p5Sketch.fill(255);
     } else {
-      fill(this.color);
-      stroke(0);
+      p5Sketch.fill(this.color);
+      p5Sketch.stroke(0);
     }
-    strokeWeight(3);
-    rect(pos.x * BLOCK_SIZE, pos.y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-    pop();
+    p5Sketch.strokeWeight(3);
+    p5Sketch.rect(
+      pos.x * BLOCK_SIZE,
+      pos.y * BLOCK_SIZE,
+      BLOCK_SIZE,
+      BLOCK_SIZE
+    );
+    p5Sketch.pop();
   }
 }

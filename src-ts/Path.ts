@@ -1,9 +1,7 @@
-class Path {
-  constructor() {
-    this.nodes = [];
-  }
+export class Path {
+  nodes: any[] = [];
 
-  addToTail(node) {
+  addToTail(node: any) {
     this.nodes.push(node);
   }
 

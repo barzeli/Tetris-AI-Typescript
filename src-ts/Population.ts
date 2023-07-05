@@ -1,13 +1,23 @@
-class Population {
-  constructor(size) {
-    this.players = [];
-    this.fitnessSum = 0;
-    this.bestPlayer = null;
-    this.generation = 1;
+import { Player } from "./Player";
+import { canvas, p5Sketch } from "./sketch";
 
+export class Population {
+  players: Player[] = [];
+  fitnessSum = 0;
+  bestPlayer: any = null;
+  generation = 1;
+
+  //batch stuff
+  batchSize = 16;
+  currentBatchNumber = 0;
+  numberOfBatches: number;
+  playersPerRow: number;
+  playersPerColumn: number;
+  playerWidth: number;
+  playerHeight: number;
+
+  constructor(size: number) {
     //batch stuff
-    this.batchSize = 16;
-    this.currentBatchNumber = 0;
     this.numberOfBatches = Math.ceil(size / this.batchSize);
 
     this.playersPerRow = Math.ceil(Math.sqrt(this.batchSize));
@@ -37,14 +47,14 @@ class Population {
   }
 
   show() {
-    push();
-    background(240);
+    p5Sketch.push();
+    p5Sketch.background(240);
 
-    textSize(30);
-    fill(100);
-    stroke(100);
-    textAlign(CENTER, CENTER);
-    text(
+    p5Sketch.textSize(30);
+    p5Sketch.fill(100);
+    p5Sketch.stroke(100);
+    p5Sketch.textAlign(p5Sketch.CENTER, p5Sketch.CENTER);
+    p5Sketch.text(
       "Gen: " +
         this.generation +
         "\t\t Batch: " +
@@ -55,25 +65,25 @@ class Population {
       25
     );
 
-    translate(0, 50);
-    scale(1, (canvas.height - 50) / canvas.height);
+    p5Sketch.translate(0, 50);
+    p5Sketch.scale(1, (canvas.height - 50) / canvas.height);
 
     let x = 0;
     let y = 0;
     let currentBatch = this.getCurrentBatchOfPlayers();
     for (let i = 0; i < currentBatch.length; i++) {
-      push();
-      translate(x * this.playerWidth, y * this.playerHeight);
+      p5Sketch.push();
+      p5Sketch.translate(x * this.playerWidth, y * this.playerHeight);
       currentBatch[i].show();
       x++;
       if (x >= this.playersPerRow) {
         x = 0;
         y++;
       }
-      pop();
+      p5Sketch.pop();
     }
 
-    pop();
+    p5Sketch.pop();
   }
 
   update() {
@@ -120,7 +130,7 @@ class Population {
 
   //assuming that the fitness sum has been calculated
   selectPlayer() {
-    let randomNumber = random(this.fitnessSum);
+    let randomNumber = p5Sketch.random(this.fitnessSum);
     let runningSum = 0;
     for (let player of this.players) {
       runningSum += player.fitness;

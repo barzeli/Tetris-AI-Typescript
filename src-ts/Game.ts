@@ -1,30 +1,45 @@
-class Game {
-  constructor(gameWidth, gameHeight) {
+import { ShapeGenerator } from "./ShapeGenerator";
+import { BLOCK_SIZE, canvas, p5Sketch } from "./sketch";
+
+export class Game {
+  gameWidth: any;
+  gameHeight: any;
+
+  justTetrised: any;
+
+  shapeGenerator = new ShapeGenerator();
+  deadBlocks: any[] = [];
+  deadBlocksMatrix: any[][] = [];
+
+  heldShape: any = null;
+  hasHeldThisShape = false;
+  score = 0;
+
+  //calculate the tetris rate
+  totalLineClears = 0;
+  totalTetrises = 0;
+  timeSinceTetris = 10;
+  needsNewMovementPlan = false;
+
+  isDead = false;
+
+  linesToBeCleared: any[] = [];
+  currentShape: any;
+  nextShape: any;
+
+  constructor(gameWidth: any, gameHeight: any) {
     this.gameWidth = gameWidth;
     this.gameHeight = gameHeight;
-    this.shapeGenerator = new ShapeGenerator();
-    this.deadBlocks = [];
-    this.deadBlocksMatrix = [];
+
     this.currentShape = this.shapeGenerator.getNewRandomShape(
-      createVector(int(this.gameWidth / 2), 0),
+      p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0),
       this
     );
     this.resetBlocksMatrix();
     this.nextShape = this.shapeGenerator.getNewRandomShape(
-      createVector(int(this.gameWidth / 2), 0),
+      p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0),
       this
     );
-    this.heldShape = null;
-    this.hasHeldThisShape = false;
-    this.score = 0;
-
-    //calculate the tetris rate
-    this.totalLineClears = 0;
-    this.totalTetrises = 0;
-    this.timeSinceTetris = 10;
-    this.needsNewMovementPlan = false;
-
-    this.isDead = false;
   }
 
   resetBlocksMatrix() {
@@ -38,7 +53,7 @@ class Game {
     }
   }
 
-  moveShapeDown(resetAfterShapeDeath) {
+  moveShapeDown(resetAfterShapeDeath?: any) {
     this.currentShape.moveDown(resetAfterShapeDeath);
 
     if (this.currentShape.isDead && resetAfterShapeDeath) {
@@ -54,7 +69,7 @@ class Game {
 
       this.currentShape = this.nextShape;
       this.nextShape = this.shapeGenerator.getNewRandomShape(
-        createVector(int(this.gameWidth / 2), 0),
+        p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0),
         this
       );
       this.needsNewMovementPlan = true;
@@ -75,11 +90,11 @@ class Game {
     this.resetBlocksMatrix();
     this.deadBlocks = [];
     this.currentShape = this.shapeGenerator.getNewRandomShape(
-      createVector(int(this.gameWidth / 2), 0),
+      p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0),
       this
     );
     this.nextShape = this.shapeGenerator.getNewRandomShape(
-      createVector(int(this.gameWidth / 2), 0),
+      p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0),
       this
     );
     this.heldShape = null;
@@ -87,7 +102,6 @@ class Game {
   }
 
   checkForTetris() {
-    this.linesToBeCleared = [];
     let linesClearedThisShape = 0;
     for (let j = 0; j < this.gameHeight; j++) {
       let rowCleared = true;
@@ -173,21 +187,21 @@ class Game {
     // background(240);
 
     //draw a rectangle boarder around the whole thing
-    push();
+    p5Sketch.push();
     {
-      fill(240);
-      stroke(200);
-      strokeWeight(4);
-      rect(2, 2, canvas.width - 4, canvas.height - 4);
+      p5Sketch.fill(240);
+      p5Sketch.stroke(200);
+      p5Sketch.strokeWeight(4);
+      p5Sketch.rect(2, 2, canvas.width - 4, canvas.height - 4);
     }
-    pop();
+    p5Sketch.pop();
 
-    push();
+    p5Sketch.push();
     {
       //translate so that the game is in the center of the canvas
       let gameWidthInPixels = this.gameWidth * BLOCK_SIZE;
       let gameHeightInPixels = this.gameHeight * BLOCK_SIZE;
-      translate(
+      p5Sketch.translate(
         (canvas.width - gameWidthInPixels) / 2,
         (canvas.height - gameHeightInPixels) / 2
       );
@@ -207,12 +221,12 @@ class Game {
       }
 
       //draw Tetris font
-      textSize(30);
-      textAlign(CENTER, CENTER);
-      fill(100);
-      stroke(0);
-      strokeWeight(1);
-      text(
+      p5Sketch.textSize(30);
+      p5Sketch.textAlign(p5Sketch.CENTER, p5Sketch.CENTER);
+      p5Sketch.fill(100);
+      p5Sketch.stroke(0);
+      p5Sketch.strokeWeight(1);
+      p5Sketch.text(
         `Score: ${this.score}\t\t Tetris Rate: ${(
           (this.totalTetrises / Math.max(1, this.totalLineClears)) *
           100
@@ -225,32 +239,37 @@ class Game {
       this.currentShape.draw();
 
       //draw a rectangle boarder around the grid
-      push();
+      p5Sketch.push();
       {
-        noFill();
-        stroke(0);
+        p5Sketch.noFill();
+        p5Sketch.stroke(0);
         // if(this.justTetrised)
         //     stroke(255,0,0);
-        strokeWeight(4);
-        rect(0, 0, this.gameWidth * BLOCK_SIZE, this.gameHeight * BLOCK_SIZE);
+        p5Sketch.strokeWeight(4);
+        p5Sketch.rect(
+          0,
+          0,
+          this.gameWidth * BLOCK_SIZE,
+          this.gameHeight * BLOCK_SIZE
+        );
       }
-      pop();
+      p5Sketch.pop();
     }
-    pop();
+    p5Sketch.pop();
 
     this.drawNextShape();
     this.drawHeldShape();
 
     if (this.justTetrised) {
-      push();
+      p5Sketch.push();
       //draw Tetris
-      textSize(100);
-      textAlign(CENTER, CENTER);
-      fill(0, 0, 0);
-      stroke(255);
-      strokeWeight(10);
+      p5Sketch.textSize(100);
+      p5Sketch.textAlign(p5Sketch.CENTER, p5Sketch.CENTER);
+      p5Sketch.fill(0, 0, 0);
+      p5Sketch.stroke(255);
+      p5Sketch.strokeWeight(10);
       // text("TETRIS", canvas.width/2, canvas.height/2);
-      pop();
+      p5Sketch.pop();
     }
   }
 
@@ -268,7 +287,7 @@ class Game {
       this.heldShape.resetPosition();
       this.currentShape = this.nextShape;
       this.nextShape = this.shapeGenerator.getNewRandomShape(
-        createVector(int(this.gameWidth / 2), 0),
+        p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0),
         this
       );
     }
@@ -277,97 +296,112 @@ class Game {
   drawNextShape() {
     let gameWidthInPixels = this.gameWidth * BLOCK_SIZE;
     let gameHeightInPixels = this.gameHeight * BLOCK_SIZE;
-    let gamePositionTopLeft = createVector(
+    let gamePositionTopLeft = p5Sketch.createVector(
       (canvas.width - gameWidthInPixels) / 2,
       (canvas.height - gameHeightInPixels) / 2
     );
 
     let nextShapeWidthInPixels = 4 * BLOCK_SIZE;
-    push();
+    p5Sketch.push();
     {
-      translate(
+      p5Sketch.translate(
         gamePositionTopLeft.x +
           gameWidthInPixels +
           gamePositionTopLeft.x / 2 -
           nextShapeWidthInPixels / 2,
         gamePositionTopLeft.y + 1 * BLOCK_SIZE
       );
-      fill(255);
-      stroke(0);
-      strokeWeight(4);
-      rect(0, 0, nextShapeWidthInPixels, nextShapeWidthInPixels);
+      p5Sketch.fill(255);
+      p5Sketch.stroke(0);
+      p5Sketch.strokeWeight(4);
+      p5Sketch.rect(0, 0, nextShapeWidthInPixels, nextShapeWidthInPixels);
       //Text
-      textSize(30);
-      textAlign(CENTER, CENTER);
-      fill(100);
-      stroke(0);
-      strokeWeight(1);
-      text("NEXT", nextShapeWidthInPixels / 2, -20);
+      p5Sketch.textSize(30);
+      p5Sketch.textAlign(p5Sketch.CENTER, p5Sketch.CENTER);
+      p5Sketch.fill(100);
+      p5Sketch.stroke(0);
+      p5Sketch.strokeWeight(1);
+      p5Sketch.text("NEXT", nextShapeWidthInPixels / 2, -20);
 
-      translate(2 * BLOCK_SIZE, 2 * BLOCK_SIZE);
-      ellipse(0, 0, 10);
+      p5Sketch.translate(2 * BLOCK_SIZE, 2 * BLOCK_SIZE);
+      p5Sketch.ellipse(0, 0, 10);
       this.nextShape.drawAtOrigin();
 
-      pop();
+      p5Sketch.pop();
     }
   }
 
   drawHeldShape() {
     let gameWidthInPixels = this.gameWidth * BLOCK_SIZE;
     let gameHeightInPixels = this.gameHeight * BLOCK_SIZE;
-    let gamePositionTopLeft = createVector(
+    let gamePositionTopLeft = p5Sketch.createVector(
       (canvas.width - gameWidthInPixels) / 2,
       (canvas.height - gameHeightInPixels) / 2
     );
 
     let nextShapeWidthInPixels = 4 * BLOCK_SIZE;
-    push();
+    p5Sketch.push();
     {
-      translate(
+      p5Sketch.translate(
         gamePositionTopLeft.x / 2 - nextShapeWidthInPixels / 2,
         gamePositionTopLeft.y + 1 * BLOCK_SIZE
       );
-      fill(255);
-      stroke(0);
-      strokeWeight(4);
-      rect(0, 0, nextShapeWidthInPixels, nextShapeWidthInPixels);
+      p5Sketch.fill(255);
+      p5Sketch.stroke(0);
+      p5Sketch.strokeWeight(4);
+      p5Sketch.rect(0, 0, nextShapeWidthInPixels, nextShapeWidthInPixels);
       //Text
-      textSize(30);
-      textAlign(CENTER, CENTER);
-      fill(100);
-      stroke(0);
-      strokeWeight(1);
-      text("HELD", nextShapeWidthInPixels / 2, -20);
+      p5Sketch.textSize(30);
+      p5Sketch.textAlign(p5Sketch.CENTER, p5Sketch.CENTER);
+      p5Sketch.fill(100);
+      p5Sketch.stroke(0);
+      p5Sketch.strokeWeight(1);
+      p5Sketch.text("HELD", nextShapeWidthInPixels / 2, -20);
 
-      translate(2 * BLOCK_SIZE, 2 * BLOCK_SIZE);
+      p5Sketch.translate(2 * BLOCK_SIZE, 2 * BLOCK_SIZE);
       if (this.heldShape) {
         this.heldShape.drawAtOrigin();
       }
-      pop();
+      p5Sketch.pop();
     }
   }
 
   drawGrid() {
-    push();
-    noStroke();
+    p5Sketch.push();
+    p5Sketch.noStroke();
 
-    fill(255);
-    rect(0, 0, this.gameWidth * BLOCK_SIZE, this.gameHeight * BLOCK_SIZE);
-    stroke(200);
+    p5Sketch.fill(255);
+    p5Sketch.rect(
+      0,
+      0,
+      this.gameWidth * BLOCK_SIZE,
+      this.gameHeight * BLOCK_SIZE
+    );
+    p5Sketch.stroke(200);
     // if(this.justTetrised){
     //     stroke(255,0,0);
     // }
-    strokeWeight(1);
+    p5Sketch.strokeWeight(1);
     for (let i = 0; i < this.gameWidth; i++) {
-      line(i * BLOCK_SIZE, 0, i * BLOCK_SIZE, this.gameHeight * BLOCK_SIZE);
+      p5Sketch.line(
+        i * BLOCK_SIZE,
+        0,
+        i * BLOCK_SIZE,
+        this.gameHeight * BLOCK_SIZE
+      );
     }
     for (let j = 0; j < this.gameHeight; j++) {
-      line(0, j * BLOCK_SIZE, this.gameWidth * BLOCK_SIZE, j * BLOCK_SIZE);
+      p5Sketch.line(
+        0,
+        j * BLOCK_SIZE,
+        this.gameWidth * BLOCK_SIZE,
+        j * BLOCK_SIZE
+      );
     }
-    pop();
+    p5Sketch.pop();
   }
 
-  isPositionVacant(position) {
+  isPositionVacant(position: any) {
     //if the position is within the grid of the game
     if (
       position.y >= -2 &&

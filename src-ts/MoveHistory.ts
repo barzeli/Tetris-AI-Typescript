@@ -1,9 +1,9 @@
-class MoveHistory {
-  constructor() {
-    this.moveHistoryList = [];
-  }
+import { p5Sketch } from "./sketch";
 
-  addDirectionalMove(x, y) {
+export class MoveHistory {
+  moveHistoryList: any[] = [];
+
+  addDirectionalMove(x: number, y: number) {
     if (x === -1) {
       this.moveHistoryList.push("LEFT");
     } else if (x === 1) {
@@ -11,7 +11,7 @@ class MoveHistory {
     } else if (y === 1) {
       this.moveHistoryList.push("DOWN");
     } else {
-      print(`ERROR BRO WHAT THE FUCK IS: ${x}, ${y}`);
+      p5Sketch.print(`ERROR BRO WHAT THE FUCK IS: ${x}, ${y}`);
     }
   }
 
