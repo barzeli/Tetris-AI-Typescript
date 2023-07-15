@@ -34,7 +34,7 @@ export let canvas: any;
 
 const sketch = (p5: p5) => {
   p5.preload = function preload() {
-    font = p5.loadFont("tetris font/Square.ttf");
+    font = p5.loadFont("public/Square.ttf");
   };
 
   p5.setup = function setup() {
