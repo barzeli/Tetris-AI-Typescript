@@ -2,17 +2,19 @@ import p5 from "p5";
 import { Block } from "./Block";
 import { MoveHistory } from "./MoveHistory";
 import { BLOCK_SIZE, p5Sketch } from "./sketch";
+import { Game } from "./Game";
+import { BlockMatrix } from "./BlockMatrix";
 
 export class Shape {
-  game: any;
+  game: Game;
   shapeID: any;
   currentPos: p5.Vector;
   startingPos: p5.Vector;
-  blocks: any[] = [];
+  blocks: Block[] = [];
   isDead: boolean;
   currentRotationCount: number;
   moveHistory: MoveHistory;
-  constructor(shapeID: any, startingPos: any, game: any) {
+  constructor(shapeID: any, startingPos: p5.Vector, game: Game) {
     this.game = game;
     this.shapeID = shapeID;
     this.currentPos = p5Sketch.createVector(startingPos.x, startingPos.y);
@@ -78,7 +80,7 @@ export class Shape {
     p5Sketch.pop();
   }
 
-  moveShape(x: any, y: any, blockMatrix: any) {
+  moveShape(x: number, y: number, blockMatrix: BlockMatrix) {
     if (blockMatrix) {
       if (this.canMoveInDirection(x, y, blockMatrix)) {
         this.currentPos.x += x;
@@ -92,7 +94,7 @@ export class Shape {
     }
   }
 
-  moveDown(resetAfterDeath: any) {
+  moveDown(resetAfterDeath: boolean) {
     if (this.canMoveDown()) {
       this.currentPos.y += 1;
     } else {
@@ -107,7 +109,7 @@ export class Shape {
     );
   }
 
-  killShape(resetAfterDeath: any) {
+  killShape(resetAfterDeath: boolean) {
     this.isDead = true;
     if (!resetAfterDeath) {
       for (let block of this.blocks) {
@@ -121,7 +123,7 @@ export class Shape {
     }
   }
 
-  canMoveDown(blockMatrix?: any) {
+  canMoveDown(blockMatrix?: BlockMatrix) {
     for (let block of this.blocks) {
       let futureBlockPosition = p5.Vector.add(
         this.currentPos,
@@ -142,7 +144,7 @@ export class Shape {
     return true;
   }
 
-  canMoveInDirection(x: any, y: any, blockMatrix?: any) {
+  canMoveInDirection(x: number, y: number, blockMatrix?: BlockMatrix) {
     //look at the future position of each block in the shape and if all those positions are vacant then we good
     for (let block of this.blocks) {
       let futureBlockPosition = p5.Vector.add(
@@ -166,7 +168,7 @@ export class Shape {
     return true;
   }
 
-  canRotateShape(isClockwise: any, blockMatrix?: any) {
+  canRotateShape(isClockwise: boolean, blockMatrix?: BlockMatrix) {
     for (let i = 0; i < this.blocks.length; i++) {
       let newPosition = this.getBlockPositionAfterShapeIsRotated(
         this.blocks[i],

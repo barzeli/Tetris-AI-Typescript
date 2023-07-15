@@ -1,6 +1,8 @@
+import { BlockMatrix } from "./BlockMatrix";
+
 export class CheckedPositionsArray {
   //an array which stores whether each position and rotation of a shape has already been checked for this matrix.
-  blockMatrix: any;
+  blockMatrix: BlockMatrix;
   checkedPositions: boolean[] = [];
   checkedPositionShapes: any[] = [];
 

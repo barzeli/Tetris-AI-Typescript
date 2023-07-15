@@ -1,12 +1,13 @@
+import p5 from "p5";
 import { BLOCK_SIZE, p5Sketch } from "./sketch";
 
 export class Block {
   isDead = false;
-  startingGridPos: any;
-  currentGridPos: any;
-  color: any;
+  startingGridPos: p5.Vector;
+  currentGridPos: p5.Vector;
+  color: p5.Color;
 
-  constructor(startingGridPos: any, color: any) {
+  constructor(startingGridPos: p5.Vector, color: p5.Color) {
     this.startingGridPos = startingGridPos;
     this.currentGridPos = startingGridPos;
     this.color = color;
@@ -19,7 +20,7 @@ export class Block {
     return clone;
   }
 
-  draw(tetrised = false, linesToBeCleared: any[] = []) {
+  draw(tetrised = false, linesToBeCleared: number[] = []) {
     if (this.isDead) return;
     p5Sketch.push();
     let pos = this.currentGridPos;
