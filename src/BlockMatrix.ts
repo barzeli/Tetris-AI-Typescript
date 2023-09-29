@@ -84,9 +84,7 @@ export class BlockMatrix {
   calculateMaximumLineHeight() {
     //going down each column look for a block and then add its height to the total
     this.maximumLineHeight = Math.max(
-      ...this.matrix.map(
-        (column) => this.height - column.findIndex((block) => block)
-      )
+      ...this.matrix.map((column) => this.getLineHeight(column))
     );
   }
 
@@ -278,24 +276,24 @@ export class BlockMatrix {
     ).length;
   }
 
+  getLineHeight(line: (Block | null)[]) {
+    const firstBlockIndex = line.findIndex((block) => block);
+    return firstBlockIndex >= 0 ? this.height - firstBlockIndex : 0;
+  }
+
   calculateBumpiness() {
     //bumpiness is defined as the total difference between column heights
-    this.bumpiness = 0;
-    let previousLineHeight = 0;
-
-    for (let i = 0; i < this.width - 1; i++) {
-      //note dont care about final row
-      for (let j = 0; j < this.height; j++) {
-        if (this.matrix[i][j] != null) {
-          let currentLineHeight = this.height - j;
-          if (i !== 0) {
-            this.bumpiness += Math.abs(previousLineHeight - currentLineHeight);
-          }
-          previousLineHeight = currentLineHeight;
-          break;
-        }
-      }
-    }
+    //note dont care about final row
+    this.bumpiness = this.matrix.reduce(
+      (sum, column, index, matrix) =>
+        sum +
+        (index === 0
+          ? 0
+          : Math.abs(
+              this.getLineHeight(column) - this.getLineHeight(matrix[index - 1])
+            )),
+      0
+    );
   }
 
   //assumes a shape has been added, the lines have been cleared, the holes are counted and the pillars are counted
