@@ -1,5 +1,6 @@
 import { p5Sketch } from "./sketch";
 import { Shape } from "./Shape";
+import { ShapeType } from "./types";
 
 export class ShapeGenerator {
   squareShape = {
@@ -86,7 +87,7 @@ export class ShapeGenerator {
     name: "S",
   };
 
-  shapeIDs = [
+  shapeIDs: ShapeType[] = [
     this.squareShape,
     this.lShape,
     this.reverseLShape,
@@ -96,7 +97,7 @@ export class ShapeGenerator {
     this.sShape,
   ];
 
-  currentBagOfShapeIDs = [
+  currentBagOfShapeIDs: ShapeType[] = [
     this.squareShape,
     this.lShape,
     this.reverseLShape,
@@ -110,7 +111,7 @@ export class ShapeGenerator {
     return new Shape(this.getRandomShapeID(), position, game);
   }
 
-  getRandomShapeID(): any {
+  getRandomShapeID(): ShapeType {
     if (this.currentBagOfShapeIDs.length > 0) {
       return this.currentBagOfShapeIDs.splice(
         Math.floor(p5Sketch.random(0, this.currentBagOfShapeIDs.length)),

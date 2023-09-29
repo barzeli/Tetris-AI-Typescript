@@ -4,26 +4,29 @@ import { MoveHistory } from "./MoveHistory";
 import { BLOCK_SIZE, p5Sketch } from "./sketch";
 import { Game } from "./Game";
 import { BlockMatrix } from "./BlockMatrix";
+import { ShapeType } from "./types";
 
 export class Shape {
   game: Game;
-  shapeID: any;
+  shapeID: ShapeType;
   currentPos: p5.Vector;
   startingPos: p5.Vector;
   blocks: Block[] = [];
   isDead: boolean;
   currentRotationCount: number;
   moveHistory: MoveHistory;
-  constructor(shapeID: any, startingPos: p5.Vector, game: Game) {
+  constructor(shapeID: ShapeType, startingPos: p5.Vector, game: Game) {
     this.game = game;
     this.shapeID = shapeID;
     this.currentPos = p5Sketch.createVector(startingPos.x, startingPos.y);
     this.startingPos = p5Sketch.createVector(startingPos.x, startingPos.y);
-    for (let pos of shapeID.blockPositions) {
-      this.blocks.push(
-        new Block(p5Sketch.createVector(pos.x, pos.y), shapeID.color)
-      );
-    }
+    this.blocks = shapeID.blockPositions.map(
+      (blockPosition) =>
+        new Block(
+          p5Sketch.createVector(blockPosition.x, blockPosition.y),
+          shapeID.color
+        )
+    );
     this.isDead = false;
     this.currentRotationCount = 0;
 
@@ -112,19 +115,19 @@ export class Shape {
   killShape(resetAfterDeath: boolean) {
     this.isDead = true;
     if (!resetAfterDeath) {
-      for (let block of this.blocks) {
+      this.blocks.forEach((block) => {
         //the block becomes disconnected from the shape and therefore the current grid position is no longer relative to the shape
         block.currentGridPos.add(this.currentPos);
         this.game.deadBlocks.push(block);
         this.game.deadBlocksMatrix[block.currentGridPos.x][
           block.currentGridPos.y
         ] = block;
-      }
+      });
     }
   }
 
   canMoveDown(blockMatrix?: BlockMatrix) {
-    for (let block of this.blocks) {
+    return this.blocks.every((block) => {
       let futureBlockPosition = p5.Vector.add(
         this.currentPos,
         block.currentGridPos
@@ -140,13 +143,13 @@ export class Shape {
           return false;
         }
       }
-    }
-    return true;
+      return true;
+    });
   }
 
   canMoveInDirection(x: number, y: number, blockMatrix?: BlockMatrix) {
     //look at the future position of each block in the shape and if all those positions are vacant then we good
-    for (let block of this.blocks) {
+    return this.blocks.every((block) => {
       let futureBlockPosition = p5.Vector.add(
         this.currentPos,
         block.currentGridPos
@@ -164,14 +167,14 @@ export class Shape {
           return false;
         }
       }
-    }
-    return true;
+      return true;
+    });
   }
 
   canRotateShape(isClockwise: boolean, blockMatrix?: BlockMatrix) {
-    for (let i = 0; i < this.blocks.length; i++) {
+    return this.blocks.every((block) => {
       let newPosition = this.getBlockPositionAfterShapeIsRotated(
-        this.blocks[i],
+        block,
         isClockwise
       );
       let newAbsolutePosition = p5.Vector.add(newPosition, this.currentPos);
@@ -185,8 +188,8 @@ export class Shape {
           return false;
         }
       }
-    }
-    return true;
+      return true;
+    });
   }
 
   getBlockPositionAfterShapeIsRotated(block: any, isClockwise: any) {
@@ -208,25 +211,25 @@ export class Shape {
   rotateShape(isClockwise: any, blockMatrix: any) {
     if (blockMatrix) {
       if (this.canRotateShape(isClockwise, blockMatrix)) {
-        for (let i = 0; i < this.blocks.length; i++) {
+        this.blocks.forEach((block) => {
           let newPosition = this.getBlockPositionAfterShapeIsRotated(
-            this.blocks[i],
+            block,
             isClockwise
           );
-          this.blocks[i].currentGridPos = newPosition;
-        }
+          block.currentGridPos = newPosition;
+        });
         this.currentRotationCount += 1;
         this.moveHistory.addRotationMove();
       }
     } else {
       if (this.canRotateShape(isClockwise)) {
-        for (let i = 0; i < this.blocks.length; i++) {
+        this.blocks.forEach((block) => {
           let newPosition = this.getBlockPositionAfterShapeIsRotated(
-            this.blocks[i],
+            block,
             isClockwise
           );
-          this.blocks[i].currentGridPos = newPosition;
-        }
+          block.currentGridPos = newPosition;
+        });
         this.currentRotationCount += 1;
         this.moveHistory.addRotationMove();
       }
