@@ -2,6 +2,7 @@ import p5 from "p5";
 import { Population } from "./Population";
 import { BlockMatrix } from "./BlockMatrix";
 import { Game } from "./Game";
+import { AI } from "./AI";
 
 let currentShape;
 
@@ -44,7 +45,7 @@ const sketch = (p5: p5) => {
 
     // population = new Population(populationSize);
     game = new Game(gameWidthBlocks, gameHeightBlocks);
-    // ai = new AI();
+    // ai = new AI(gameWidthBlocks, gameHeightBlocks);
     // ai.calculateMovementPlan2(game.currentShape, game.heldShape, game.nextShape, game.deadBlocksMatrix);
     p5.frameRate(10);
     p5.textFont(font);

@@ -13,7 +13,7 @@ export class AI {
   brain: Brain;
   chosenEndPosition: any;
 
-  constructor(gameWidth: number, gameHeight: number, brain: Brain) {
+  constructor(gameWidth: number, gameHeight: number, brain?: Brain) {
     this.gameWidth = gameWidth;
     this.gameHeight = gameHeight;
     this.brain = brain;

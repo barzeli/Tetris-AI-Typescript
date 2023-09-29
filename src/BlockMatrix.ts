@@ -4,6 +4,7 @@ import { p5Sketch } from "./sketch";
 import { Block } from "./Block";
 import { Shape } from "./Shape";
 import { Brain } from "./Brain";
+import { zip } from "lodash";
 
 export class BlockMatrix {
   width: number;
@@ -42,11 +43,9 @@ export class BlockMatrix {
     let clone = new BlockMatrix(this.width, this.height);
 
     //clone the matrix
-    for (let i = 0; i < clone.width; i++) {
-      for (let j = 0; j < clone.height; j++) {
-        if (this.matrix[i][j]) clone.matrix[i][j] = this.matrix[i][j]!.clone();
-      }
-    }
+    clone.matrix = this.matrix.map((column) =>
+      column.map((block) => (block ? block.clone() : null))
+    );
 
     clone.holeCount = this.holeCount;
     clone.pillarCount = this.pillarCount;
@@ -57,54 +56,38 @@ export class BlockMatrix {
   //returns a copy of the block matrix
   copyFromMatrix(matrixToCopyFrom: (Block | null)[][]) {
     //clone the matrix
-    for (let i = 0; i < this.width; i++) {
-      for (let j = 0; j < this.height; j++) {
-        if (matrixToCopyFrom[i][j])
-          this.matrix[i][j] = matrixToCopyFrom[i][j]!.clone();
-      }
-    }
+    this.matrix = matrixToCopyFrom.map((column) =>
+      column.map((block) => (block ? block.clone() : null))
+    );
   }
 
   //resets the matrix to all nulls and creates the matrix from scratch
   resetMatrix() {
-    this.matrix = [];
-    for (let i = 0; i < this.width; i++) {
-      let column = [];
-      for (let j = 0; j < this.height; j++) {
-        column.push(null);
-      }
-      this.matrix.push(column);
-    }
+    this.matrix = [...Array(this.width)].map((_) =>
+      [...Array(this.height)].map((_) => null)
+    );
   }
 
   //adds the parameter shape to the matrix
   //DOES NOT CLEAR LINES
   addShapeToMatrix(shape: Shape) {
     //add the shape to the block matrix
-    for (let block of shape.blocks) {
+    shape.blocks.forEach((block) => {
       //the block becomes disconnected from the shape and therefore the current grid position is no longer relative to the shape
       let newPosition = p5.Vector.add(block.currentGridPos, shape.currentPos);
       this.matrix[newPosition.x][newPosition.y] = block.clone();
-    }
+    });
 
     this.addedShapeHeight = this.height - shape.currentPos.y;
   }
 
   calculateMaximumLineHeight() {
-    this.maximumLineHeight = 0;
-
-    for (let i = 0; i < this.width; i++) {
-      //going down each column look for a block and then add its height to the total
-      for (let j = 0; j < this.height; j++) {
-        if (this.matrix[i][j] != null) {
-          this.maximumLineHeight = Math.max(
-            this.maximumLineHeight,
-            this.height - j
-          );
-          break;
-        }
-      }
-    }
+    //going down each column look for a block and then add its height to the total
+    this.maximumLineHeight = Math.max(
+      ...this.matrix.map(
+        (column) => this.height - column.findIndex((block) => block)
+      )
+    );
   }
 
   isPositionVacant(position: p5.Vector) {
@@ -167,19 +150,9 @@ export class BlockMatrix {
   }
 
   printMatrix() {
-    let printString = "";
-    for (let j = 0; j < this.height; j++) {
-      let printLine = "";
-      let pieceCount = 0;
-      for (let i = 0; i < this.width; i++) {
-        printLine += this.matrix[i][j] != null ? "X" : " ";
-        pieceCount += this.matrix[i][j] != null ? 1 : 0;
-      }
-      if (pieceCount > 0) {
-        printString += printLine;
-        printString += "\n";
-      }
-    }
+    const printString = zip(...this.matrix)
+      .map((row) => row.map((block) => (block ? "X" : " ")).join(""))
+      .join("\n");
     p5Sketch.print(printString);
   }
 
@@ -299,14 +272,10 @@ export class BlockMatrix {
   }
 
   countNumberOfBlocksInRightmostLane() {
-    this.blocksInRightLane = 0;
-
     //going down each column look for a block and once found each block below is a hole
-    for (let j = 0; j < this.height; j++) {
-      if (this.matrix[this.width - 1][j] != null) {
-        this.blocksInRightLane++;
-      }
-    }
+    this.blocksInRightLane = this.matrix[this.width - 1].filter(
+      (block) => block
+    ).length;
   }
 
   calculateBumpiness() {
