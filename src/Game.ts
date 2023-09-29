@@ -3,6 +3,7 @@ import { Block } from "./Block";
 import { Shape } from "./Shape";
 import { ShapeGenerator } from "./ShapeGenerator";
 import { BLOCK_SIZE, canvas, p5Sketch } from "./sketch";
+import { zip } from "lodash";
 
 export class Game {
   gameWidth: number;
@@ -46,14 +47,9 @@ export class Game {
   }
 
   resetBlocksMatrix() {
-    this.deadBlocksMatrix = [];
-    for (let i = 0; i < this.gameWidth; i++) {
-      let column = [];
-      for (let j = 0; j < this.gameHeight; j++) {
-        column.push(null);
-      }
-      this.deadBlocksMatrix.push(column);
-    }
+    this.deadBlocksMatrix = [...Array(this.gameWidth)].map((_) =>
+      [...Array(this.gameHeight)].map((_) => null)
+    );
   }
 
   moveShapeDown(resetAfterShapeDeath?: boolean) {
@@ -106,19 +102,13 @@ export class Game {
 
   checkForTetris() {
     let linesClearedThisShape = 0;
-    for (let j = 0; j < this.gameHeight; j++) {
-      let rowCleared = true;
-      for (let i = 0; i < this.gameWidth; i++) {
-        if (this.deadBlocksMatrix[i][j] == null) {
-          rowCleared = false;
-          break;
-        }
-      }
+    zip(...this.deadBlocksMatrix).forEach((row, rowIndex) => {
+      const rowCleared = row.every((block) => block);
       if (rowCleared) {
-        this.linesToBeCleared.push(j);
+        this.linesToBeCleared.push(rowIndex);
         linesClearedThisShape++;
       }
-    }
+    });
     if (linesClearedThisShape === 4) {
       this.justTetrised = true;
       this.timeSinceTetris = 0;
@@ -220,9 +210,9 @@ export class Game {
       //draw the grid
       this.drawGrid();
       //draw the blocks which have already been placed
-      for (let block of this.deadBlocks) {
-        block.draw(this.justTetrised, this.linesToBeCleared);
-      }
+      this.deadBlocks.forEach((block) =>
+        block.draw(this.justTetrised, this.linesToBeCleared)
+      );
 
       //draw Tetris font
       p5Sketch.textSize(30);
@@ -386,22 +376,23 @@ export class Game {
     //     stroke(255,0,0);
     // }
     p5Sketch.strokeWeight(1);
-    for (let i = 0; i < this.gameWidth; i++) {
+    [...Array(this.gameWidth)].forEach((_, index) =>
       p5Sketch.line(
-        i * BLOCK_SIZE,
+        index * BLOCK_SIZE,
         0,
-        i * BLOCK_SIZE,
+        index * BLOCK_SIZE,
         this.gameHeight * BLOCK_SIZE
-      );
-    }
-    for (let j = 0; j < this.gameHeight; j++) {
+      )
+    );
+    [...Array(this.gameHeight)].forEach((_, index) =>
       p5Sketch.line(
         0,
-        j * BLOCK_SIZE,
+        index * BLOCK_SIZE,
         this.gameWidth * BLOCK_SIZE,
-        j * BLOCK_SIZE
-      );
-    }
+        index * BLOCK_SIZE
+      )
+    );
+
     p5Sketch.pop();
   }
 

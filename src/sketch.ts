@@ -77,44 +77,50 @@ const sketch = (p5: p5) => {
     // if (game.justTetrised) {
     //     return;
     // }
-    // for (let i = 0; i < 1; i++) {
-    //     // move the shape down at a rate of (shape Fall Rate) drops per second
-    //     if (!paused && frameCount % int(30 / shapeFallRate) === 0) {
-    //         if (ai.movementPlan === null) {
-    //             ai.calculateMovementPlan2(game.currentShape, game.heldShape, game.nextShape, game.deadBlocksMatrix);
-    //         }
-    //
-    //         let nextMove = ai.getNextMove();
-    //
-    //         switch (nextMove) {
-    //             case "ALL DOWN":
-    //                 let downMoveMultiplier = 2;
-    //                 // let downMoveMultiplier = 2;
-    //                 while (ai.movementPlan.moveHistoryList.length > 0 && downMoveMultiplier > 0) {
-    //                     ai.movementPlan.moveHistoryList.splice(0, 1);
-    //                     game.moveShapeDown();
-    //                     downMoveMultiplier -= 1;
-    //                 }
-    //                 break;
-    //             case "HOLD":
-    //                 game.holdShape();
-    //                 break;
-    //             case "ROTATE":
-    //                 game.rotateShape();
-    //                 break;
-    //             case "RIGHT":
-    //                 game.moveShapeRight();
-    //                 break;
-    //             case "LEFT":
-    //                 game.moveShapeLeft();
-    //                 break;
-    //             case "DOWN":
-    //                 game.moveShapeDown();
-    //                 break;
-    //         }
-    //     }
-    //     pop();
+    // move the shape down at a rate of (shape Fall Rate) drops per second
+    // if (!paused && p5.frameCount % p5.int(30 / shapeFallRate) === 0) {
+    //   if (ai.movementPlan === null) {
+    //     ai.calculateMovementPlan2(
+    //       game.currentShape,
+    //       game.heldShape,
+    //       game.nextShape,
+    //       game.deadBlocksMatrix
+    //     );
+    //   }
+
+    //   let nextMove = ai.getNextMove();
+
+    //   switch (nextMove) {
+    //     case "ALL DOWN":
+    //       let downMoveMultiplier = 2;
+    //       // let downMoveMultiplier = 2;
+    //       while (
+    //         ai.movementPlan.moveHistoryList.length > 0 &&
+    //         downMoveMultiplier > 0
+    //       ) {
+    //         ai.movementPlan.moveHistoryList.splice(0, 1);
+    //         game.moveShapeDown();
+    //         downMoveMultiplier -= 1;
+    //       }
+    //       break;
+    //     case "HOLD":
+    //       game.holdShape();
+    //       break;
+    //     case "ROTATE":
+    //       game.rotateShape();
+    //       break;
+    //     case "RIGHT":
+    //       game.moveShapeRight();
+    //       break;
+    //     case "LEFT":
+    //       game.moveShapeLeft();
+    //       break;
+    //     case "DOWN":
+    //       game.moveShapeDown();
+    //       break;
+    //   }
     // }
+    // p5.pop();
   };
 
   function writeCurrentMatrixStats() {
@@ -155,9 +161,9 @@ const sketch = (p5: p5) => {
     p5.text("Current Stats", startingX, startingY);
     p5.textSize(15);
     p5.noStroke();
-    for (let i = 0; i < matrixStats.length; i++) {
-      p5.text("---" + matrixStats[i], startingX, startingY + (i + 1) * textGap);
-    }
+    matrixStats.forEach((matrixStat, index) =>
+      p5.text("---" + matrixStat, startingX, startingY + (index + 1) * textGap)
+    );
   }
 
   function writeCurrentOptimisations() {
@@ -183,9 +189,13 @@ const sketch = (p5: p5) => {
     // text("Implemented Optimisations",startingX, startingY);
     p5.textSize(15);
     p5.noStroke();
-    for (let i = 0; i < implementedOptimisations.length; i++) {
-      // text("---" + implementedOptimisations[i],startingX, startingY + (i+1) * textGap);
-    }
+    // implementedOptimisations.forEach((implementedOptimisation, index) =>
+    //   p5.text(
+    //     "---" + implementedOptimisation,
+    //     startingX,
+    //     startingY + (index + 1) * textGap
+    //   )
+    // );
   }
 
   let leftKeyIsDown = false;
