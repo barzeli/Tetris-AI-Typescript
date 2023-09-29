@@ -101,15 +101,12 @@ export class Game {
   }
 
   checkForTetris() {
-    let linesClearedThisShape = 0;
-    zip(...this.deadBlocksMatrix).forEach((row, rowIndex) => {
-      const rowCleared = row.every((block) => block);
-      if (rowCleared) {
-        this.linesToBeCleared.push(rowIndex);
-        linesClearedThisShape++;
-      }
-    });
-    if (linesClearedThisShape === 4) {
+    const fullLineIndexes = zip(...this.deadBlocksMatrix)
+      .map((row, rowIndex) => ({ row, rowIndex }))
+      .filter(({ row }) => row.every((block) => block))
+      .map(({ rowIndex }) => rowIndex);
+    this.linesToBeCleared.push(...fullLineIndexes);
+    if (fullLineIndexes.length === 4) {
       this.justTetrised = true;
       this.timeSinceTetris = 0;
     }
