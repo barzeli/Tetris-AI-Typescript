@@ -1,7 +1,8 @@
 import { p5Sketch } from "./sketch";
+import { MovementType } from "./types";
 
 export class MoveHistory {
-  moveHistoryList: any[] = [];
+  moveHistoryList: MovementType[] = [];
 
   addDirectionalMove(x: number, y: number) {
     if (x === -1) {
@@ -29,7 +30,7 @@ export class MoveHistory {
   clone() {
     let clone = new MoveHistory();
     for (let i = 0; i < this.moveHistoryList.length; i++) {
-      clone.moveHistoryList.push("" + this.moveHistoryList[i]);
+      clone.moveHistoryList.push(this.moveHistoryList[i]);
     }
     return clone;
   }

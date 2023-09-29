@@ -4,7 +4,7 @@ import { canvas, p5Sketch } from "./sketch";
 export class Population {
   players: Player[] = [];
   fitnessSum = 0;
-  bestPlayer: any = null;
+  bestPlayer: Player | null = null;
   generation = 1;
 
   //batch stuff
@@ -103,13 +103,13 @@ export class Population {
     //make sure best player makes it to the next gen
     this.setBestPlayer();
     let parent = this.bestPlayer;
-    let child = parent.clone();
+    let child = parent!.clone();
     child.brain.mutate();
     nextGen.push(child);
 
     while (nextGen.length < this.players.length) {
       parent = this.selectPlayer();
-      child = parent.clone();
+      child = parent!.clone();
       child.brain.mutate();
       nextGen.push(child);
     }

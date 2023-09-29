@@ -4,8 +4,8 @@ import { Game } from "./Game";
 import { canvas, p5Sketch } from "./sketch";
 
 export class Player {
-  windowWidth: any;
-  windowHeight: any;
+  windowWidth: number;
+  windowHeight: number;
 
   fitness = 0;
   score = 0;
@@ -15,7 +15,7 @@ export class Player {
   ai: AI;
   isDead = false;
 
-  constructor(firstPlayer?: any) {
+  constructor(firstPlayer?: boolean) {
     this.brain = new Brain(firstPlayer);
 
     this.ai = new AI(

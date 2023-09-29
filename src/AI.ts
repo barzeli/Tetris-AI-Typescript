@@ -4,15 +4,16 @@ import { MoveHistory } from "./MoveHistory";
 import { CheckedPositionsArray } from "./CheckedPositionsArray";
 import { Shape } from "./Shape";
 import { Block } from "./Block";
+import { Brain } from "./Brain";
 
 export class AI {
   movementPlan = new MoveHistory();
-  gameWidth: any;
-  gameHeight: any;
-  brain: any;
+  gameWidth: number;
+  gameHeight: number;
+  brain: Brain;
   chosenEndPosition: any;
 
-  constructor(gameWidth: any, gameHeight: any, brain: any) {
+  constructor(gameWidth: number, gameHeight: number, brain: Brain) {
     this.gameWidth = gameWidth;
     this.gameHeight = gameHeight;
     this.brain = brain;
@@ -209,7 +210,7 @@ export class AI {
     // minCostMatrix.printMatrix();
     // print(minCostMatrix);
     // paused = true;
-    this.movementPlan = minCostMatrix.movementHistory;
+    if (minCostMatrix) this.movementPlan = minCostMatrix.movementHistory;
     // print(this.movementPlan.moveHistoryList);
   }
 
@@ -406,9 +407,9 @@ export class AI {
   }
 
   convertEndPositionsToMatrices(
-    endPositions: any,
-    currentMatrix: any,
-    hasHeld: any
+    endPositions: Shape[],
+    currentMatrix: BlockMatrix,
+    hasHeld: boolean
   ) {
     let endMatrices = [];
     for (let shape of endPositions) {

@@ -2,12 +2,14 @@ import p5 from "p5";
 import { MoveHistory } from "./MoveHistory";
 import { p5Sketch } from "./sketch";
 import { Block } from "./Block";
+import { Shape } from "./Shape";
+import { Brain } from "./Brain";
 
 export class BlockMatrix {
-  width: any;
-  height: any;
+  width: number;
+  height: number;
 
-  matrix: any[][] = [];
+  matrix: (Block | null)[][] = [];
 
   holeCount = 0;
   openHoleCount = 0;
@@ -24,14 +26,14 @@ export class BlockMatrix {
 
   blocksInRightLane: number = 0;
 
-  constructor(width: any, height: any) {
+  constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
 
     this.resetMatrix();
   }
 
-  addMovementHistory(movementHistory: any) {
+  addMovementHistory(movementHistory: MoveHistory) {
     this.movementHistory = movementHistory.clone();
   }
 
@@ -42,8 +44,7 @@ export class BlockMatrix {
     //clone the matrix
     for (let i = 0; i < clone.width; i++) {
       for (let j = 0; j < clone.height; j++) {
-        if (this.matrix[i][j] !== null)
-          clone.matrix[i][j] = this.matrix[i][j].clone();
+        if (this.matrix[i][j]) clone.matrix[i][j] = this.matrix[i][j]!.clone();
       }
     }
 
@@ -78,7 +79,7 @@ export class BlockMatrix {
 
   //adds the parameter shape to the matrix
   //DOES NOT CLEAR LINES
-  addShapeToMatrix(shape: any) {
+  addShapeToMatrix(shape: Shape) {
     //add the shape to the block matrix
     for (let block of shape.blocks) {
       //the block becomes disconnected from the shape and therefore the current grid position is no longer relative to the shape
@@ -106,7 +107,7 @@ export class BlockMatrix {
     }
   }
 
-  isPositionVacant(position: any) {
+  isPositionVacant(position: p5.Vector) {
     //check the position is within the matrix, for example -1,4 is not in the matrix and therefore is not vacant
     if (
       position.y >= 0 &&
@@ -151,8 +152,8 @@ export class BlockMatrix {
             //for each block in that row
 
             //if its not null then change the position of the block
-            if (this.matrix[i][rowIndexToMoveDown] !== null) {
-              this.matrix[i][rowIndexToMoveDown].currentGridPos.y += 1;
+            if (this.matrix[i][rowIndexToMoveDown]) {
+              this.matrix[i][rowIndexToMoveDown]!.currentGridPos.y += 1;
             }
 
             //move this block into the lower row and set the blocks previous row position to null
@@ -329,7 +330,7 @@ export class BlockMatrix {
   }
 
   //assumes a shape has been added, the lines have been cleared, the holes are counted and the pillars are counted
-  calculateCost(brain?: any) {
+  calculateCost(brain?: Brain) {
     if (brain) {
       this.cost = brain.getCostOfMatrix(this);
       return;

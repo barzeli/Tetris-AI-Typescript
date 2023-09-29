@@ -1,9 +1,21 @@
 import { p5Sketch } from "./sketch";
+import { Multipliers } from "./types";
 
 export class Brain {
-  multipliers: any = {};
+  multipliers: Multipliers = {
+    holeCountMultiplier: 0,
+    openHoleCountMultiplier: 0,
+    maximumLineHeightMultiplier: 0,
+    addedShapeHeightMultiplier: 0,
+    pillarCountMultiplier: 0,
+    blocksInRightMostLaneMultiplier: 0,
+    nonTetrisClearPenalty: 0,
+    blocksAboveHolesMultiplier: 0,
+    bumpinessMultiplier: 0,
+    tetrisRewardMultiplier: 0,
+  };
 
-  constructor(isFirst?: any) {
+  constructor(isFirst?: boolean) {
     if (isFirst) {
       this.setAsMyMultipliers();
     } else {
@@ -45,29 +57,29 @@ export class Brain {
     let mutationRate = 0.1;
     this.multipliers.holeCountMultiplier *=
       p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
-    this.multipliers.multipliersopenHoleCountMultiplier *=
+    this.multipliers.openHoleCountMultiplier *=
       p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
-    this.multipliers.multipliersmaximumLineHeightMultiplier *=
+    this.multipliers.maximumLineHeightMultiplier *=
       p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
-    this.multipliers.multipliersaddedShapeHeightMultiplier *=
+    this.multipliers.addedShapeHeightMultiplier *=
       p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
-    this.multipliers.multiplierspillarCountMultiplier *=
+    this.multipliers.pillarCountMultiplier *=
       p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
-    this.multipliers.multipliersblocksInRightMostLaneMultiplier *=
+    this.multipliers.blocksInRightMostLaneMultiplier *=
       p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
-    this.multipliers.multipliersnonTetrisClearPenalty *=
+    this.multipliers.nonTetrisClearPenalty *=
       p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
-    this.multipliers.multipliersblocksAboveHolesMultiplier *=
+    this.multipliers.blocksAboveHolesMultiplier *=
       p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
-    this.multipliers.multipliersbumpinessMultiplier *=
+    this.multipliers.bumpinessMultiplier *=
       p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
-    this.multipliers.multiplierstetrisRewardMultiplier *=
+    this.multipliers.tetrisRewardMultiplier *=
       p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
   }
 
   clone() {
     let clone = new Brain();
-    clone.multipliers = Object.assign({}, this.multipliers);
+    clone.multipliers = { ...this.multipliers };
     return clone;
   }
 
