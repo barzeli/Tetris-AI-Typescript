@@ -11,10 +11,12 @@ export class Shape {
   shapeID: ShapeType;
   currentPos: p5.Vector;
   startingPos: p5.Vector;
-  blocks: Block[] = [];
-  isDead: boolean;
-  currentRotationCount: number;
-  moveHistory: MoveHistory;
+  blocks: Block[];
+  isDead = false;
+  currentRotationCount = 0;
+  //vectors which control this piece into the best position
+  moveHistory = new MoveHistory();
+
   constructor(shapeID: ShapeType, startingPos: p5.Vector, game: Game) {
     this.game = game;
     this.shapeID = shapeID;
@@ -27,20 +29,12 @@ export class Shape {
           shapeID.color
         )
     );
-    this.isDead = false;
-    this.currentRotationCount = 0;
-
-    //vectors which control this piece into the best position
-    this.moveHistory = new MoveHistory();
   }
 
   clone() {
     let clone = new Shape(this.shapeID, this.startingPos, this.game);
     clone.currentPos = this.currentPos.copy();
-    clone.blocks = [];
-    for (let block of this.blocks) {
-      clone.blocks.push(block.clone());
-    }
+    clone.blocks = this.blocks.map((block) => block.clone());
     clone.isDead = this.isDead;
     clone.currentRotationCount = this.currentRotationCount;
     clone.moveHistory = this.moveHistory.clone();
@@ -53,21 +47,21 @@ export class Shape {
       this.currentPos.x * BLOCK_SIZE,
       this.currentPos.y * BLOCK_SIZE
     );
-    for (let block of this.blocks) {
-      block.draw();
-    }
+    this.blocks.forEach((block) => block.draw());
     p5Sketch.pop();
   }
 
   //draws the shape with its CENTER at 0,0
   drawAtOrigin() {
     //get the midpoint of the shape
-    let sumX = 0;
-    let sumY = 0;
-    for (let block of this.blocks) {
-      sumX += block.currentGridPos.x + 0.5;
-      sumY += block.currentGridPos.y + 0.5;
-    }
+    const sumX = this.blocks.reduce(
+      (sum, block) => sum + block.currentGridPos.x + 0.5,
+      0
+    );
+    const sumY = this.blocks.reduce(
+      (sum, block) => sum + block.currentGridPos.y + 0.5,
+      0
+    );
     let midpoint = p5Sketch.createVector(
       sumX / this.blocks.length,
       sumY / this.blocks.length
@@ -77,13 +71,11 @@ export class Shape {
     //translate so that the midpoint is at 0,0
     p5Sketch.translate(-midpoint.x * BLOCK_SIZE, -midpoint.y * BLOCK_SIZE);
 
-    for (let block of this.blocks) {
-      block.draw();
-    }
+    this.blocks.forEach((block) => block.draw());
     p5Sketch.pop();
   }
 
-  moveShape(x: number, y: number, blockMatrix: BlockMatrix) {
+  moveShape(x: number, y: number, blockMatrix?: BlockMatrix) {
     if (blockMatrix) {
       if (this.canMoveInDirection(x, y, blockMatrix)) {
         this.currentPos.x += x;
@@ -192,7 +184,7 @@ export class Shape {
     });
   }
 
-  getBlockPositionAfterShapeIsRotated(block: any, isClockwise: any) {
+  getBlockPositionAfterShapeIsRotated(block: Block, isClockwise: boolean) {
     let startingPos = block.currentGridPos;
     let rotationPoint = this.shapeID.rotationPoint;
     let startingPosRelativeToRotationPoint = p5.Vector.sub(
@@ -208,7 +200,7 @@ export class Shape {
     return newPosition;
   }
 
-  rotateShape(isClockwise: any, blockMatrix: any) {
+  rotateShape(isClockwise: boolean, blockMatrix?: any) {
     if (blockMatrix) {
       if (this.canRotateShape(isClockwise, blockMatrix)) {
         this.blocks.forEach((block) => {

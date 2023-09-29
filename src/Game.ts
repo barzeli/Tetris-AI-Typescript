@@ -1,3 +1,4 @@
+import { Shape } from "./Shape";
 import { ShapeGenerator } from "./ShapeGenerator";
 import { BLOCK_SIZE, canvas, p5Sketch } from "./sketch";
 
@@ -24,8 +25,8 @@ export class Game {
   isDead = false;
 
   linesToBeCleared: any[] = [];
-  currentShape: any;
-  nextShape: any;
+  currentShape: Shape;
+  nextShape: Shape;
 
   constructor(gameWidth: any, gameHeight: any) {
     this.gameWidth = gameWidth;
