@@ -1,6 +1,8 @@
 import { p5Sketch } from "./sketch";
 import { Shape } from "./Shape";
 import { ShapeType } from "./types";
+import p5 from "p5";
+import { Game } from "./Game";
 
 export class ShapeGenerator {
   squareShape = {
@@ -107,7 +109,7 @@ export class ShapeGenerator {
     this.sShape,
   ];
 
-  getNewRandomShape(position: any, game: any) {
+  getNewRandomShape(position: p5.Vector, game: Game) {
     return new Shape(this.getRandomShapeID(), position, game);
   }
 

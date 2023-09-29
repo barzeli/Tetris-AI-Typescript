@@ -1,6 +1,7 @@
 import p5 from "p5";
 import { MoveHistory } from "./MoveHistory";
 import { p5Sketch } from "./sketch";
+import { Block } from "./Block";
 
 export class BlockMatrix {
   width: any;
@@ -53,12 +54,12 @@ export class BlockMatrix {
   }
 
   //returns a copy of the block matrix
-  copyFromMatrix(matrixToCopyFrom: any) {
+  copyFromMatrix(matrixToCopyFrom: (Block | null)[][]) {
     //clone the matrix
     for (let i = 0; i < this.width; i++) {
       for (let j = 0; j < this.height; j++) {
-        if (matrixToCopyFrom[i][j] !== null)
-          this.matrix[i][j] = matrixToCopyFrom[i][j].clone();
+        if (matrixToCopyFrom[i][j])
+          this.matrix[i][j] = matrixToCopyFrom[i][j]!.clone();
       }
     }
   }

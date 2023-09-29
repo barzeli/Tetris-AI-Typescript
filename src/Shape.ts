@@ -89,7 +89,7 @@ export class Shape {
     }
   }
 
-  moveDown(resetAfterDeath: boolean) {
+  moveDown(resetAfterDeath?: boolean) {
     if (this.canMoveDown()) {
       this.currentPos.y += 1;
     } else {
@@ -104,7 +104,7 @@ export class Shape {
     );
   }
 
-  killShape(resetAfterDeath: boolean) {
+  killShape(resetAfterDeath?: boolean) {
     this.isDead = true;
     if (!resetAfterDeath) {
       this.blocks.forEach((block) => {

@@ -2,6 +2,8 @@ import p5 from "p5";
 import { BlockMatrix } from "./BlockMatrix";
 import { MoveHistory } from "./MoveHistory";
 import { CheckedPositionsArray } from "./CheckedPositionsArray";
+import { Shape } from "./Shape";
+import { Block } from "./Block";
 
 export class AI {
   movementPlan = new MoveHistory();
@@ -61,10 +63,10 @@ export class AI {
 
   //ok so this ones going to look at the next shape to see what were working with
   calculateMovementPlan2(
-    currentShape_: any,
-    heldShape_: any,
-    nextShape_: any,
-    blockMatrix_: any
+    currentShape_: Shape,
+    heldShape_: Shape | null,
+    nextShape_: Shape,
+    blockMatrix_: (Block | null)[][]
   ) {
     //clone all the input so we dont fuck it up
     let currentShape = currentShape_.clone();
@@ -262,7 +264,7 @@ export class AI {
     return blockMatrix.cost;
   }
 
-  getAllEndPositions(startingShape: any, blockMatrix_: any) {
+  getAllEndPositions(startingShape: Shape | null, blockMatrix_: BlockMatrix) {
     //so now we need to run a loop to hit all the possible positions
     let endPositions = this.getShortestPathsToAllEndPositions(
       startingShape,
@@ -312,16 +314,19 @@ export class AI {
   }
 
   //returns a list of all the possible end positions from this starting shape
-  getShortestPathsToAllEndPositions(startingShape: any, blockMatrix: any) {
+  getShortestPathsToAllEndPositions(
+    startingShape: Shape | null,
+    blockMatrix: BlockMatrix
+  ) {
     let counter = 0;
     let endPositions = [];
     let checkedPositions = new CheckedPositionsArray(blockMatrix);
     let checkInDirection = (
-      queue: any,
-      shape: any,
-      x: any,
-      y: any,
-      r?: any
+      queue: Shape[],
+      shape: Shape,
+      x: number,
+      y: number,
+      r?: number
     ) => {
       if (r) {
         if (shape.canRotateShape(true, blockMatrix)) {
@@ -361,8 +366,8 @@ export class AI {
       }
     };
 
-    let queue = [];
-    queue.push(startingShape);
+    let queue: Shape[] = [];
+    if (startingShape) queue.push(startingShape);
     while (queue.length > 0) {
       counter++;
       //grab a shape off the front of the queue

@@ -246,7 +246,7 @@ const sketch = (p5: p5) => {
   };
 
   p5.keyReleased = function keyReleased() {
-     if (p5.keyCode === p5.DOWN_ARROW) {
+    if (p5.keyCode === p5.DOWN_ARROW) {
       downKeyIsDown = false;
     }
     if (p5.keyCode === p5.LEFT_ARROW) {

@@ -1,18 +1,20 @@
+import p5 from "p5";
+import { Block } from "./Block";
 import { Shape } from "./Shape";
 import { ShapeGenerator } from "./ShapeGenerator";
 import { BLOCK_SIZE, canvas, p5Sketch } from "./sketch";
 
 export class Game {
-  gameWidth: any;
-  gameHeight: any;
+  gameWidth: number;
+  gameHeight: number;
 
-  justTetrised: any;
+  justTetrised = false;
 
   shapeGenerator = new ShapeGenerator();
-  deadBlocks: any[] = [];
-  deadBlocksMatrix: any[][] = [];
+  deadBlocks: Block[] = [];
+  deadBlocksMatrix: (Block | null)[][] = [];
 
-  heldShape: any = null;
+  heldShape: Shape | null = null;
   hasHeldThisShape = false;
   score = 0;
 
@@ -24,11 +26,11 @@ export class Game {
 
   isDead = false;
 
-  linesToBeCleared: any[] = [];
+  linesToBeCleared: number[] = [];
   currentShape: Shape;
   nextShape: Shape;
 
-  constructor(gameWidth: any, gameHeight: any) {
+  constructor(gameWidth: number, gameHeight: number) {
     this.gameWidth = gameWidth;
     this.gameHeight = gameHeight;
 
@@ -54,7 +56,7 @@ export class Game {
     }
   }
 
-  moveShapeDown(resetAfterShapeDeath?: any) {
+  moveShapeDown(resetAfterShapeDeath?: boolean) {
     this.currentShape.moveDown(resetAfterShapeDeath);
 
     if (this.currentShape.isDead && resetAfterShapeDeath) {
@@ -138,7 +140,8 @@ export class Game {
         linesClearedThisShape++;
         //deactivate row
         for (let i = 0; i < this.gameWidth; i++) {
-          this.deadBlocksMatrix[i][j].isDead = true;
+          if (this.deadBlocksMatrix[i][j])
+            this.deadBlocksMatrix[i][j]!.isDead = true;
         }
 
         //for each row above the cleared row move them down
@@ -148,10 +151,10 @@ export class Game {
           rowIndexToMoveDown--
         ) {
           for (let i = 0; i < this.gameWidth; i++) {
-            if (this.deadBlocksMatrix[i][rowIndexToMoveDown] !== null) {
+            if (this.deadBlocksMatrix[i][rowIndexToMoveDown]) {
               this.deadBlocksMatrix[i][
                 rowIndexToMoveDown
-              ].currentGridPos.y += 1;
+              ]!.currentGridPos.y += 1;
             }
             this.deadBlocksMatrix[i][rowIndexToMoveDown + 1] =
               this.deadBlocksMatrix[i][rowIndexToMoveDown];
@@ -402,7 +405,7 @@ export class Game {
     p5Sketch.pop();
   }
 
-  isPositionVacant(position: any) {
+  isPositionVacant(position: p5.Vector) {
     //if the position is within the grid of the game
     if (
       position.y >= -2 &&
