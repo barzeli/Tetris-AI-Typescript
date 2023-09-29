@@ -29,9 +29,7 @@ export class MoveHistory {
 
   clone() {
     let clone = new MoveHistory();
-    for (let i = 0; i < this.moveHistoryList.length; i++) {
-      clone.moveHistoryList.push(this.moveHistoryList[i]);
-    }
+    clone.moveHistoryList = [...this.moveHistoryList];
     return clone;
   }
 }

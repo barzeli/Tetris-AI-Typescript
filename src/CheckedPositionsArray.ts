@@ -21,26 +21,14 @@ export class CheckedPositionsArray {
   }
 
   setAllPositionsToFalse() {
-    this.checkedPositions = [];
-    for (
-      let i = 0;
-      i < this.blockMatrix.width * this.blockMatrix.height * 4;
-      i++
-    ) {
-      this.checkedPositions.push(false);
-      this.checkedPositionShapes.push(null);
-    }
+    const length = this.blockMatrix.width * this.blockMatrix.height * 4;
+    this.checkedPositions = [...Array(length).fill(false)];
+    this.checkedPositionShapes = [...Array(length).fill(null)];
   }
 
   resetCheckedPositions() {
-    this.checkedPositions = [];
-    for (
-      let i = 0;
-      i < this.blockMatrix.width * this.blockMatrix.height * 4;
-      i++
-    ) {
-      this.checkedPositions.push(false);
-    }
+    const length = this.blockMatrix.width * this.blockMatrix.height * 4;
+    this.checkedPositions = [...Array(length).fill(false)];
   }
 
   hasPositionBeenChecked(x: number, y: number, r: number) {

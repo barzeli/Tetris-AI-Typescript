@@ -144,13 +144,13 @@ export class Brain {
     p5Sketch.text("Multipliers", startingX, startingY);
     p5Sketch.textSize(15);
     p5Sketch.noStroke();
-    for (let i = 0; i < multiplierStats.length; i++) {
+    multiplierStats.forEach((multiplierStat, index) =>
       p5Sketch.text(
-        multiplierStats[i],
+        multiplierStat,
         startingX,
-        startingY + (i + 1) * textGap
-      );
-    }
+        startingY + (index + 1) * textGap
+      )
+    );
 
     p5Sketch.pop();
   }
