@@ -15,7 +15,13 @@ export class Player {
   ai: AI;
   isDead = false;
 
-  constructor(firstPlayer?: boolean) {
+  constructor(
+    windowWidth: number,
+    windowHeight: number,
+    firstPlayer?: boolean
+  ) {
+    this.windowWidth = windowWidth;
+    this.windowHeight = windowHeight;
     this.brain = new Brain(firstPlayer);
 
     this.ai = new AI(
@@ -49,7 +55,7 @@ export class Player {
   }
 
   clone() {
-    let clone = new Player();
+    let clone = new Player(this.windowWidth, this.windowHeight);
     clone.currentGame.needsNewMovementPlan = true;
     clone.brain = this.brain.clone();
     clone.ai.brain = clone.brain;

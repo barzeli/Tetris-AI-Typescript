@@ -26,24 +26,16 @@ export class Population {
     this.playerWidth = canvas.width / this.playersPerRow;
     this.playerHeight = canvas.height / this.playersPerColumn;
 
-    for (let i = 0; i < size; i++) {
-      let player = new Player(i === 0);
-      player.windowWidth = this.playerWidth;
-      player.windowHeight = this.playerHeight;
-      this.players.push(player);
-    }
+    this.players = [...Array(size)].map(
+      (_, index) => new Player(this.playerWidth, this.playerHeight, index === 0)
+    );
   }
 
   getCurrentBatchOfPlayers() {
-    let currentBatch = [];
-    for (
-      let i = this.currentBatchNumber * this.batchSize;
-      i < (this.currentBatchNumber + 1) * this.batchSize;
-      i++
-    ) {
-      currentBatch.push(this.players[i]);
-    }
-    return currentBatch;
+    return this.players.slice(
+      this.currentBatchNumber * this.batchSize,
+      (this.currentBatchNumber + 1) * this.batchSize
+    );
   }
 
   show() {
@@ -71,26 +63,24 @@ export class Population {
     let x = 0;
     let y = 0;
     let currentBatch = this.getCurrentBatchOfPlayers();
-    for (let i = 0; i < currentBatch.length; i++) {
+    currentBatch.forEach((player) => {
       p5Sketch.push();
       p5Sketch.translate(x * this.playerWidth, y * this.playerHeight);
-      currentBatch[i].show();
+      player.show();
       x++;
       if (x >= this.playersPerRow) {
         x = 0;
         y++;
       }
       p5Sketch.pop();
-    }
+    });
 
     p5Sketch.pop();
   }
 
   update() {
     let currentBatch = this.getCurrentBatchOfPlayers();
-    for (let i = 0; i < currentBatch.length; i++) {
-      currentBatch[i].update();
-    }
+    currentBatch.forEach((player) => player.update());
     if (this.areAllPlayersInBatchDead()) {
       this.currentBatchNumber++;
     }
@@ -120,12 +110,10 @@ export class Population {
   }
 
   setBestPlayer() {
-    this.bestPlayer = this.players[0];
-    for (let player of this.players) {
-      if (player.fitness > this.bestPlayer.fitness) {
-        this.bestPlayer = player;
-      }
-    }
+    if (this.players.length > 0)
+      this.bestPlayer = this.players.reduce((bestPlayer, currPlayer) =>
+        currPlayer.fitness > bestPlayer.fitness ? currPlayer : bestPlayer
+      );
   }
 
   //assuming that the fitness sum has been calculated
@@ -143,34 +131,19 @@ export class Population {
   }
 
   calculatePlayerFitnesses() {
-    for (let player of this.players) {
-      player.calculateFitness();
-    }
+    this.players.forEach((player) => player.calculateFitness());
   }
 
   calculateFitnessSum() {
-    this.fitnessSum = 0;
-    for (let player of this.players) {
-      this.fitnessSum += player.fitness;
-    }
+    this.fitnessSum = this.players.reduce((sum, curr) => sum + curr.fitness, 0);
   }
 
   areAllPlayersDead() {
-    for (let player of this.players) {
-      if (!player.isDead) {
-        return false;
-      }
-    }
-    return true;
+    return this.players.every((player) => player.isDead);
   }
 
   areAllPlayersInBatchDead() {
-    for (let player of this.getCurrentBatchOfPlayers()) {
-      if (!player.isDead) {
-        return false;
-      }
-    }
-    return true;
+    return this.getCurrentBatchOfPlayers().every((player) => player.isDead);
   }
 }
 
