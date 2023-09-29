@@ -1,3 +1,4 @@
+import { BlockMatrix } from "./BlockMatrix";
 import { p5Sketch } from "./sketch";
 import { Multipliers } from "./types";
 
@@ -83,7 +84,7 @@ export class Brain {
     return clone;
   }
 
-  getCostOfMatrix(blockMatrix: any) {
+  getCostOfMatrix(blockMatrix: BlockMatrix) {
     let linesClearedWhichArentTetrises =
       blockMatrix.linesCleared > 0 && blockMatrix.linesCleared < 4 ? 1 : 0;
     let tetrises = blockMatrix.linesCleared === 4 ? 1 : 0;
@@ -107,7 +108,7 @@ export class Brain {
     return blockMatrix.cost;
   }
 
-  writeMultipliers(startingX: any, startingY: any) {
+  writeMultipliers(startingX: number, startingY: number) {
     p5Sketch.push();
 
     let multiplierStats = [

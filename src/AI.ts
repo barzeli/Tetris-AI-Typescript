@@ -11,7 +11,7 @@ export class AI {
   gameWidth: number;
   gameHeight: number;
   brain: Brain;
-  chosenEndPosition: any;
+  chosenEndPosition: Shape;
 
   constructor(gameWidth: number, gameHeight: number, brain?: Brain) {
     this.gameWidth = gameWidth;
@@ -22,10 +22,10 @@ export class AI {
   //Main function
   //Given the state of the matrix returns a string of instructions to get the block into position.
   calculateMovementPlan(
-    currentShape_: any,
-    heldShape_: any,
-    nextShape_: any,
-    blockMatrix_: any
+    currentShape_: Shape,
+    heldShape_: Shape,
+    nextShape_: Shape,
+    blockMatrix_: BlockMatrix
   ) {
     //clone all the input so we dont fuck it up
     let currentShape = currentShape_.clone();
@@ -56,7 +56,7 @@ export class AI {
       this.chosenEndPosition = bestEndPositionForCurrentShape.bestShape;
     } else {
       this.chosenEndPosition = bestEndPositionForHeld.bestShape;
-      this.chosenEndPosition.moveHistory.unshift("hold");
+      this.chosenEndPosition.moveHistory.moveHistoryList.unshift("HOLD");
     }
 
     this.movementPlan = this.chosenEndPosition.moveHistory;
@@ -215,7 +215,7 @@ export class AI {
   }
 
   //not in JS arrays are passed by reference
-  removeRepeatsInPossibleEndPositions(endPositions: any) {
+  removeRepeatsInPossibleEndPositions(endPositions: Shape[]) {
     for (let i = 0; i < endPositions.length; i++) {
       for (let j = i + 1; j < endPositions.length; j++) {
         //comparing block i to block j
@@ -252,7 +252,7 @@ export class AI {
     }
   }
 
-  calculateShapeCost(shape: any, blockMatrix_: any) {
+  calculateShapeCost(shape: Shape, blockMatrix_: BlockMatrix) {
     let blockMatrix = blockMatrix_.clone();
     blockMatrix.addShapeToMatrix(shape);
     blockMatrix.clearFullRows();
@@ -276,7 +276,7 @@ export class AI {
     return endPositions;
   }
 
-  getBestEndPosition(startingShape: any, blockMatrix_: any) {
+  getBestEndPosition(startingShape: Shape | null, blockMatrix_: BlockMatrix) {
     let endPositions = this.getAllEndPositions(startingShape, blockMatrix_);
     //now lets count all the holes for each shape option and pick the lowest hole count
     let minShapeCost = 100000;
@@ -390,7 +390,7 @@ export class AI {
     return endPositions;
   }
 
-  countNumberOfBlocksInRightmostLane(shape: any) {
+  countNumberOfBlocksInRightmostLane(shape: Shape) {
     let blockPositions = [];
     let blocksInRightLaneCounter = 0;
     for (let block of shape.blocks) {

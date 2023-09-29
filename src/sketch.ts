@@ -23,7 +23,7 @@ let gameWidthBlocks = 10;
 let gameHeightBlocks = 20;
 
 let font: p5.Font;
-let ai: any;
+let ai: AI;
 let paused = false;
 
 let possibleAIMoveCounter = 0;

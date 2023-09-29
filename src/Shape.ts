@@ -200,7 +200,7 @@ export class Shape {
     return newPosition;
   }
 
-  rotateShape(isClockwise: boolean, blockMatrix?: any) {
+  rotateShape(isClockwise: boolean, blockMatrix?: BlockMatrix) {
     if (blockMatrix) {
       if (this.canRotateShape(isClockwise, blockMatrix)) {
         this.blocks.forEach((block) => {
