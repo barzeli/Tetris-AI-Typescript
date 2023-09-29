@@ -1,6 +1,7 @@
 import p5 from "p5";
 import { Population } from "./Population";
 import { BlockMatrix } from "./BlockMatrix";
+import { Game } from "./Game";
 
 let currentShape;
 
@@ -20,7 +21,7 @@ export let BLOCK_SIZE = 35;
 let gameWidthBlocks = 10;
 let gameHeightBlocks = 20;
 
-let font: any;
+let font: p5.Font;
 let ai: any;
 let paused = false;
 
@@ -30,7 +31,7 @@ let possibleAIMoveCounter = 0;
 let population: Population;
 let populationSize = 160;
 
-export let canvas: any;
+export let canvas: p5.Renderer;
 
 const sketch = (p5: p5) => {
   p5.preload = function preload() {
@@ -41,8 +42,8 @@ const sketch = (p5: p5) => {
     canvas = p5.createCanvas(800, 800);
     canvas.parent("canvas");
 
-    population = new Population(populationSize);
-    // game = new Game(gameWidthBlocks, gameHeightBlocks);
+    // population = new Population(populationSize);
+    game = new Game(gameWidthBlocks, gameHeightBlocks);
     // ai = new AI();
     // ai.calculateMovementPlan2(game.currentShape, game.heldShape, game.nextShape, game.deadBlocksMatrix);
     p5.frameRate(10);
@@ -52,15 +53,15 @@ const sketch = (p5: p5) => {
   p5.draw = function draw() {
     p5.push();
 
-    if (!population.areAllPlayersDead()) {
-      population.show();
-      if (!paused) population.update();
-    } else {
-      population.naturalSelection();
-      population.show();
-      population.update();
-    }
-    // game.draw();
+    // if (!population.areAllPlayersDead()) {
+    //   population.show();
+    //   if (!paused) population.update();
+    // } else {
+    //   population.naturalSelection();
+    //   population.show();
+    //   population.update();
+    // }
+    game.draw();
 
     // writeCurrentOptimisations();
     // writeCurrentMatrixStats();
@@ -70,7 +71,7 @@ const sketch = (p5: p5) => {
     //     possibleAIMoveCounter = (possibleAIMoveCounter + 1) % ai.possibleEndPositions.length;
     // }
     // ai.showBestMove();
-    // checkInput();
+    checkInput();
 
     // if (game.justTetrised) {
     //     return;
@@ -187,7 +188,6 @@ const sketch = (p5: p5) => {
   }
 
   let leftKeyIsDown = false;
-  let upKeyIsDown = false;
   let rightKeyIsDown = false;
   let downKeyIsDown = false;
 
@@ -214,7 +214,6 @@ const sketch = (p5: p5) => {
   p5.keyPressed = function keyPressed() {
     if (p5.keyCode === p5.UP_ARROW) {
       game.rotateShape();
-      upKeyIsDown = true;
     } else if (p5.keyCode === p5.DOWN_ARROW) {
       downKeyIsDown = true;
     }
@@ -247,9 +246,7 @@ const sketch = (p5: p5) => {
   };
 
   p5.keyReleased = function keyReleased() {
-    if (p5.keyCode === p5.UP_ARROW) {
-      upKeyIsDown = false;
-    } else if (p5.keyCode === p5.DOWN_ARROW) {
+     if (p5.keyCode === p5.DOWN_ARROW) {
       downKeyIsDown = false;
     }
     if (p5.keyCode === p5.LEFT_ARROW) {
