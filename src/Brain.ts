@@ -55,42 +55,25 @@ export class Brain {
     };
   }
 
-  getMutationMultiplier(mutationRate: number) {
-    return p5Sketch.random(1.0) < mutationRate
+  getMutationMultiplier() {
+    return p5Sketch.random(1.0) < this.mutationRate
       ? p5Sketch.random(0.95, 1.05)
       : 1;
   }
 
   mutate() {
-    this.multipliers.holeCountMultiplier *= this.getMutationMultiplier(
-      this.mutationRate
-    );
-    this.multipliers.openHoleCountMultiplier *= this.getMutationMultiplier(
-      this.mutationRate
-    );
-    this.multipliers.maximumLineHeightMultiplier *= this.getMutationMultiplier(
-      this.mutationRate
-    );
-    this.multipliers.addedShapeHeightMultiplier *= this.getMutationMultiplier(
-      this.mutationRate
-    );
-    this.multipliers.pillarCountMultiplier *= this.getMutationMultiplier(
-      this.mutationRate
-    );
+    this.multipliers.holeCountMultiplier *= this.getMutationMultiplier();
+    this.multipliers.openHoleCountMultiplier *= this.getMutationMultiplier();
+    this.multipliers.maximumLineHeightMultiplier *=
+      this.getMutationMultiplier();
+    this.multipliers.addedShapeHeightMultiplier *= this.getMutationMultiplier();
+    this.multipliers.pillarCountMultiplier *= this.getMutationMultiplier();
     this.multipliers.blocksInRightMostLaneMultiplier *=
-      this.getMutationMultiplier(this.mutationRate);
-    this.multipliers.nonTetrisClearPenalty *= this.getMutationMultiplier(
-      this.mutationRate
-    );
-    this.multipliers.blocksAboveHolesMultiplier *= this.getMutationMultiplier(
-      this.mutationRate
-    );
-    this.multipliers.bumpinessMultiplier *= this.getMutationMultiplier(
-      this.mutationRate
-    );
-    this.multipliers.tetrisRewardMultiplier *= this.getMutationMultiplier(
-      this.mutationRate
-    );
+      this.getMutationMultiplier();
+    this.multipliers.nonTetrisClearPenalty *= this.getMutationMultiplier();
+    this.multipliers.blocksAboveHolesMultiplier *= this.getMutationMultiplier();
+    this.multipliers.bumpinessMultiplier *= this.getMutationMultiplier();
+    this.multipliers.tetrisRewardMultiplier *= this.getMutationMultiplier();
   }
 
   clone() {
