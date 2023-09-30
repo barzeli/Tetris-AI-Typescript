@@ -16,14 +16,10 @@ export class Shape {
 
   constructor(shapeID: ShapeType, startingPos: p5.Vector) {
     this.shapeID = shapeID;
-    this.currentPos = p5Sketch.createVector(startingPos.x, startingPos.y);
-    this.startingPos = p5Sketch.createVector(startingPos.x, startingPos.y);
+    this.currentPos = startingPos.copy();
+    this.startingPos = startingPos.copy();
     this.blocks = shapeID.blockPositions.map(
-      (blockPosition) =>
-        new Block(
-          p5Sketch.createVector(blockPosition.x, blockPosition.y),
-          shapeID.color
-        )
+      (blockPosition) => new Block(blockPosition.copy(), shapeID.color)
     );
   }
 
@@ -70,10 +66,7 @@ export class Shape {
   }
 
   resetPosition() {
-    this.currentPos = p5Sketch.createVector(
-      this.startingPos.x,
-      this.startingPos.y
-    );
+    this.currentPos = this.startingPos.copy();
   }
 
   getBlockPositionAfterShapeIsRotated(block: Block, isClockwise: boolean) {
