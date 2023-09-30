@@ -156,24 +156,40 @@ export class BlockMatrix {
 
   //counts the number of holes in the matrix
   countHoles() {
+    this.blocksAboveHoles = this.matrix.reduce(
+      (sum, column) =>
+        sum +
+        column
+          .slice(
+            column.findIndex((block) => block) >= 0
+              ? column.findIndex((block) => block)
+              : column.length
+          )
+          .filter(
+            (block, index, blocksBelow) =>
+              block && blocksBelow.findIndex((block) => !block) > index
+          ).length,
+      0
+    );
+
     this.holeCount = 0;
     this.openHoleCount = 0;
     //an open hole is one which isnt fully covered, like there isnt a block to the left or right,
     //open holes are less bad than normal holes because you can slip a piece in there.
     //actually an open hole needs 2 spots to a side to be able to be filled.
 
-    this.blocksAboveHoles = 0;
+    // this.blocksAboveHoles = 0;
 
     for (let i = 0; i < this.width; i++) {
       //going down each column look for a block and once found each block below is a hole
       let blockFound = false;
-      let numberOfBlocksFound = 0;
+      // let numberOfBlocksFound = 0;
       for (let j = 0; j < this.height; j++) {
         if (this.matrix[i][j] != null) {
           blockFound = true;
-          numberOfBlocksFound++;
+          // numberOfBlocksFound++;
         } else if (blockFound) {
-          this.blocksAboveHoles += numberOfBlocksFound;
+          // this.blocksAboveHoles += numberOfBlocksFound;
 
           if (i < this.width - 2) {
             //check if there is 2 spaces to the right

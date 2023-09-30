@@ -43,8 +43,8 @@ const sketch = (p5: p5) => {
     canvas = p5.createCanvas(800, 800);
     canvas.parent("canvas");
 
-    population = new Population(populationSize);
-    // game = new Game(gameWidthBlocks, gameHeightBlocks);
+    // population = new Population(populationSize);
+    game = new Game(gameWidthBlocks, gameHeightBlocks);
     // ai = new AI(game);
     // ai.calculateMovementPlan2();
     p5.frameRate(10);
@@ -54,18 +54,18 @@ const sketch = (p5: p5) => {
   p5.draw = function draw() {
     p5.push();
 
-    if (!population.areAllPlayersDead()) {
-      population.show();
-      if (!paused) population.update();
-    } else {
-      population.naturalSelection();
-      population.show();
-      population.update();
-    }
-    // game.draw();
+    // if (!population.areAllPlayersDead()) {
+    //   population.show();
+    //   if (!paused) population.update();
+    // } else {
+    //   population.naturalSelection();
+    //   population.show();
+    //   population.update();
+    // }
+    game.draw();
 
     // writeCurrentOptimisations();
-    // writeCurrentMatrixStats();
+    writeCurrentMatrixStats();
 
     // ai.showPossibleMoveNo(possibleAIMoveCounter);
     // if (ai.possibleEndPositions.length > 0 && frameCount % 5 === 0) {
