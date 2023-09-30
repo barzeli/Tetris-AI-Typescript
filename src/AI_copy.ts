@@ -411,94 +411,15 @@ class AI {
   countNumberAndHeightOfPillars(shape: Shape, blockMatrix: BlockMatrix) {
     let clonedBlockMatrix = blockMatrix.clone();
 
-    //add the shape to the block matrix
-    for (let block of shape.blocks) {
-      //the block becomes disconnected from the shape and therefore the current grid position is no longer relative to the shape
-      let newPosition = p5.Vector.add(block.gridPos, shape.currentPos);
-      clonedBlockMatrix.matrix[newPosition.x][newPosition.y] = block.clone();
-    }
+    clonedBlockMatrix.addShapeToMatrix(shape);
 
     //clear required lines
-    for (let j = 0; j < this.game.gameHeight; j++) {
-      let rowCleared = true;
-      for (let i = 0; i < this.game.gameWidth; i++) {
-        if (clonedBlockMatrix.matrix[i][j] == null) {
-          rowCleared = false;
-          break;
-        }
-      }
-      if (rowCleared) {
-        //for each row above the cleared row move them down
-        for (
-          let rowIndexToMoveDown = j - 1;
-          rowIndexToMoveDown >= 0;
-          rowIndexToMoveDown--
-        ) {
-          for (let i = 0; i < this.game.gameWidth; i++) {
-            if (clonedBlockMatrix.matrix[i][rowIndexToMoveDown]) {
-              clonedBlockMatrix.matrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
-            }
-            clonedBlockMatrix.matrix[i][rowIndexToMoveDown + 1] =
-              clonedBlockMatrix.matrix[i][rowIndexToMoveDown];
-            clonedBlockMatrix.matrix[i][rowIndexToMoveDown] = null;
-          }
-        }
-      }
-    }
+    clonedBlockMatrix.clearFullRows();
 
     //count pillars
+    clonedBlockMatrix.countPillars();
 
-    let pillarCount = 0;
-
-    for (let i = 0; i < this.game.gameWidth; i++) {
-      //going up each column look for 3 blocks in a row with nothing to the left
-      let currentPillarHeightL = 0;
-      let currentPillarHeightR = 0;
-      for (let j = this.game.gameHeight - 1; j >= 0; j--) {
-        //if this positions has a block and there is no block to the left then this is potentially part of a pillar
-        if (
-          i > 0 &&
-          clonedBlockMatrix.matrix[i][j] != null &&
-          clonedBlockMatrix.matrix[i - 1][j] === null
-        ) {
-          currentPillarHeightL++;
-        } else {
-          //if the current pillar height is >=3 then we have found a pillar, yay
-          if (currentPillarHeightL >= 3) {
-            //pillar count is 1 for a 3 height pillar 2 for a 4 height pillar ect.
-            pillarCount += currentPillarHeightL - 2;
-          }
-          currentPillarHeightL = 0;
-        }
-
-        //check to the right
-        //note dont check the spot 2 spots back from the right because we want them tetrises
-        if (
-          i < this.game.gameWidth - 1 &&
-          clonedBlockMatrix.matrix[i][j] != null &&
-          clonedBlockMatrix.matrix[i + 1][j] === null
-        ) {
-          currentPillarHeightR++;
-        } else {
-          //if the current pillar height is >=3 then we have found a pillar, yay
-          if (currentPillarHeightR >= 3) {
-            //pillar count is 1 for a 3 height pillar 2 for a 4 height pillar ect.
-            pillarCount += currentPillarHeightR - 2;
-          }
-          currentPillarHeightR = 0;
-        }
-      }
-      if (currentPillarHeightL >= 3) {
-        //pillar count is 1 for a 3 height pillar 2 for a 4 height pillar ect.
-        pillarCount += currentPillarHeightL - 2;
-      }
-      if (currentPillarHeightR >= 3) {
-        //pillar count is 1 for a 3 height pillar 2 for a 4 height pillar ect.
-        pillarCount += currentPillarHeightR - 2;
-      }
-    }
-
-    return pillarCount;
+    return clonedBlockMatrix.pillarCount;
   }
 
   countNumberOfBlocksInRightmostLane(shape: Shape) {

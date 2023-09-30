@@ -239,6 +239,8 @@ export class BlockMatrix {
           if (currentPillarHeightL >= 3) {
             //pillar count is 1 for a 3 height pillar 2 for a 4 height pillar ect.
 
+            // from AI_copy
+            // pillarCount += currentPillarHeightL - 2;
             this.pillarCount += currentPillarHeightL;
           }
           currentPillarHeightL = 0;
@@ -247,6 +249,8 @@ export class BlockMatrix {
         //check to the right
         //note dont check the spot 2 spots back from the right because we want them tetrises
         if (
+          // from AI_copy
+          // i < this.game.gameWidth - 1 &&
           i < this.width - 2 &&
           this.matrix[i][j] != null &&
           this.matrix[i + 1][j] === null
@@ -255,15 +259,21 @@ export class BlockMatrix {
         } else {
           //if the current pillar height is >=3 then we have found a pillar, yay
           if (currentPillarHeightR >= 3) {
+            // from AI_copy
+            // pillarCount += currentPillarHeightL - 2;
             this.pillarCount += currentPillarHeightR;
           }
           currentPillarHeightR = 0;
         }
       }
       if (currentPillarHeightL >= 3) {
+        // from AI_copy
+        // pillarCount += currentPillarHeightL - 2;
         this.pillarCount += currentPillarHeightL;
       }
       if (currentPillarHeightR >= 3) {
+        // from AI_copy
+        // pillarCount += currentPillarHeightR - 2;
         this.pillarCount += currentPillarHeightR;
       }
     }
