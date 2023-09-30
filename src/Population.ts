@@ -92,15 +92,13 @@ export class Population {
     let parent = this.bestPlayer;
     let child = parent!.clone();
     child.brain.mutate();
-    const nextGen = [...Array(this.players.length - 1)].map((_) => {
+    this.players = [...Array(this.players.length - 1)].map((_) => {
       parent = this.selectPlayer();
       child = parent!.clone();
       child.brain.mutate();
       return child;
     });
-    nextGen.unshift(child);
-
-    this.players = nextGen;
+    this.players.unshift(child);
     this.generation++;
     this.currentBatchNumber = 0;
   }
