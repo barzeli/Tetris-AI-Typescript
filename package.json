@@ -1,17 +1,21 @@
 {
-  "name": "tetris-ai-typescript",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src/sketch.js",
+  "name": "tetris-ai",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "build": "tsc --watch"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
-  "author": "barzeli",
-  "license": "ISC",
   "dependencies": {
-    "p5": "^1.6.0"
+    "lodash": "^4.17.21",
+    "p5": "^1.7.0"
   },
   "devDependencies": {
-    "@types/p5": "^1.6.2"
+    "@types/lodash": "^4.14.199",
+    "@types/p5": "^1.7.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.0"
   }
 }
