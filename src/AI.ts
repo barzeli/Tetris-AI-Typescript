@@ -324,9 +324,9 @@ export class AI {
       r?: number
     ) => {
       if (r) {
-        if (this.game.canRotateShape(shape, true, blockMatrix)) {
+        if (this.game.canRotateShape(shape, blockMatrix)) {
           let rotatedShape = shape.clone();
-          this.game.rotateCurrentShape(rotatedShape, true, blockMatrix);
+          this.game.rotateCurrentShape(rotatedShape, blockMatrix);
 
           if (!checkedPositions.hasShapesPositionBeenChecked(rotatedShape)) {
             checkedPositions.setCheckedPositionsArrayValueAtShapesPosition(

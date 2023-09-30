@@ -424,9 +424,9 @@ class AI {
       y: number,
       r?: number
     ) => {
-      if (r && game.canRotateShape(shape, true)) {
+      if (r && game.canRotateShape(shape)) {
         let rotatedShape = shape.clone();
-        game.rotateCurrentShape(rotatedShape, true);
+        game.rotateCurrentShape(rotatedShape);
 
         if (!this.hasShapesPositionBeenChecked(rotatedShape)) {
           this.setCheckedPositionsArrayValueAtShapesPosition(
@@ -476,9 +476,9 @@ class AI {
 
   checkAllPositionsReachableFrom(startingShape: Shape) {
     let checkInDirection = (x: number, y: number, r?: number) => {
-      if (r && game.canRotateShape(startingShape, true)) {
+      if (r && game.canRotateShape(startingShape)) {
         let rotatedShape = startingShape.clone();
-        game.rotateCurrentShape(rotatedShape, true);
+        game.rotateCurrentShape(rotatedShape);
         if (!this.hasShapesPositionBeenChecked(rotatedShape)) {
           this.setCheckedPositionsArrayValueAtShapesPosition(
             rotatedShape,

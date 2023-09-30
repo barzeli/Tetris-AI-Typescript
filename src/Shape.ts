@@ -69,7 +69,7 @@ export class Shape {
     this.currentPos = this.startingPos.copy();
   }
 
-  getBlockPositionAfterShapeIsRotated(block: Block, isClockwise: boolean) {
+  getBlockPositionAfterShapeIsRotated(block: Block) {
     let startingPos = block.gridPos;
     let rotationPoint = this.shapeID.rotationPoint;
     let startingPosRelativeToRotationPoint = p5.Vector.sub(
@@ -77,7 +77,7 @@ export class Shape {
       rotationPoint
     );
     let rotatedRelativePoint = startingPosRelativeToRotationPoint.rotate(
-      isClockwise ? Math.PI / 2 : -Math.PI / 2
+      Math.PI / 2
     );
     let newPosition = p5.Vector.add(rotationPoint, rotatedRelativePoint);
     newPosition.x = Math.round(newPosition.x);

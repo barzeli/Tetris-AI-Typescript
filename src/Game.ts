@@ -52,7 +52,11 @@ export class Game {
   }
 
   moveShapeDown(resetAfterShapeDeath?: boolean) {
-    this.moveCurrentShapeDown(this.currentShape, resetAfterShapeDeath);
+    if (this.canMoveShapeDown(this.currentShape)) {
+      this.currentShape.currentPos.y += 1;
+    } else {
+      this.killShape(this.currentShape, resetAfterShapeDeath);
+    }
 
     if (this.currentShape.isDead && resetAfterShapeDeath) {
       this.currentShape.isDead = false;
@@ -79,14 +83,6 @@ export class Game {
         this.isDead = true;
         // this.resetGame();
       }
-    }
-  }
-
-  moveCurrentShapeDown(shape: Shape, resetAfterDeath?: boolean) {
-    if (this.canMoveShapeDown(shape)) {
-      shape.currentPos.y += 1;
-    } else {
-      this.killShape(shape, resetAfterDeath);
     }
   }
 
@@ -160,30 +156,20 @@ export class Game {
     });
   }
 
-  rotateCurrentShape(
-    shape: Shape,
-    isClockwise: boolean,
-    blockMatrix?: BlockMatrix
-  ) {
+  rotateCurrentShape(shape: Shape, blockMatrix?: BlockMatrix) {
     if (blockMatrix) {
-      if (this.canRotateShape(shape, isClockwise, blockMatrix)) {
+      if (this.canRotateShape(shape, blockMatrix)) {
         shape.blocks.forEach((block) => {
-          let newPosition = shape.getBlockPositionAfterShapeIsRotated(
-            block,
-            isClockwise
-          );
+          let newPosition = shape.getBlockPositionAfterShapeIsRotated(block);
           block.gridPos = newPosition;
         });
         shape.currentRotationCount += 1;
         shape.moveHistory.addRotationMove();
       }
     } else {
-      if (this.canRotateShape(shape, isClockwise)) {
+      if (this.canRotateShape(shape)) {
         shape.blocks.forEach((block) => {
-          let newPosition = shape.getBlockPositionAfterShapeIsRotated(
-            block,
-            isClockwise
-          );
+          let newPosition = shape.getBlockPositionAfterShapeIsRotated(block);
           block.gridPos = newPosition;
         });
         shape.currentRotationCount += 1;
@@ -192,16 +178,9 @@ export class Game {
     }
   }
 
-  canRotateShape(
-    shape: Shape,
-    isClockwise: boolean,
-    blockMatrix?: BlockMatrix
-  ) {
+  canRotateShape(shape: Shape, blockMatrix?: BlockMatrix) {
     return shape.blocks.every((block) => {
-      let newPosition = shape.getBlockPositionAfterShapeIsRotated(
-        block,
-        isClockwise
-      );
+      let newPosition = shape.getBlockPositionAfterShapeIsRotated(block);
       let newAbsolutePosition = p5.Vector.add(newPosition, shape.currentPos);
       //if a block matrix is passed into the function then look at that instead of the game
       if (blockMatrix) {
@@ -301,7 +280,7 @@ export class Game {
   }
 
   rotateShape() {
-    this.rotateCurrentShape(this.currentShape, true);
+    this.rotateCurrentShape(this.currentShape);
   }
 
   draw() {
