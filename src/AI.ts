@@ -329,9 +329,9 @@ export class AI {
       r?: number
     ) => {
       if (r) {
-        if (shape.canRotateShape(true, blockMatrix)) {
+        if (this.game.canRotateShape(shape, true, blockMatrix)) {
           let rotatedShape = shape.clone();
-          rotatedShape.rotateShape(true, blockMatrix);
+          this.game.rotateCurrentShape(rotatedShape, true, blockMatrix);
 
           if (!checkedPositions.hasShapesPositionBeenChecked(rotatedShape)) {
             checkedPositions.setCheckedPositionsArrayValueAtShapesPosition(
@@ -342,9 +342,9 @@ export class AI {
           }
         }
       } else {
-        if (shape.canMoveInDirection(x, y, blockMatrix)) {
+        if (this.game.canMoveInDirection(shape, x, y, blockMatrix)) {
           let movedShape = shape.clone();
-          movedShape.moveShape(x, y, blockMatrix);
+          this.game.moveShape(movedShape, x, y, blockMatrix);
 
           if (!checkedPositions.hasShapesPositionBeenChecked(movedShape)) {
             checkedPositions.setCheckedPositionsArrayValueAtShapesPosition(

@@ -432,9 +432,9 @@ class AI {
       y: number,
       r?: number
     ) => {
-      if (r && shape.canRotateShape(true)) {
+      if (r && game.canRotateShape(shape, true)) {
         let rotatedShape = shape.clone();
-        rotatedShape.rotateShape(true);
+        game.rotateCurrentShape(rotatedShape, true);
 
         if (!this.hasShapesPositionBeenChecked(rotatedShape)) {
           this.setCheckedPositionsArrayValueAtShapesPosition(
@@ -444,9 +444,9 @@ class AI {
           queue.push(rotatedShape);
         }
       } else {
-        if (shape.canMoveInDirection(x, y)) {
+        if (game.canMoveInDirection(shape, x, y)) {
           let movedShape = shape.clone();
-          movedShape.moveShape(x, y);
+          game.moveShape(movedShape, x, y);
 
           if (!this.hasShapesPositionBeenChecked(movedShape)) {
             this.setCheckedPositionsArrayValueAtShapesPosition(
@@ -484,9 +484,9 @@ class AI {
 
   checkAllPositionsReachableFrom(startingShape: Shape) {
     let checkInDirection = (x: number, y: number, r?: number) => {
-      if (r && startingShape.canRotateShape(true)) {
+      if (r && game.canRotateShape(startingShape, true)) {
         let rotatedShape = startingShape.clone();
-        rotatedShape.rotateShape(true);
+        game.rotateCurrentShape(rotatedShape, true);
         if (!this.hasShapesPositionBeenChecked(rotatedShape)) {
           this.setCheckedPositionsArrayValueAtShapesPosition(
             rotatedShape,
@@ -495,9 +495,9 @@ class AI {
           this.checkAllPositionsReachableFrom(rotatedShape);
         }
       } else {
-        if (startingShape.canMoveInDirection(x, y)) {
+        if (game.canMoveInDirection(startingShape, x, y)) {
           let movedShape = startingShape.clone();
-          movedShape.moveShape(x, y);
+          game.moveShape(movedShape, x, y);
 
           if (!this.hasShapesPositionBeenChecked(movedShape)) {
             this.setCheckedPositionsArrayValueAtShapesPosition(
