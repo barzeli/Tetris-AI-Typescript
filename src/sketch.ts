@@ -6,12 +6,6 @@ import { AI } from "./AI";
 import { Brain } from "./Brain";
 import { Mode } from "./types";
 
-let currentShape;
-
-let deadBlocks = [];
-let deadBlocksMatrix = [];
-let gameWidth;
-let gameHeight;
 let shapeFallRate = 30; //number of falls per second
 
 let horizontalMoveEveryXFrames = 2; // the speed the blocks move when the left or right key is down
@@ -27,7 +21,7 @@ let font: p5.Font;
 let ai: AI;
 let paused = false;
 
-let possibleAIMoveCounter = 0;
+// let possibleAIMoveCounter = 0;
 
 //------------------------------------------------------------- ai learning stuff
 let population: Population;
@@ -254,12 +248,12 @@ const sketch = (p5: p5) => {
       paused = !paused;
     }
     if (p5.key === "A") {
-      ai.getMove(
-        game.currentShape,
-        game.heldShape,
-        game.nextShape,
-        game.deadBlocksMatrix
-      );
+      // ai.getMove(
+      //   game.currentShape,
+      //   game.heldShape,
+      //   game.nextShape,
+      //   game.deadBlocksMatrix
+      // );
     }
     if (p5.key == "R") {
       replayingMove = !replayingMove;
