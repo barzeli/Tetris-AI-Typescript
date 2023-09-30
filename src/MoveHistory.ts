@@ -19,12 +19,9 @@ export class MoveHistory {
   addRotationMove() {
     this.moveHistoryList.push("ROTATE");
   }
-  addHoldMove(addToTail = true) {
-    if (addToTail) {
-      this.moveHistoryList.push("HOLD");
-    } else {
-      this.moveHistoryList.unshift("HOLD");
-    }
+
+  addHoldMove() {
+    this.moveHistoryList.unshift("HOLD");
   }
 
   clone() {

@@ -263,7 +263,7 @@ class AI {
       this.chosenEndPosition = bestEndPositionForCurrentShape.bestShape;
     } else {
       this.chosenEndPosition = bestEndPositionForHeld.bestShape;
-      this.chosenEndPosition.moveHistory.moveHistoryList.unshift("HOLD");
+      this.chosenEndPosition.moveHistory.addHoldMove();
     }
 
     this.movementPlan = this.chosenEndPosition.moveHistory.moveHistoryList;
@@ -332,7 +332,7 @@ class AI {
       this.chosenEndPosition = bestEndPositionForCurrentShape.bestShape;
     } else {
       this.chosenEndPosition = bestEndPositionForHeld.bestShape;
-      this.chosenEndPosition!.moveHistory.moveHistoryList.unshift("HOLD");
+      this.chosenEndPosition!.moveHistory.addHoldMove();
     }
 
     this.movementPlan = this.chosenEndPosition!.moveHistory.moveHistoryList;

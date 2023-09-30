@@ -57,7 +57,7 @@ export class AI {
       this.chosenEndPosition = bestEndPositionForCurrentShape.bestShape;
     } else {
       this.chosenEndPosition = bestEndPositionForHeld.bestShape;
-      this.chosenEndPosition.moveHistory.moveHistoryList.unshift("HOLD");
+      this.chosenEndPosition.moveHistory.addHoldMove();
     }
 
     this.movementPlan = this.chosenEndPosition.moveHistory;
@@ -427,7 +427,7 @@ export class AI {
       newMatrix.addMovementHistory(shape.moveHistory);
       //if the shape is from the held spot then add the hold move to the start of the move history
       if (hasHeld) {
-        newMatrix.movementHistory.addHoldMove(false);
+        newMatrix.movementHistory.addHoldMove();
       }
 
       endMatrices.push(newMatrix);
