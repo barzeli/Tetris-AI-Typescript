@@ -72,34 +72,34 @@ class AI {
     }
   }
 
-  calculateTotalWorldHoles(shape: Shape, blockMatrix_: BlockMatrix) {
+  calculateTotalWorldHoles(shape: Shape, blockMatrix: BlockMatrix) {
     //clone the block matrix
-    let blockMatrix = [];
+    let clonedBlockMatrix = [];
 
     for (let i = 0; i < game.gameWidth; i++) {
       let column = [];
       for (let j = 0; j < game.gameHeight; j++) {
-        if (blockMatrix_.matrix[i][j]) {
-          column.push(blockMatrix_.matrix[i][j]!.clone());
+        if (blockMatrix.matrix[i][j]) {
+          column.push(blockMatrix.matrix[i][j]!.clone());
         } else {
           column.push(null);
         }
       }
-      blockMatrix.push(column);
+      clonedBlockMatrix.push(column);
     }
 
     //add the shape to the block matrix
     for (let block of shape.blocks) {
       //the block becomes disconnected from the shape and therefore the current grid position is no longer relative to the shape
       let newPosition = p5.Vector.add(block.gridPos, shape.currentPos);
-      blockMatrix[newPosition.x][newPosition.y] = block.clone();
+      clonedBlockMatrix[newPosition.x][newPosition.y] = block.clone();
     }
 
     //clear required lines
     for (let j = 0; j < this.gameHeight; j++) {
       let rowCleared = true;
       for (let i = 0; i < this.gameWidth; i++) {
-        if (blockMatrix[i][j] == null) {
+        if (clonedBlockMatrix[i][j] == null) {
           rowCleared = false;
           break;
         }
@@ -112,12 +112,12 @@ class AI {
           rowIndexToMoveDown--
         ) {
           for (let i = 0; i < this.gameWidth; i++) {
-            if (blockMatrix[i][rowIndexToMoveDown]) {
-              blockMatrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
+            if (clonedBlockMatrix[i][rowIndexToMoveDown]) {
+              clonedBlockMatrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
             }
-            blockMatrix[i][rowIndexToMoveDown + 1] =
-              blockMatrix[i][rowIndexToMoveDown];
-            blockMatrix[i][rowIndexToMoveDown] = null;
+            clonedBlockMatrix[i][rowIndexToMoveDown + 1] =
+              clonedBlockMatrix[i][rowIndexToMoveDown];
+            clonedBlockMatrix[i][rowIndexToMoveDown] = null;
           }
         }
       }
@@ -131,7 +131,7 @@ class AI {
       //going down each column look for a block and once found each block below is a hole
       let blockFound = false;
       for (let j = 0; j < this.gameHeight; j++) {
-        if (blockMatrix[i][j] != null) {
+        if (clonedBlockMatrix[i][j] != null) {
           blockFound = true;
         } else if (blockFound) {
           holeCount++;
@@ -197,28 +197,28 @@ class AI {
 
   //Given the state of the matrix returns a string of instructions to get the block into position.
   calculateMovementPlan(
-    currentShape_: Shape,
-    heldShape_: Shape,
-    nextShape_: Shape,
-    blockMatrix_: BlockMatrix
+    currentShape: Shape,
+    heldShape: Shape,
+    nextShape: Shape,
+    blockMatrix: BlockMatrix
   ) {
     //clone all the input so we dont fuck it up
-    let currentShape = currentShape_.clone();
-    let heldShape = heldShape_ ? heldShape_.clone() : null;
-    let nextShape = nextShape_.clone();
-    let blockMatrix = blockMatrix_.clone();
+    let clonedCurrentShape = currentShape.clone();
+    let clonedHeldShape = heldShape ? heldShape.clone() : null;
+    let clonedNextShape = nextShape.clone();
+    let clonedBlockMatrix = blockMatrix.clone();
 
     let bestEndPositionForCurrentShape = this.getBestEndPosition(
-      currentShape,
-      blockMatrix_
+      clonedCurrentShape,
+      blockMatrix
     );
 
     //check held piece and see if thats better
 
     //if there is no held shape then check the next shape instead
-    let bestEndPositionForHeld = heldShape
-      ? this.getBestEndPosition(heldShape, blockMatrix)
-      : this.getBestEndPosition(nextShape, blockMatrix);
+    let bestEndPositionForHeld = clonedHeldShape
+      ? this.getBestEndPosition(clonedHeldShape, clonedBlockMatrix)
+      : this.getBestEndPosition(clonedNextShape, clonedBlockMatrix);
 
     //choose the piece with the best shape cost
     if (
@@ -235,16 +235,16 @@ class AI {
   }
   //Given the state of the matrix returns a string of instructions to get the block into position.
   calculateMovementPlanByConsideringNextShape(
-    currentShape_: Shape,
-    heldShape_: Shape | null,
-    nextShape_: Shape,
-    blockMatrix_: BlockMatrix
+    currentShape: Shape,
+    heldShape: Shape | null,
+    nextShape: Shape,
+    blockMatrix: BlockMatrix
   ) {
     //clone all the input so we dont fuck it up
-    let currentShape = currentShape_.clone();
-    let heldShape = heldShape_ ? heldShape_.clone() : null;
-    let nextShape = nextShape_.clone();
-    let blockMatrix = blockMatrix_.clone();
+    let clonedCurrentShape = currentShape.clone();
+    let clonedHeldShape = heldShape ? heldShape.clone() : null;
+    let clonedNextShape = nextShape.clone();
+    let clonedBlockMatrix = blockMatrix.clone();
 
     //populate the array with falses since we haven't found any yet
     this.resetCheckedPositions();
@@ -264,7 +264,7 @@ class AI {
     for (let i = 0; i < this.possibleEndPositions.length; i++) {
       let shapeCost = this.calculateShapeCost(
         this.possibleEndPositions[i],
-        blockMatrix_
+        blockMatrix
       );
       if (shapeCost < minShapeCost) {
         minShapeCost = shapeCost;
@@ -281,16 +281,16 @@ class AI {
     // old shit
 
     let bestEndPositionForCurrentShape = this.getBestEndPosition(
-      currentShape,
-      blockMatrix_
+      clonedCurrentShape,
+      blockMatrix
     );
 
     //check held piece and see if thats better
 
     //if there is no held shape then check the next shape instead
-    let bestEndPositionForHeld = heldShape
-      ? this.getBestEndPosition(heldShape!, blockMatrix)
-      : this.getBestEndPosition(nextShape, blockMatrix);
+    let bestEndPositionForHeld = clonedHeldShape
+      ? this.getBestEndPosition(clonedHeldShape!, clonedBlockMatrix)
+      : this.getBestEndPosition(clonedNextShape, clonedBlockMatrix);
 
     //choose the piece with the best shape cost
     if (
@@ -306,7 +306,7 @@ class AI {
     this.movementPlan = this.chosenEndPosition!.moveHistory.clone();
   }
 
-  getBestEndPosition(startingShape: Shape, blockMatrix_: BlockMatrix) {
+  getBestEndPosition(startingShape: Shape, blockMatrix: BlockMatrix) {
     //populate the array with falses since we haven't found any yet
     this.resetCheckedPositions();
     this.resetPossibleEndPositions();
@@ -325,7 +325,7 @@ class AI {
     const endPositionsWithCosts = this.possibleEndPositions.map(
       (endPosition) => ({
         endPosition,
-        cost: this.calculateShapeCost(endPosition, blockMatrix_),
+        cost: this.calculateShapeCost(endPosition, blockMatrix),
       })
     );
 
@@ -470,21 +470,21 @@ class AI {
 
   //a pillar is an area which is reliant on a line piece, i.e. a formation of 3 or more blocks high with and empty space next to each
   //note will probably allow it for pillars on the right side so you can get some sweet tetrises
-  countNumberAndHeightOfPillars(shape: Shape, blockMatrix_: BlockMatrix) {
-    let blockMatrix = blockMatrix_.clone();
+  countNumberAndHeightOfPillars(shape: Shape, blockMatrix: BlockMatrix) {
+    let clonedBlockMatrix = blockMatrix.clone();
 
     //add the shape to the block matrix
     for (let block of shape.blocks) {
       //the block becomes disconnected from the shape and therefore the current grid position is no longer relative to the shape
       let newPosition = p5.Vector.add(block.gridPos, shape.currentPos);
-      blockMatrix.matrix[newPosition.x][newPosition.y] = block.clone();
+      clonedBlockMatrix.matrix[newPosition.x][newPosition.y] = block.clone();
     }
 
     //clear required lines
     for (let j = 0; j < this.gameHeight; j++) {
       let rowCleared = true;
       for (let i = 0; i < this.gameWidth; i++) {
-        if (blockMatrix.matrix[i][j] == null) {
+        if (clonedBlockMatrix.matrix[i][j] == null) {
           rowCleared = false;
           break;
         }
@@ -497,12 +497,12 @@ class AI {
           rowIndexToMoveDown--
         ) {
           for (let i = 0; i < this.gameWidth; i++) {
-            if (blockMatrix.matrix[i][rowIndexToMoveDown]) {
-              blockMatrix.matrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
+            if (clonedBlockMatrix.matrix[i][rowIndexToMoveDown]) {
+              clonedBlockMatrix.matrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
             }
-            blockMatrix.matrix[i][rowIndexToMoveDown + 1] =
-              blockMatrix.matrix[i][rowIndexToMoveDown];
-            blockMatrix.matrix[i][rowIndexToMoveDown] = null;
+            clonedBlockMatrix.matrix[i][rowIndexToMoveDown + 1] =
+              clonedBlockMatrix.matrix[i][rowIndexToMoveDown];
+            clonedBlockMatrix.matrix[i][rowIndexToMoveDown] = null;
           }
         }
       }
@@ -520,8 +520,8 @@ class AI {
         //if this positions has a block and there is no block to the left then this is potentially part of a pillar
         if (
           i > 0 &&
-          blockMatrix.matrix[i][j] != null &&
-          blockMatrix.matrix[i - 1][j] === null
+          clonedBlockMatrix.matrix[i][j] != null &&
+          clonedBlockMatrix.matrix[i - 1][j] === null
         ) {
           currentPillarHeightL++;
         } else {
@@ -537,8 +537,8 @@ class AI {
         //note dont check the spot 2 spots back from the right because we want them tetrises
         if (
           i < this.gameWidth - 1 &&
-          blockMatrix.matrix[i][j] != null &&
-          blockMatrix.matrix[i + 1][j] === null
+          clonedBlockMatrix.matrix[i][j] != null &&
+          clonedBlockMatrix.matrix[i + 1][j] === null
         ) {
           currentPillarHeightR++;
         } else {

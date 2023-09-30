@@ -21,34 +21,34 @@ export class AI {
   //Main function
   //Given the state of the matrix returns a string of instructions to get the block into position.
   calculateMovementPlan(
-    currentShape_: Shape,
-    heldShape_: Shape,
-    nextShape_: Shape,
-    blockMatrix_: BlockMatrix
+    currentShape: Shape,
+    heldShape: Shape,
+    nextShape: Shape,
+    blockMatrix: BlockMatrix
   ) {
     //clone all the input so we dont fuck it up
-    let currentShape = currentShape_.clone();
-    let heldShape = heldShape_ ? heldShape_.clone() : null;
-    let nextShape = nextShape_ ? nextShape_.clone() : null;
+    let clonedCurrentShape = currentShape.clone();
+    let clonedHeldShape = heldShape ? heldShape.clone() : null;
+    let clonedNextShape = nextShape ? nextShape.clone() : null;
 
-    let blockMatrix = new BlockMatrix(
+    let clonedBlockMatrix = new BlockMatrix(
       this.game.gameWidth,
       this.game.gameHeight
     );
-    blockMatrix.copyFromMatrix(blockMatrix_.matrix);
+    clonedBlockMatrix.copyFromMatrix(blockMatrix.matrix);
 
     let bestEndPositionForCurrentShape = this.getBestEndPosition(
-      currentShape,
-      blockMatrix
+      clonedCurrentShape,
+      clonedBlockMatrix
     );
 
     //check held piece and see if thats better
 
     //if there is no held shape then check the next shape instead
     let bestEndPositionForHeld =
-      heldShape == null
-        ? this.getBestEndPosition(nextShape, blockMatrix)
-        : this.getBestEndPosition(heldShape, blockMatrix);
+      clonedHeldShape == null
+        ? this.getBestEndPosition(clonedNextShape, clonedBlockMatrix)
+        : this.getBestEndPosition(clonedHeldShape, clonedBlockMatrix);
 
     //choose the piece with the best shape cost
     if (
@@ -215,24 +215,24 @@ export class AI {
     // print(this.movementPlan.moveHistoryList);
   }
 
-  calculateShapeCost(shape: Shape, blockMatrix_: BlockMatrix) {
-    let blockMatrix = blockMatrix_.clone();
-    blockMatrix.addShapeToMatrix(shape);
-    blockMatrix.clearFullRows();
-    blockMatrix.countHoles();
-    blockMatrix.countPillars();
-    blockMatrix.calculateMaximumLineHeight();
-    blockMatrix.countNumberOfBlocksInRightmostLane();
-    blockMatrix.calculateBumpiness();
-    blockMatrix.calculateCost(this.brain);
-    return blockMatrix.cost;
+  calculateShapeCost(shape: Shape, blockMatrix: BlockMatrix) {
+    let clonedBlockMatrix = blockMatrix.clone();
+    clonedBlockMatrix.addShapeToMatrix(shape);
+    clonedBlockMatrix.clearFullRows();
+    clonedBlockMatrix.countHoles();
+    clonedBlockMatrix.countPillars();
+    clonedBlockMatrix.calculateMaximumLineHeight();
+    clonedBlockMatrix.countNumberOfBlocksInRightmostLane();
+    clonedBlockMatrix.calculateBumpiness();
+    clonedBlockMatrix.calculateCost(this.brain);
+    return clonedBlockMatrix.cost;
   }
 
-  getAllEndPositions(startingShape: Shape | null, blockMatrix_: BlockMatrix) {
+  getAllEndPositions(startingShape: Shape | null, blockMatrix: BlockMatrix) {
     //so now we need to run a loop to hit all the possible positions
     let endPositions = this.getShortestPathsToAllEndPositions(
       startingShape,
-      blockMatrix_
+      blockMatrix
     );
     //since some shape can look the same when rotated we need to remove repeats
     endPositions = uniqWith(endPositions, (firstShape, secondShape) =>
@@ -241,12 +241,12 @@ export class AI {
     return endPositions;
   }
 
-  getBestEndPosition(startingShape: Shape | null, blockMatrix_: BlockMatrix) {
-    let endPositions = this.getAllEndPositions(startingShape, blockMatrix_);
+  getBestEndPosition(startingShape: Shape | null, blockMatrix: BlockMatrix) {
+    let endPositions = this.getAllEndPositions(startingShape, blockMatrix);
     //now lets count all the holes for each shape option and pick the lowest hole count
     const endPositionsWithCosts = endPositions.map((endPosition) => ({
       endPosition,
-      cost: this.calculateShapeCost(endPosition, blockMatrix_),
+      cost: this.calculateShapeCost(endPosition, blockMatrix),
     }));
 
     const minShapeCost = Math.min(
