@@ -48,12 +48,11 @@ export class Population {
     p5Sketch.stroke(100);
     p5Sketch.textAlign(p5Sketch.CENTER, p5Sketch.CENTER);
     p5Sketch.text(
-      "Gen: " +
-        this.generation +
-        "\t\t Batch: " +
-        (this.currentBatchNumber + 1) +
-        "\t\tAverage Fitness: " +
-        (this.fitnessSum / this.players.length).toFixed(2),
+      `Gen: ${this.generation}\t\t Batch: ${
+        this.currentBatchNumber + 1
+      }\t\tAverage Fitness: ${(this.fitnessSum / this.players.length).toFixed(
+        2
+      )}`,
       canvas.width / 2,
       25
     );
