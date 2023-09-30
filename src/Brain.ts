@@ -99,7 +99,7 @@ export class Brain {
     //   maximumLineHeightMultiplier = 1;
     // }
 
-    blockMatrix.cost =
+    return (
       blockMatrix.holeCount * this.multipliers.holeCountMultiplier +
       blockMatrix.openHoleCount * this.multipliers.openHoleCountMultiplier +
       blockMatrix.blocksAboveHoles *
@@ -113,9 +113,8 @@ export class Brain {
       blockMatrix.pillarCount * this.multipliers.pillarCountMultiplier +
       blockMatrix.blocksInRightLane *
         this.multipliers.blocksInRightMostLaneMultiplier +
-      blockMatrix.bumpiness * this.multipliers.bumpinessMultiplier;
-
-    return blockMatrix.cost;
+      blockMatrix.bumpiness * this.multipliers.bumpinessMultiplier
+    );
   }
 
   writeMultipliers(startingX: number, startingY: number) {
