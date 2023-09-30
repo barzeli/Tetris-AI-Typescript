@@ -103,16 +103,6 @@ export class ShapeGenerator {
   }
 
   getRandomShapeID() {
-    if (this.shapeIDs.length > 0) {
-      return this.shapeIDs[
-        Math.floor(p5Sketch.random(0, this.shapeIDs.length))
-      ];
-    } else
-      return {
-        blockPositions: [],
-        color: p5Sketch.color(0, 0, 0),
-        name: "",
-        rotationPoint: p5Sketch.createVector(0),
-      };
+    return this.shapeIDs[Math.floor(p5Sketch.random(0, this.shapeIDs.length))];
   }
 }
