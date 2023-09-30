@@ -5,7 +5,7 @@ import { BlockMatrix } from "./BlockMatrix";
 import { MovementType } from "./types";
 
 class AI {
-  checkedPositions: any[] = [];
+  checkedPositions: boolean[] = [];
   gameWidth = game.gameWidth;
   gameHeight = game.gameHeight;
   possibleEndPositions: Shape[] = [];
