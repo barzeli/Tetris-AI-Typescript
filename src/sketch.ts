@@ -66,7 +66,7 @@ const sketch = (p5: p5) => {
     game.draw();
 
     // writeCurrentOptimisations();
-    writeCurrentMatrixStats();
+    // writeCurrentMatrixStats(ai.brain);
 
     // ai.showPossibleMoveNo(possibleAIMoveCounter);
     // if (ai.possibleEndPositions.length > 0 && frameCount % 5 === 0) {
@@ -119,7 +119,7 @@ const sketch = (p5: p5) => {
     p5.pop();
   };
 
-  function writeCurrentMatrixStats() {
+  function writeCurrentMatrixStats(brain: Brain) {
     let currentMatrix = new BlockMatrix(game.gameWidth, game.gameHeight);
 
     currentMatrix.copyFromMatrix(game.deadBlocksMatrix);
@@ -129,7 +129,7 @@ const sketch = (p5: p5) => {
     currentMatrix.calculateMaximumLineHeight();
     currentMatrix.countNumberOfBlocksInRightmostLane();
     currentMatrix.calculateBumpiness();
-    currentMatrix.calculateCost();
+    currentMatrix.calculateCost(brain);
 
     let matrixStats = [
       `Hole Count: ${currentMatrix.holeCount}`,
