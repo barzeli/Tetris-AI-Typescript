@@ -210,7 +210,7 @@ export class AI {
   }
 
   calculateShapeCost(shape: Shape, blockMatrix: BlockMatrix) {
-    let clonedBlockMatrix = blockMatrix.clone();
+    const clonedBlockMatrix = blockMatrix.clone();
     clonedBlockMatrix.addShapeToMatrix(shape);
     clonedBlockMatrix.clearFullRows();
     clonedBlockMatrix.countHoles();

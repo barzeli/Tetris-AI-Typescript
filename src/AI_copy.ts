@@ -75,70 +75,17 @@ class AI {
 
   calculateTotalWorldHoles(shape: Shape, blockMatrix: BlockMatrix) {
     //clone the block matrix
-    let clonedBlockMatrix = [];
-
-    for (let i = 0; i < this.game.gameWidth; i++) {
-      let column = [];
-      for (let j = 0; j < this.game.gameHeight; j++) {
-        if (blockMatrix.matrix[i][j]) {
-          column.push(blockMatrix.matrix[i][j]!.clone());
-        } else {
-          column.push(null);
-        }
-      }
-      clonedBlockMatrix.push(column);
-    }
+    const clonedBlockMatrix = blockMatrix.clone();
 
     //add the shape to the block matrix
-    for (let block of shape.blocks) {
-      //the block becomes disconnected from the shape and therefore the current grid position is no longer relative to the shape
-      let newPosition = p5.Vector.add(block.gridPos, shape.currentPos);
-      clonedBlockMatrix[newPosition.x][newPosition.y] = block.clone();
-    }
+    clonedBlockMatrix.addShapeToMatrix(shape);
 
     //clear required lines
-    for (let j = 0; j < this.game.gameHeight; j++) {
-      let rowCleared = true;
-      for (let i = 0; i < this.game.gameWidth; i++) {
-        if (clonedBlockMatrix[i][j] == null) {
-          rowCleared = false;
-          break;
-        }
-      }
-      if (rowCleared) {
-        //for each row above the cleared row move them down
-        for (
-          let rowIndexToMoveDown = j - 1;
-          rowIndexToMoveDown >= 0;
-          rowIndexToMoveDown--
-        ) {
-          for (let i = 0; i < this.game.gameWidth; i++) {
-            if (clonedBlockMatrix[i][rowIndexToMoveDown]) {
-              clonedBlockMatrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
-            }
-            clonedBlockMatrix[i][rowIndexToMoveDown + 1] =
-              clonedBlockMatrix[i][rowIndexToMoveDown];
-            clonedBlockMatrix[i][rowIndexToMoveDown] = null;
-          }
-        }
-      }
-    }
+    clonedBlockMatrix.clearFullRows();
 
     //count holes
     //holes are blank spaces with a block above it.
-    let holeCount = 0;
-
-    for (let i = 0; i < this.game.gameWidth; i++) {
-      //going down each column look for a block and once found each block below is a hole
-      let blockFound = false;
-      for (let j = 0; j < this.game.gameHeight; j++) {
-        if (clonedBlockMatrix[i][j] != null) {
-          blockFound = true;
-        } else if (blockFound) {
-          holeCount++;
-        }
-      }
-    }
+    let holeCount = clonedBlockMatrix.countHoles();
 
     return holeCount;
   }
