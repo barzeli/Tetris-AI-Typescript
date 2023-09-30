@@ -19,22 +19,21 @@ export class AI {
 
   //Main function
   //Given the state of the matrix returns a string of instructions to get the block into position.
-  calculateMovementPlan(
-    currentShape: Shape,
-    heldShape: Shape,
-    nextShape: Shape,
-    blockMatrix: BlockMatrix
-  ) {
+  calculateMovementPlan() {
     //clone all the input so we dont fuck it up
-    let clonedCurrentShape = currentShape.clone();
-    let clonedHeldShape = heldShape ? heldShape.clone() : null;
-    let clonedNextShape = nextShape ? nextShape.clone() : null;
+    let clonedCurrentShape = this.game.currentShape.clone();
+    let clonedHeldShape = this.game.heldShape
+      ? this.game.heldShape.clone()
+      : null;
+    let clonedNextShape = this.game.nextShape
+      ? this.game.nextShape.clone()
+      : null;
 
     let clonedBlockMatrix = new BlockMatrix(
       this.game.gameWidth,
       this.game.gameHeight
     );
-    clonedBlockMatrix.copyFromMatrix(blockMatrix.matrix);
+    clonedBlockMatrix.copyFromMatrix(this.game.deadBlocksMatrix.matrix);
 
     let bestEndPositionForCurrentShape = this.getBestEndPosition(
       clonedCurrentShape,

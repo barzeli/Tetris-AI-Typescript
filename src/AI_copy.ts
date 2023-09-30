@@ -197,21 +197,18 @@ class AI {
   }
 
   //Given the state of the matrix returns a string of instructions to get the block into position.
-  calculateMovementPlan(
-    currentShape: Shape,
-    heldShape: Shape,
-    nextShape: Shape,
-    blockMatrix: BlockMatrix
-  ) {
+  calculateMovementPlan() {
     //clone all the input so we dont fuck it up
-    let clonedCurrentShape = currentShape.clone();
-    let clonedHeldShape = heldShape ? heldShape.clone() : null;
-    let clonedNextShape = nextShape.clone();
-    let clonedBlockMatrix = blockMatrix.clone();
+    let clonedCurrentShape = this.game.currentShape.clone();
+    let clonedHeldShape = this.game.heldShape
+      ? this.game.heldShape.clone()
+      : null;
+    let clonedNextShape = this.game.nextShape.clone();
+    let clonedBlockMatrix = this.game.deadBlocksMatrix.clone();
 
     let bestEndPositionForCurrentShape = this.getBestEndPosition(
       clonedCurrentShape,
-      blockMatrix
+      clonedBlockMatrix
     );
 
     //check held piece and see if thats better
@@ -235,17 +232,14 @@ class AI {
     this.movementPlan = this.chosenEndPosition.moveHistory.clone();
   }
   //Given the state of the matrix returns a string of instructions to get the block into position.
-  calculateMovementPlanByConsideringNextShape(
-    currentShape: Shape,
-    heldShape: Shape | null,
-    nextShape: Shape,
-    blockMatrix: BlockMatrix
-  ) {
+  calculateMovementPlanByConsideringNextShape() {
     //clone all the input so we dont fuck it up
-    let clonedCurrentShape = currentShape.clone();
-    let clonedHeldShape = heldShape ? heldShape.clone() : null;
-    let clonedNextShape = nextShape.clone();
-    let clonedBlockMatrix = blockMatrix.clone();
+    let clonedCurrentShape = this.game.currentShape.clone();
+    let clonedHeldShape = this.game.heldShape
+      ? this.game.heldShape.clone()
+      : null;
+    let clonedNextShape = this.game.nextShape.clone();
+    let clonedBlockMatrix = this.game.deadBlocksMatrix.clone();
 
     //populate the array with falses since we haven't found any yet
     this.resetCheckedPositions();
@@ -265,7 +259,7 @@ class AI {
     for (let i = 0; i < this.possibleEndPositions.length; i++) {
       let shapeCost = this.calculateShapeCost(
         this.possibleEndPositions[i],
-        blockMatrix
+        clonedBlockMatrix
       );
       if (shapeCost < minShapeCost) {
         minShapeCost = shapeCost;
@@ -283,7 +277,7 @@ class AI {
 
     let bestEndPositionForCurrentShape = this.getBestEndPosition(
       clonedCurrentShape,
-      blockMatrix
+      clonedBlockMatrix
     );
 
     //check held piece and see if thats better
