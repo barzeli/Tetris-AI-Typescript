@@ -415,41 +415,36 @@ class AI {
     );
   }
 
-  calculateShortestPathsToAllEndPositions(startingShape: Shape) {
-    let counter = 0;
-    let checkInDirection = (
-      queue: Shape[],
-      shape: Shape,
-      x: number,
-      y: number,
-      r?: number
-    ) => {
-      if (r && game.canRotateShape(shape)) {
-        let rotatedShape = shape.clone();
-        game.rotateCurrentShape(rotatedShape);
+  checkInDirection(
+    queue: Shape[],
+    shape: Shape,
+    x: number,
+    y: number,
+    r?: number
+  ) {
+    if (r && game.canRotateShape(shape)) {
+      let rotatedShape = shape.clone();
+      game.rotateCurrentShape(rotatedShape);
 
-        if (!this.hasShapesPositionBeenChecked(rotatedShape)) {
-          this.setCheckedPositionsArrayValueAtShapesPosition(
-            rotatedShape,
-            true
-          );
-          queue.push(rotatedShape);
-        }
-      } else {
-        if (game.canMoveShapeInDirection(shape, x, y)) {
-          let movedShape = shape.clone();
-          game.moveShape(movedShape, x, y);
+      if (!this.hasShapesPositionBeenChecked(rotatedShape)) {
+        this.setCheckedPositionsArrayValueAtShapesPosition(rotatedShape, true);
+        queue.push(rotatedShape);
+      }
+    } else {
+      if (game.canMoveShapeInDirection(shape, x, y)) {
+        let movedShape = shape.clone();
+        game.moveShape(movedShape, x, y);
 
-          if (!this.hasShapesPositionBeenChecked(movedShape)) {
-            this.setCheckedPositionsArrayValueAtShapesPosition(
-              movedShape,
-              true
-            );
-            queue.push(movedShape);
-          }
+        if (!this.hasShapesPositionBeenChecked(movedShape)) {
+          this.setCheckedPositionsArrayValueAtShapesPosition(movedShape, true);
+          queue.push(movedShape);
         }
       }
-    };
+    }
+  }
+
+  calculateShortestPathsToAllEndPositions(startingShape: Shape) {
+    let counter = 0;
 
     let queue = [];
     queue.push(startingShape);
@@ -465,10 +460,10 @@ class AI {
 
       //check if you can move this shape in each way, if you can move it then add it to the back of the queue
 
-      checkInDirection(queue, shape, -1, 0); //check left
-      checkInDirection(queue, shape, 1, 0); //check right
-      checkInDirection(queue, shape, 0, 0, 1); //check rotation
-      checkInDirection(queue, shape, 0, 1); //check down
+      this.checkInDirection(queue, shape, -1, 0); //check left
+      this.checkInDirection(queue, shape, 1, 0); //check right
+      this.checkInDirection(queue, shape, 0, 0, 1); //check rotation
+      this.checkInDirection(queue, shape, 0, 1); //check down
     }
 
     p5Sketch.print("counter is " + counter);
