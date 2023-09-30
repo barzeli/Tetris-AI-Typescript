@@ -85,7 +85,6 @@ export class Population {
   }
 
   naturalSelection() {
-    let nextGen = [];
     this.calculatePlayerFitnesses();
     this.calculateFitnessSum();
     //make sure best player makes it to the next gen
@@ -93,14 +92,13 @@ export class Population {
     let parent = this.bestPlayer;
     let child = parent!.clone();
     child.brain.mutate();
-    nextGen.push(child);
-
-    while (nextGen.length < this.players.length) {
+    const nextGen = [...Array(this.players.length - 1)].map((_) => {
       parent = this.selectPlayer();
       child = parent!.clone();
       child.brain.mutate();
-      nextGen.push(child);
-    }
+      return child;
+    });
+    nextGen.unshift(child);
 
     this.players = nextGen;
     this.generation++;
