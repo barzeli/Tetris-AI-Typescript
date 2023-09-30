@@ -98,24 +98,14 @@ export class ShapeGenerator {
     this.sShape,
   ];
 
-  currentBagOfShapeIDs: ShapeType[] = [
-    this.oShape,
-    this.lShape,
-    this.jShape,
-    this.iShape,
-    this.tShape,
-    this.zShape,
-    this.sShape,
-  ];
-
   getNewRandomShape(position: p5.Vector) {
     return new Shape(this.getRandomShapeID(), position);
   }
 
   getRandomShapeID() {
-    if (this.currentBagOfShapeIDs.length > 0) {
-      return this.currentBagOfShapeIDs[
-        Math.floor(p5Sketch.random(0, this.currentBagOfShapeIDs.length))
+    if (this.shapeIDs.length > 0) {
+      return this.shapeIDs[
+        Math.floor(p5Sketch.random(0, this.shapeIDs.length))
       ];
     } else
       return {

@@ -11,7 +11,6 @@ let deadBlocks = [];
 let deadBlocksMatrix = [];
 let gameWidth;
 let gameHeight;
-let shapeIDs = [];
 let shapeFallRate = 30; //number of falls per second
 
 let horizontalMoveEveryXFrames = 2; // the speed the blocks move when the left or right key is down
