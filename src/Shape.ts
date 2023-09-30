@@ -89,54 +89,11 @@ export class Shape {
     }
   }
 
-  moveDown(resetAfterDeath?: boolean) {
-    if (this.canMoveDown()) {
-      this.currentPos.y += 1;
-    } else {
-      this.killShape(resetAfterDeath);
-    }
-  }
-
   resetPosition() {
     this.currentPos = p5Sketch.createVector(
       this.startingPos.x,
       this.startingPos.y
     );
-  }
-
-  killShape(resetAfterDeath?: boolean) {
-    this.isDead = true;
-    if (!resetAfterDeath) {
-      this.blocks.forEach((block) => {
-        //the block becomes disconnected from the shape and therefore the current grid position is no longer relative to the shape
-        block.currentGridPos.add(this.currentPos);
-        this.game.deadBlocks.push(block);
-        this.game.deadBlocksMatrix[block.currentGridPos.x][
-          block.currentGridPos.y
-        ] = block;
-      });
-    }
-  }
-
-  canMoveDown(blockMatrix?: BlockMatrix) {
-    return this.blocks.every((block) => {
-      let futureBlockPosition = p5.Vector.add(
-        this.currentPos,
-        block.currentGridPos
-      );
-      futureBlockPosition.y += 1;
-      //if a block matrix is passed into the function then look at that instead of the game
-      if (blockMatrix) {
-        if (!blockMatrix.isPositionVacant(futureBlockPosition)) {
-          return false;
-        }
-      } else {
-        if (!this.game.isPositionVacant(futureBlockPosition)) {
-          return false;
-        }
-      }
-      return true;
-    });
   }
 
   canMoveInDirection(x: number, y: number, blockMatrix?: BlockMatrix) {

@@ -467,7 +467,7 @@ class AI {
       let shape = queue.splice(0, 1)[0];
 
       //if the shape cannot move down then it is a possible end position
-      if (!shape.canMoveDown()) {
+      if (!game.canMoveDown(shape)) {
         this.possibleEndPositions.push(shape.clone());
       }
 
@@ -510,7 +510,7 @@ class AI {
       }
     };
 
-    if (!startingShape.canMoveDown()) {
+    if (!game.canMoveDown(startingShape)) {
       this.possibleEndPositions.push(startingShape.clone());
     }
 

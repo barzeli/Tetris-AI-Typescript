@@ -4,6 +4,7 @@ import { Shape } from "./Shape";
 import { ShapeGenerator } from "./ShapeGenerator";
 import { BLOCK_SIZE, canvas, p5Sketch } from "./sketch";
 import { zip } from "lodash";
+import { BlockMatrix } from "./BlockMatrix";
 
 export class Game {
   gameWidth: number;
@@ -53,7 +54,7 @@ export class Game {
   }
 
   moveShapeDown(resetAfterShapeDeath?: boolean) {
-    this.currentShape.moveDown(resetAfterShapeDeath);
+    this.moveDown(this.currentShape, resetAfterShapeDeath);
 
     if (this.currentShape.isDead && resetAfterShapeDeath) {
       this.currentShape.isDead = false;
@@ -78,6 +79,48 @@ export class Game {
         this.isDead = true;
         // this.resetGame();
       }
+    }
+  }
+
+  moveDown(shape: Shape, resetAfterDeath?: boolean) {
+    if (this.canMoveDown(shape)) {
+      shape.currentPos.y += 1;
+    } else {
+      this.killShape(shape, resetAfterDeath);
+    }
+  }
+
+  canMoveDown(shape: Shape, blockMatrix?: BlockMatrix) {
+    return shape.blocks.every((block) => {
+      let futureBlockPosition = p5.Vector.add(
+        shape.currentPos,
+        block.currentGridPos
+      );
+      futureBlockPosition.y += 1;
+      //if a block matrix is passed into the function then look at that instead of the game
+      if (blockMatrix) {
+        if (!blockMatrix.isPositionVacant(futureBlockPosition)) {
+          return false;
+        }
+      } else {
+        if (!this.isPositionVacant(futureBlockPosition)) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }
+
+  killShape(shape: Shape, resetAfterDeath?: boolean) {
+    shape.isDead = true;
+    if (!resetAfterDeath) {
+      shape.blocks.forEach((block) => {
+        //the block becomes disconnected from the shape and therefore the current grid position is no longer relative to the shape
+        block.currentGridPos.add(shape.currentPos);
+        this.deadBlocks.push(block);
+        this.deadBlocksMatrix[block.currentGridPos.x][block.currentGridPos.y] =
+          block;
+      });
     }
   }
 
