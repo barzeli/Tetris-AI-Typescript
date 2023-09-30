@@ -14,7 +14,7 @@ export class Game {
 
   shapeGenerator = new ShapeGenerator();
   deadBlocks: Block[] = [];
-  deadBlocksMatrix: (Block | null)[][] = [];
+  deadBlocksMatrix: BlockMatrix;
 
   heldShape: Shape | null = null;
   hasHeldThisShape = false;
@@ -35,6 +35,7 @@ export class Game {
   constructor(gameWidth: number, gameHeight: number) {
     this.gameWidth = gameWidth;
     this.gameHeight = gameHeight;
+    this.deadBlocksMatrix = new BlockMatrix(gameWidth, gameHeight);
 
     this.currentShape = this.shapeGenerator.getNewRandomShape(
       p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0)
@@ -46,7 +47,7 @@ export class Game {
   }
 
   resetBlocksMatrix() {
-    this.deadBlocksMatrix = [...Array(this.gameWidth)].map((_) =>
+    this.deadBlocksMatrix.matrix = [...Array(this.gameWidth)].map((_) =>
       [...Array(this.gameHeight)].map((_) => null)
     );
   }
@@ -111,7 +112,7 @@ export class Game {
         //the block becomes disconnected from the shape and therefore the current grid position is no longer relative to the shape
         block.gridPos.add(shape.currentPos);
         this.deadBlocks.push(block);
-        this.deadBlocksMatrix[block.gridPos.x][block.gridPos.y] = block;
+        this.deadBlocksMatrix.matrix[block.gridPos.x][block.gridPos.y] = block;
       });
     }
   }
@@ -214,7 +215,7 @@ export class Game {
   }
 
   checkForTetris() {
-    const fullLineIndexes = zip(...this.deadBlocksMatrix)
+    const fullLineIndexes = zip(...this.deadBlocksMatrix.matrix)
       .map((row, rowIndex) => ({ row, rowIndex }))
       .filter(({ row }) => row.every((block) => block))
       .map(({ rowIndex }) => rowIndex);
@@ -230,7 +231,7 @@ export class Game {
     for (let j = 0; j < this.gameHeight; j++) {
       let rowCleared = true;
       for (let i = 0; i < this.gameWidth; i++) {
-        if (this.deadBlocksMatrix[i][j] == null) {
+        if (this.deadBlocksMatrix.matrix[i][j] == null) {
           rowCleared = false;
           break;
         }
@@ -240,8 +241,8 @@ export class Game {
         linesClearedThisShape++;
         //deactivate row
         for (let i = 0; i < this.gameWidth; i++) {
-          if (this.deadBlocksMatrix[i][j])
-            this.deadBlocksMatrix[i][j]!.isDead = true;
+          if (this.deadBlocksMatrix.matrix[i][j])
+            this.deadBlocksMatrix.matrix[i][j]!.isDead = true;
         }
 
         //for each row above the cleared row move them down
@@ -251,12 +252,14 @@ export class Game {
           rowIndexToMoveDown--
         ) {
           for (let i = 0; i < this.gameWidth; i++) {
-            if (this.deadBlocksMatrix[i][rowIndexToMoveDown]) {
-              this.deadBlocksMatrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
+            if (this.deadBlocksMatrix.matrix[i][rowIndexToMoveDown]) {
+              this.deadBlocksMatrix.matrix[i][
+                rowIndexToMoveDown
+              ]!.gridPos.y += 1;
             }
-            this.deadBlocksMatrix[i][rowIndexToMoveDown + 1] =
-              this.deadBlocksMatrix[i][rowIndexToMoveDown];
-            this.deadBlocksMatrix[i][rowIndexToMoveDown] = null;
+            this.deadBlocksMatrix.matrix[i][rowIndexToMoveDown + 1] =
+              this.deadBlocksMatrix.matrix[i][rowIndexToMoveDown];
+            this.deadBlocksMatrix.matrix[i][rowIndexToMoveDown] = null;
           }
         }
       }
@@ -512,7 +515,7 @@ export class Game {
       position.x < this.gameWidth
     ) {
       //if the position is not null in the matrix
-      if (this.deadBlocksMatrix[position.x][position.y] != null) {
+      if (this.deadBlocksMatrix.matrix[position.x][position.y] != null) {
         return false;
       }
     } else {

@@ -1,4 +1,3 @@
-import p5 from "p5";
 import { BlockMatrix } from "./BlockMatrix";
 import { MoveHistory } from "./MoveHistory";
 import { CheckedPositionsArray } from "./CheckedPositionsArray";
@@ -74,7 +73,7 @@ export class AI {
       this.game.gameWidth,
       this.game.gameHeight
     );
-    blockMatrix.copyFromMatrix(this.game.deadBlocksMatrix);
+    blockMatrix.copyFromMatrix(this.game.deadBlocksMatrix.matrix);
 
     //first we get all the possible end positions for the current and held pieces
 

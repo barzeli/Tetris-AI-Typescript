@@ -29,7 +29,7 @@ let populationSize = 16;
 
 export let canvas: p5.Renderer;
 
-export let mode: Mode = "AI";
+export let mode: Mode = "GAME";
 
 const sketch = (p5: p5) => {
   p5.preload = function preload() {
@@ -130,7 +130,7 @@ const sketch = (p5: p5) => {
   function writeCurrentMatrixStats(brain: Brain) {
     let currentMatrix = new BlockMatrix(game.gameWidth, game.gameHeight);
 
-    currentMatrix.copyFromMatrix(game.deadBlocksMatrix);
+    currentMatrix.copyFromMatrix(game.deadBlocksMatrix.matrix);
     currentMatrix.clearFullRows();
     currentMatrix.countHoles();
     currentMatrix.countPillars();
