@@ -16,18 +16,16 @@ export class Player {
   isDead = false;
 
   constructor(
-    windowWidth: number,
-    windowHeight: number,
-    firstPlayer?: boolean
+    firstPlayer?: boolean,
+    windowWidth?: number,
+    windowHeight?: number
   ) {
-    this.windowWidth = windowWidth;
-    this.windowHeight = windowHeight;
+    this.windowWidth = windowWidth ?? canvas.width / 2;
+    this.windowHeight = windowHeight ?? canvas.height / 2;
     this.brain = new Brain(firstPlayer);
 
     this.ai = new AI(this.currentGame, this.brain);
     this.ai.calculateMovementPlan2();
-    this.windowHeight = canvas.height / 2;
-    this.windowWidth = canvas.width / 2;
   }
 
   calculateMovementPlan() {
@@ -41,7 +39,7 @@ export class Player {
   }
 
   clone() {
-    let clone = new Player(this.windowWidth, this.windowHeight);
+    let clone = new Player();
     clone.currentGame.needsNewMovementPlan = true;
     clone.brain = this.brain.clone();
     clone.ai.brain = clone.brain;

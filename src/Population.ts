@@ -27,7 +27,7 @@ export class Population {
     this.playerHeight = canvas.height / this.playersPerColumn;
 
     this.players = [...Array(size)].map(
-      (_, index) => new Player(this.playerWidth, this.playerHeight, index === 0)
+      (_, index) => new Player(index === 0, this.playerWidth, this.playerHeight)
     );
   }
 
