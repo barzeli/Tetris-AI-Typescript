@@ -358,8 +358,7 @@ export class AI {
     currentMatrix: BlockMatrix,
     hasHeld: boolean
   ) {
-    let endMatrices = [];
-    for (let shape of endPositions) {
+    return endPositions.map((shape) => {
       let newMatrix = currentMatrix.clone();
       newMatrix.addShapeToMatrix(shape);
       newMatrix.clearFullRows();
@@ -377,10 +376,8 @@ export class AI {
         newMatrix.movementHistory.addHoldMove();
       }
 
-      endMatrices.push(newMatrix);
-    }
-
-    return endMatrices;
+      return newMatrix;
+    });
   }
 }
 

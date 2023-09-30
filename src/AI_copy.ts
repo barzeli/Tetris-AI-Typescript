@@ -40,9 +40,9 @@ class AI {
         (canvas.width - gameWidthInPixels) / 2,
         (canvas.height - gameHeightInPixels) / 2
       );
-      for (let block of this.possibleEndPositions[moveNo].blocks) {
-        block.color = p5Sketch.color(0, 0, 0, 0);
-      }
+      this.possibleEndPositions[moveNo].blocks.forEach(
+        (block) => (block.color = p5Sketch.color(0, 0, 0, 0))
+      );
       this.possibleEndPositions[moveNo].draw();
       p5Sketch.pop();
     }
@@ -64,9 +64,9 @@ class AI {
           (canvas.width - gameWidthInPixels) / 2,
           (canvas.height - gameHeightInPixels) / 2
         );
-        for (let block of this.chosenEndPosition.blocks) {
-          block.color = p5Sketch.color(0, 0, 0, 0);
-        }
+        this.chosenEndPosition.blocks.forEach(
+          (block) => (block.color = p5Sketch.color(0, 0, 0, 0))
+        );
         this.chosenEndPosition.draw();
         p5Sketch.pop();
       }
@@ -85,17 +85,16 @@ class AI {
 
     //count holes
     //holes are blank spaces with a block above it.
-    let holeCount = clonedBlockMatrix.countHoles();
+    clonedBlockMatrix.countHoles();
 
-    return holeCount;
+    return clonedBlockMatrix.holeCount;
   }
 
   calculateHoles(shape: Shape) {
-    let blockPositions = [];
     let holeCounter = 0;
-    for (let block of shape.blocks) {
-      blockPositions.push(p5.Vector.add(shape.currentPos, block.gridPos));
-    }
+    const blockPositions = shape.blocks.map((block) =>
+      p5.Vector.add(shape.currentPos, block.gridPos)
+    );
 
     for (let pos of blockPositions) {
       let posBelow = p5Sketch.createVector(
@@ -197,21 +196,23 @@ class AI {
     );
 
     //now lets count all the holes for each shape option and pick the lowest hole count
-    let minShapeCost = 100000;
-    let minShapeCostIndex = 0;
-    for (let i = 0; i < this.possibleEndPositions.length; i++) {
-      let shapeCost = this.calculateShapeCost(
-        this.possibleEndPositions[i],
-        blockMatrix
-      );
-      if (shapeCost < minShapeCost) {
-        minShapeCost = shapeCost;
-        minShapeCostIndex = i;
-      }
-    }
+    const endPositionsWithCosts = this.possibleEndPositions.map(
+      (endPosition) => ({
+        endPosition,
+        cost: this.calculateShapeCost(endPosition, blockMatrix),
+      })
+    );
+
+    const minShapeCost = Math.min(
+      ...endPositionsWithCosts.map(({ cost }) => cost)
+    );
+
+    const shapeWithMinCost = endPositionsWithCosts.find(
+      ({ cost }) => cost === minShapeCost
+    )!.endPosition;
 
     return {
-      bestShape: this.possibleEndPositions[minShapeCostIndex],
+      bestShape: shapeWithMinCost,
       shapeCost: minShapeCost,
     };
 
