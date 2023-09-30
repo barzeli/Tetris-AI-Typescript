@@ -3,6 +3,7 @@ import { p5Sketch } from "./sketch";
 import { Multipliers } from "./types";
 
 export class Brain {
+  mutationRate = 0.1;
   multipliers: Multipliers = {
     holeCountMultiplier: 0,
     openHoleCountMultiplier: 0,
@@ -61,27 +62,35 @@ export class Brain {
   }
 
   mutate() {
-    let mutationRate = 0.1;
-    this.multipliers.holeCountMultiplier *=
-      this.getMutationMultiplier(mutationRate);
-    this.multipliers.openHoleCountMultiplier *=
-      this.getMutationMultiplier(mutationRate);
-    this.multipliers.maximumLineHeightMultiplier *=
-      this.getMutationMultiplier(mutationRate);
-    this.multipliers.addedShapeHeightMultiplier *=
-      this.getMutationMultiplier(mutationRate);
-    this.multipliers.pillarCountMultiplier *=
-      this.getMutationMultiplier(mutationRate);
+    this.multipliers.holeCountMultiplier *= this.getMutationMultiplier(
+      this.mutationRate
+    );
+    this.multipliers.openHoleCountMultiplier *= this.getMutationMultiplier(
+      this.mutationRate
+    );
+    this.multipliers.maximumLineHeightMultiplier *= this.getMutationMultiplier(
+      this.mutationRate
+    );
+    this.multipliers.addedShapeHeightMultiplier *= this.getMutationMultiplier(
+      this.mutationRate
+    );
+    this.multipliers.pillarCountMultiplier *= this.getMutationMultiplier(
+      this.mutationRate
+    );
     this.multipliers.blocksInRightMostLaneMultiplier *=
-      this.getMutationMultiplier(mutationRate);
-    this.multipliers.nonTetrisClearPenalty *=
-      this.getMutationMultiplier(mutationRate);
-    this.multipliers.blocksAboveHolesMultiplier *=
-      this.getMutationMultiplier(mutationRate);
-    this.multipliers.bumpinessMultiplier *=
-      this.getMutationMultiplier(mutationRate);
-    this.multipliers.tetrisRewardMultiplier *=
-      this.getMutationMultiplier(mutationRate);
+      this.getMutationMultiplier(this.mutationRate);
+    this.multipliers.nonTetrisClearPenalty *= this.getMutationMultiplier(
+      this.mutationRate
+    );
+    this.multipliers.blocksAboveHolesMultiplier *= this.getMutationMultiplier(
+      this.mutationRate
+    );
+    this.multipliers.bumpinessMultiplier *= this.getMutationMultiplier(
+      this.mutationRate
+    );
+    this.multipliers.tetrisRewardMultiplier *= this.getMutationMultiplier(
+      this.mutationRate
+    );
   }
 
   clone() {
