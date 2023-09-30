@@ -3,9 +3,10 @@ import { BLOCK_SIZE, canvas, game, p5Sketch } from "./sketch";
 import { Shape } from "./Shape";
 import { BlockMatrix } from "./BlockMatrix";
 import { MovementType } from "./types";
+import { CheckedPositionsArray } from "./CheckedPositionsArray";
 
 class AI {
-  checkedPositions: boolean[] = [];
+  checkedPositionsArray: CheckedPositionsArray;
   gameWidth = game.gameWidth;
   gameHeight = game.gameHeight;
   possibleEndPositions: Shape[] = [];
@@ -15,11 +16,14 @@ class AI {
   //this shit is for showing all the current moves
   endPosCounter = 0;
 
+  constructor() {
+    this.checkedPositionsArray = new CheckedPositionsArray(
+      new BlockMatrix(game.gameWidth, game.gameHeight)
+    );
+  }
+
   resetCheckedPositions() {
-    this.checkedPositions = [];
-    for (let i = 0; i < this.gameWidth * this.gameHeight * 4; i++) {
-      this.checkedPositions.push(false);
-    }
+    this.checkedPositionsArray.setAllPositionsToFalse();
   }
 
   removeRepeatsInPossibleEndPositions() {
@@ -381,25 +385,8 @@ class AI {
     }
   }
 
-  hasPositionBeenChecked(x: number, y: number, r: number) {
-    return this.checkedPositions[
-      game.gameWidth * y + x + game.gameWidth * game.gameHeight * r
-    ];
-  }
-
-  setCheckedPositionsArrayValue(
-    x: number,
-    y: number,
-    r: number,
-    value: boolean
-  ) {
-    this.checkedPositions[
-      game.gameWidth * y + x + game.gameWidth * game.gameHeight * r
-    ] = value;
-  }
-
   hasShapesPositionBeenChecked(shape: Shape) {
-    return this.hasPositionBeenChecked(
+    return this.checkedPositionsArray.hasPositionBeenChecked(
       shape.currentPos.x,
       shape.currentPos.y,
       shape.currentRotationCount % 4
@@ -407,7 +394,7 @@ class AI {
   }
 
   setCheckedPositionsArrayValueAtShapesPosition(shape: Shape, value: boolean) {
-    this.setCheckedPositionsArrayValue(
+    this.checkedPositionsArray.setCheckedPositionsArrayValue(
       shape.currentPos.x,
       shape.currentPos.y,
       shape.currentRotationCount % 4,
