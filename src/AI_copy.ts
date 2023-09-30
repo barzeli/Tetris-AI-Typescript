@@ -347,19 +347,13 @@ class AI {
   getNextMove() {
     if (this.movementPlan.length > 0) {
       //if all the remaining moves are downs then snap it down
-      let allDown = true;
-      for (let move of this.movementPlan) {
-        if (move === "HOLD" || move !== "DOWN") {
-          allDown = false;
-          break;
-        }
+
+      if (this.movementPlan.every((movement) => movement === "DOWN")) {
+        return "ALL DOWN";
       }
-      if (allDown) {
-        return "allDown";
-      }
-      return this.movementPlan.splice(0, 1)[0];
+      return this.movementPlan.shift()!;
     } else {
-      return p5Sketch.createVector(0, 1, 0);
+      return "DOWN";
     }
   }
 

@@ -266,17 +266,14 @@ export class AI {
   getNextMove() {
     if (this.movementPlan.moveHistoryList.length > 0) {
       //if all the remaining moves are downs then snap it down
-      let allDown = true;
-      for (let move of this.movementPlan.moveHistoryList) {
-        if (move !== "DOWN") {
-          allDown = false;
-          break;
-        }
-      }
-      if (allDown) {
+      if (
+        this.movementPlan.moveHistoryList.every(
+          (movement) => movement === "DOWN"
+        )
+      ) {
         return "ALL DOWN";
       }
-      return this.movementPlan.moveHistoryList.splice(0, 1)[0];
+      return this.movementPlan.moveHistoryList.shift()!;
     } else {
       return "DOWN";
     }
