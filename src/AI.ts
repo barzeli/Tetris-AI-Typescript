@@ -118,59 +118,60 @@ export class AI {
 
     //get the minimum number of holes in the matrices
 
-    let minNumberOfHoles = 1000;
-
-    for (let matrix of allPossibleEndBlockMatrices) {
-      minNumberOfHoles = Math.min(matrix.holeCount, minNumberOfHoles);
-    }
+    let minNumberOfHoles = Math.min(
+      ...allPossibleEndBlockMatrices.map(
+        (endBlockMatrix) => endBlockMatrix.holeCount
+      )
+    );
 
     //now add all matrices which  have the min number of holes to a new list
-    let minHoleMatrices = [];
-    for (let i = 0; i < allPossibleEndBlockMatrices.length; i++) {
-      if (allPossibleEndBlockMatrices[i].holeCount === minNumberOfHoles) {
-        minHoleMatrices.push(allPossibleEndBlockMatrices[i]);
-        // print(`matrix no: ${i}`);
-        // allPossibleEndBlockMatrices[i].printMatrix();
-      }
-    }
+    let minHoleMatrices = allPossibleEndBlockMatrices.filter(
+      (endBlockMatrix) => endBlockMatrix.holeCount === minNumberOfHoles
+    );
+    // minHoleMatrices.forEach(() => {
+    //   p5.print(`matrix no: ${index}`);
+    //   endBlockMatrix.printMatrix();
+    // });
 
     //ok now we run the next piece over each of these and then get the cost and the winner is chosen
 
     //actually heres the plan, all we want to do is remove all matrices which force the next piece to produce a hole
 
-    let minNextPieceHoleMatrices = [];
-    minNumberOfHoles = 1000;
-    for (let i = 0; i < minHoleMatrices.length; i++) {
-      let bestEndPositionData = this.getBestEndPosition(
+    const matricesAfterHoleRemoval = minHoleMatrices.map((minHoleMatrix) => {
+      const bestEndPositionData = this.getBestEndPosition(
         nextShape,
-        minHoleMatrices[i]
+        minHoleMatrix
       );
-      let tempMatrix = minHoleMatrices[i].clone();
+      const tempMatrix = minHoleMatrix.clone();
       tempMatrix.addShapeToMatrix(bestEndPositionData.bestShape);
       tempMatrix.clearFullRows();
       tempMatrix.countHoles();
+      return tempMatrix;
+    });
 
-      if (tempMatrix.holeCount === minNumberOfHoles) {
-        minNextPieceHoleMatrices.push(minHoleMatrices[i]);
-      } else if (tempMatrix.holeCount < minNumberOfHoles) {
-        minNextPieceHoleMatrices = [];
-        minNumberOfHoles = tempMatrix.holeCount;
-        minNextPieceHoleMatrices.push(minHoleMatrices[i]);
-      }
-    }
+    const minNumberOfHolesAfterHoleRemoval = Math.min(
+      ...matricesAfterHoleRemoval.map(
+        (endBlockMatrix) => endBlockMatrix.holeCount
+      )
+    );
+
+    const minNextPieceHoleMatrices = matricesAfterHoleRemoval.filter(
+      (endBlockMatrix) =>
+        endBlockMatrix.holeCount === minNumberOfHolesAfterHoleRemoval
+    );
+    // minHoleMatricesAfterHoleRemoval.forEach(() => {
+    //   p5.print(`matrix no: ${index}`);
+    //   endBlockMatrix.printMatrix();
+    // });
 
     //ok now we have a list of the matrices which we get from the current and hold pieces which produce the minimal number of holes for itself and the next piece
     //so now lets just get the lowest cost matrix and choose it.
 
-    let minCost = 10000000;
-    let minCostMatrix = null;
-    for (let i = 0; i < minHoleMatrices.length; i++) {
-      let matrixCost = minHoleMatrices[i].cost;
-      if (minCost > matrixCost) {
-        minCost = matrixCost;
-        minCostMatrix = minHoleMatrices[i];
-      }
-    }
+    const minMatrixCost = Math.min(...minHoleMatrices.map(({ cost }) => cost));
+
+    const matrixWithMinCost = minHoleMatrices.find(
+      ({ cost }) => cost === minMatrixCost
+    )!;
 
     // let minCost = 10000000;
     // let minCostMatrix = null;
@@ -205,7 +206,8 @@ export class AI {
     // minCostMatrix.printMatrix();
     // print(minCostMatrix);
     // paused = true;
-    if (minCostMatrix) this.movementPlan = minCostMatrix.movementHistory;
+    if (matrixWithMinCost)
+      this.movementPlan = matrixWithMinCost.movementHistory;
     // print(this.movementPlan.moveHistoryList);
   }
 
