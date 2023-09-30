@@ -92,10 +92,7 @@ export class Game {
 
   canMoveShapeDown(shape: Shape, blockMatrix?: BlockMatrix) {
     return shape.blocks.every((block) => {
-      let futureBlockPosition = p5.Vector.add(
-        shape.currentPos,
-        block.currentGridPos
-      );
+      let futureBlockPosition = p5.Vector.add(shape.currentPos, block.gridPos);
       futureBlockPosition.y += 1;
       //if a block matrix is passed into the function then look at that instead of the game
       if (blockMatrix) {
@@ -116,10 +113,9 @@ export class Game {
     if (!resetAfterDeath) {
       shape.blocks.forEach((block) => {
         //the block becomes disconnected from the shape and therefore the current grid position is no longer relative to the shape
-        block.currentGridPos.add(shape.currentPos);
+        block.gridPos.add(shape.currentPos);
         this.deadBlocks.push(block);
-        this.deadBlocksMatrix[block.currentGridPos.x][block.currentGridPos.y] =
-          block;
+        this.deadBlocksMatrix[block.gridPos.x][block.gridPos.y] = block;
       });
     }
   }
@@ -146,10 +142,7 @@ export class Game {
   ) {
     //look at the future position of each block in the shape and if all those positions are vacant then we good
     return shape.blocks.every((block) => {
-      let futureBlockPosition = p5.Vector.add(
-        shape.currentPos,
-        block.currentGridPos
-      );
+      let futureBlockPosition = p5.Vector.add(shape.currentPos, block.gridPos);
       futureBlockPosition.y += y;
       futureBlockPosition.x += x;
 
@@ -179,7 +172,7 @@ export class Game {
             block,
             isClockwise
           );
-          block.currentGridPos = newPosition;
+          block.gridPos = newPosition;
         });
         shape.currentRotationCount += 1;
         shape.moveHistory.addRotationMove();
@@ -191,7 +184,7 @@ export class Game {
             block,
             isClockwise
           );
-          block.currentGridPos = newPosition;
+          block.gridPos = newPosition;
         });
         shape.currentRotationCount += 1;
         shape.moveHistory.addRotationMove();
@@ -280,9 +273,7 @@ export class Game {
         ) {
           for (let i = 0; i < this.gameWidth; i++) {
             if (this.deadBlocksMatrix[i][rowIndexToMoveDown]) {
-              this.deadBlocksMatrix[i][
-                rowIndexToMoveDown
-              ]!.currentGridPos.y += 1;
+              this.deadBlocksMatrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
             }
             this.deadBlocksMatrix[i][rowIndexToMoveDown + 1] =
               this.deadBlocksMatrix[i][rowIndexToMoveDown];

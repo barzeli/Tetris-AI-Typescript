@@ -74,7 +74,7 @@ export class BlockMatrix {
     //add the shape to the block matrix
     shape.blocks.forEach((block) => {
       //the block becomes disconnected from the shape and therefore the current grid position is no longer relative to the shape
-      let newPosition = p5.Vector.add(block.currentGridPos, shape.currentPos);
+      let newPosition = p5.Vector.add(block.gridPos, shape.currentPos);
       this.matrix[newPosition.x][newPosition.y] = block.clone();
     });
 
@@ -134,7 +134,7 @@ export class BlockMatrix {
 
             //if its not null then change the position of the block
             if (this.matrix[i][rowIndexToMoveDown]) {
-              this.matrix[i][rowIndexToMoveDown]!.currentGridPos.y += 1;
+              this.matrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
             }
 
             //move this block into the lower row and set the blocks previous row position to null

@@ -34,14 +34,8 @@ class AI {
         for (let blockI of shapeI.blocks) {
           matchFound = false;
           for (let blockJ of shapeJ.blocks) {
-            let blockIPos = p5.Vector.add(
-              shapeI.currentPos,
-              blockI.currentGridPos
-            );
-            let blockJPos = p5.Vector.add(
-              shapeJ.currentPos,
-              blockJ.currentGridPos
-            );
+            let blockIPos = p5.Vector.add(shapeI.currentPos, blockI.gridPos);
+            let blockJPos = p5.Vector.add(shapeJ.currentPos, blockJ.gridPos);
 
             if (p5.Vector.dist(blockIPos, blockJPos) < 0.1) {
               matchFound = true;
@@ -124,7 +118,7 @@ class AI {
     //add the shape to the block matrix
     for (let block of shape.blocks) {
       //the block becomes disconnected from the shape and therefore the current grid position is no longer relative to the shape
-      let newPosition = p5.Vector.add(block.currentGridPos, shape.currentPos);
+      let newPosition = p5.Vector.add(block.gridPos, shape.currentPos);
       blockMatrix[newPosition.x][newPosition.y] = block.clone();
     }
 
@@ -146,7 +140,7 @@ class AI {
         ) {
           for (let i = 0; i < this.gameWidth; i++) {
             if (blockMatrix[i][rowIndexToMoveDown]) {
-              blockMatrix[i][rowIndexToMoveDown]!.currentGridPos.y += 1;
+              blockMatrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
             }
             blockMatrix[i][rowIndexToMoveDown + 1] =
               blockMatrix[i][rowIndexToMoveDown];
@@ -179,9 +173,7 @@ class AI {
     let blockPositions = [];
     let holeCounter = 0;
     for (let block of shape.blocks) {
-      blockPositions.push(
-        p5.Vector.add(shape.currentPos, block.currentGridPos)
-      );
+      blockPositions.push(p5.Vector.add(shape.currentPos, block.gridPos));
     }
 
     for (let pos of blockPositions) {
@@ -532,7 +524,7 @@ class AI {
     //add the shape to the block matrix
     for (let block of shape.blocks) {
       //the block becomes disconnected from the shape and therefore the current grid position is no longer relative to the shape
-      let newPosition = p5.Vector.add(block.currentGridPos, shape.currentPos);
+      let newPosition = p5.Vector.add(block.gridPos, shape.currentPos);
       blockMatrix.matrix[newPosition.x][newPosition.y] = block.clone();
     }
 
@@ -554,7 +546,7 @@ class AI {
         ) {
           for (let i = 0; i < this.gameWidth; i++) {
             if (blockMatrix.matrix[i][rowIndexToMoveDown]) {
-              blockMatrix.matrix[i][rowIndexToMoveDown]!.currentGridPos.y += 1;
+              blockMatrix.matrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
             }
             blockMatrix.matrix[i][rowIndexToMoveDown + 1] =
               blockMatrix.matrix[i][rowIndexToMoveDown];
@@ -623,9 +615,7 @@ class AI {
     let blockPositions = [];
     let blocksInRightLaneCounter = 0;
     for (let block of shape.blocks) {
-      blockPositions.push(
-        p5.Vector.add(shape.currentPos, block.currentGridPos)
-      );
+      blockPositions.push(p5.Vector.add(shape.currentPos, block.gridPos));
     }
     for (let pos of blockPositions) {
       if (pos.x === this.gameWidth - 1) {

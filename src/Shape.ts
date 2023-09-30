@@ -51,10 +51,10 @@ export class Shape {
   drawAtOrigin() {
     //get the midpoint of the shape
     const sumX =
-      this.blocks.reduce((sum, block) => sum + block.currentGridPos.x, 0) +
+      this.blocks.reduce((sum, block) => sum + block.gridPos.x, 0) +
       this.blocks.length / 2;
     const sumY =
-      this.blocks.reduce((sum, block) => sum + block.currentGridPos.y, 0) +
+      this.blocks.reduce((sum, block) => sum + block.gridPos.y, 0) +
       this.blocks.length / 2;
     let midpoint = p5Sketch.createVector(
       sumX / this.blocks.length,
@@ -77,7 +77,7 @@ export class Shape {
   }
 
   getBlockPositionAfterShapeIsRotated(block: Block, isClockwise: boolean) {
-    let startingPos = block.currentGridPos;
+    let startingPos = block.gridPos;
     let rotationPoint = this.shapeID.rotationPoint;
     let startingPosRelativeToRotationPoint = p5.Vector.sub(
       startingPos,

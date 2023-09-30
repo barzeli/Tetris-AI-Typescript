@@ -3,16 +3,16 @@ import { BLOCK_SIZE, p5Sketch } from "./sketch";
 
 export class Block {
   isDead = false;
-  currentGridPos: p5.Vector;
+  gridPos: p5.Vector;
   color: p5.Color;
 
-  constructor(startingGridPos: p5.Vector, color: p5.Color) {
-    this.currentGridPos = startingGridPos;
+  constructor(gridPos: p5.Vector, color: p5.Color) {
+    this.gridPos = gridPos;
     this.color = color;
   }
 
   clone() {
-    let clone = new Block(this.currentGridPos.copy(), this.color);
+    let clone = new Block(this.gridPos.copy(), this.color);
     clone.isDead = this.isDead;
     return clone;
   }
@@ -20,8 +20,8 @@ export class Block {
   draw(tetrised = false, linesToBeCleared: number[] = []) {
     if (this.isDead) return;
     p5Sketch.push();
-    let pos = this.currentGridPos;
-    if (tetrised && linesToBeCleared.includes(this.currentGridPos.y)) {
+    let pos = this.gridPos;
+    if (tetrised && linesToBeCleared.includes(this.gridPos.y)) {
       p5Sketch.stroke(0);
       p5Sketch.fill(255);
     } else {

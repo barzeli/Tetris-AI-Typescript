@@ -227,14 +227,8 @@ export class AI {
         for (let blockI of shapeI.blocks) {
           matchFound = false;
           for (let blockJ of shapeJ.blocks) {
-            let blockIPos = p5.Vector.add(
-              shapeI.currentPos,
-              blockI.currentGridPos
-            );
-            let blockJPos = p5.Vector.add(
-              shapeJ.currentPos,
-              blockJ.currentGridPos
-            );
+            let blockIPos = p5.Vector.add(shapeI.currentPos, blockI.gridPos);
+            let blockJPos = p5.Vector.add(shapeJ.currentPos, blockJ.gridPos);
 
             if (p5.Vector.dist(blockIPos, blockJPos) < 0.1) {
               matchFound = true;
@@ -394,9 +388,7 @@ export class AI {
     let blockPositions = [];
     let blocksInRightLaneCounter = 0;
     for (let block of shape.blocks) {
-      blockPositions.push(
-        p5.Vector.add(shape.currentPos, block.currentGridPos)
-      );
+      blockPositions.push(p5.Vector.add(shape.currentPos, block.gridPos));
     }
     for (let pos of blockPositions) {
       if (pos.x === this.game.gameWidth - 1) {
