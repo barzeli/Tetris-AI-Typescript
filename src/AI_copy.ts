@@ -2,7 +2,7 @@ import p5 from "p5";
 import { BLOCK_SIZE, canvas, game, p5Sketch } from "./sketch";
 import { Shape } from "./Shape";
 import { BlockMatrix } from "./BlockMatrix";
-import { MovementType } from "./types";
+import { MoveHistory } from "./MoveHistory";
 import { CheckedPositionsArray } from "./CheckedPositionsArray";
 import { uniqWith } from "lodash";
 
@@ -12,8 +12,7 @@ class AI {
   gameHeight = game.gameHeight;
   possibleEndPositions: Shape[] = [];
   chosenEndPosition: Shape | null = null;
-  movementPlan: MovementType[] = [];
-
+  movementPlan = new MoveHistory();
   //this shit is for showing all the current moves
   endPosCounter = 0;
 
@@ -232,7 +231,7 @@ class AI {
       this.chosenEndPosition.moveHistory.addHoldMove();
     }
 
-    this.movementPlan = this.chosenEndPosition.moveHistory.moveHistoryList;
+    this.movementPlan = this.chosenEndPosition.moveHistory.clone();
   }
   //Given the state of the matrix returns a string of instructions to get the block into position.
   calculateMovementPlanByConsideringNextShape(
@@ -304,7 +303,7 @@ class AI {
       this.chosenEndPosition!.moveHistory.addHoldMove();
     }
 
-    this.movementPlan = this.chosenEndPosition!.moveHistory.moveHistoryList;
+    this.movementPlan = this.chosenEndPosition!.moveHistory.clone();
   }
 
   getBestEndPosition(startingShape: Shape, blockMatrix_: BlockMatrix) {
@@ -345,13 +344,17 @@ class AI {
   }
 
   getNextMove() {
-    if (this.movementPlan.length > 0) {
+    if (this.movementPlan.moveHistoryList.length > 0) {
       //if all the remaining moves are downs then snap it down
 
-      if (this.movementPlan.every((movement) => movement === "DOWN")) {
+      if (
+        this.movementPlan.moveHistoryList.every(
+          (movement) => movement === "DOWN"
+        )
+      ) {
         return "ALL DOWN";
       }
-      return this.movementPlan.shift()!;
+      return this.movementPlan.moveHistoryList.shift()!;
     } else {
       return "DOWN";
     }
