@@ -3,6 +3,7 @@ import { Population } from "./Population";
 import { BlockMatrix } from "./BlockMatrix";
 import { Game } from "./Game";
 import { AI } from "./AI";
+import { Brain } from "./Brain";
 
 let currentShape;
 
@@ -45,7 +46,7 @@ const sketch = (p5: p5) => {
 
     // population = new Population(populationSize);
     game = new Game(gameWidthBlocks, gameHeightBlocks);
-    // ai = new AI(game);
+    // ai = new AI(game, new Brain());
     // ai.calculateMovementPlan2();
     p5.frameRate(10);
     p5.textFont(font);
@@ -77,7 +78,7 @@ const sketch = (p5: p5) => {
     // if (game.justTetrised) {
     //     return;
     // }
-    // move the shape down at a rate of (shape Fall Rate) drops per second
+    // // move the shape down at a rate of (shape Fall Rate) drops per second
     // if (!paused && p5.frameCount % p5.int(30 / shapeFallRate) === 0) {
     //   if (ai.movementPlan === null) {
     //     ai.calculateMovementPlan2();

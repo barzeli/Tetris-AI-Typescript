@@ -9,10 +9,10 @@ import { Game } from "./Game";
 export class AI {
   movementPlan = new MoveHistory();
   game: Game;
-  brain: Brain | undefined;
+  brain: Brain;
   chosenEndPosition: Shape | null = null;
 
-  constructor(game: Game, brain?: Brain) {
+  constructor(game: Game, brain: Brain) {
     this.game = game;
     this.brain = brain;
   }
