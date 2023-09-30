@@ -54,28 +54,34 @@ export class Brain {
     };
   }
 
+  getMutationMultiplier(mutationRate: number) {
+    return p5Sketch.random(1.0) < mutationRate
+      ? p5Sketch.random(0.95, 1.05)
+      : 1;
+  }
+
   mutate() {
     let mutationRate = 0.1;
     this.multipliers.holeCountMultiplier *=
-      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
+      this.getMutationMultiplier(mutationRate);
     this.multipliers.openHoleCountMultiplier *=
-      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
+      this.getMutationMultiplier(mutationRate);
     this.multipliers.maximumLineHeightMultiplier *=
-      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
+      this.getMutationMultiplier(mutationRate);
     this.multipliers.addedShapeHeightMultiplier *=
-      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
+      this.getMutationMultiplier(mutationRate);
     this.multipliers.pillarCountMultiplier *=
-      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
+      this.getMutationMultiplier(mutationRate);
     this.multipliers.blocksInRightMostLaneMultiplier *=
-      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
+      this.getMutationMultiplier(mutationRate);
     this.multipliers.nonTetrisClearPenalty *=
-      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
+      this.getMutationMultiplier(mutationRate);
     this.multipliers.blocksAboveHolesMultiplier *=
-      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
+      this.getMutationMultiplier(mutationRate);
     this.multipliers.bumpinessMultiplier *=
-      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
+      this.getMutationMultiplier(mutationRate);
     this.multipliers.tetrisRewardMultiplier *=
-      p5Sketch.random(1.0) < mutationRate ? p5Sketch.random(0.95, 1.05) : 1;
+      this.getMutationMultiplier(mutationRate);
   }
 
   clone() {
