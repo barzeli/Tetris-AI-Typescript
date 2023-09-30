@@ -2,10 +2,9 @@ import { p5Sketch } from "./sketch";
 import { Shape } from "./Shape";
 import { ShapeType } from "./types";
 import p5 from "p5";
-import { Game } from "./Game";
 
 export class ShapeGenerator {
-  squareShape = {
+  oShape = {
     blockPositions: [
       p5Sketch.createVector(0, 0),
       p5Sketch.createVector(0, 1),
@@ -14,7 +13,7 @@ export class ShapeGenerator {
     ],
     rotationPoint: p5Sketch.createVector(0.5, 0.5),
     color: p5Sketch.color(255, 239, 43),
-    name: "Square",
+    name: "O",
   };
 
   lShape = {
@@ -29,7 +28,7 @@ export class ShapeGenerator {
     name: "L",
   };
 
-  reverseLShape = {
+  jShape = {
     blockPositions: [
       p5Sketch.createVector(1, 0),
       p5Sketch.createVector(1, 1),
@@ -38,10 +37,10 @@ export class ShapeGenerator {
     ],
     rotationPoint: p5Sketch.createVector(1, 1),
     color: p5Sketch.color(0, 100, 200),
-    name: "ReverseL",
+    name: "J",
   };
 
-  lineShape = {
+  iShape = {
     blockPositions: [
       p5Sketch.createVector(0, 0),
       p5Sketch.createVector(0, 1),
@@ -50,7 +49,7 @@ export class ShapeGenerator {
     ],
     rotationPoint: p5Sketch.createVector(0.5, 1.5),
     color: p5Sketch.color(0, 201, 223),
-    name: "Line",
+    name: "I",
   };
 
   tShape = {
@@ -90,20 +89,20 @@ export class ShapeGenerator {
   };
 
   shapeIDs: ShapeType[] = [
-    this.squareShape,
+    this.oShape,
     this.lShape,
-    this.reverseLShape,
-    this.lineShape,
+    this.jShape,
+    this.iShape,
     this.tShape,
     this.zShape,
     this.sShape,
   ];
 
   currentBagOfShapeIDs: ShapeType[] = [
-    this.squareShape,
+    this.oShape,
     this.lShape,
-    this.reverseLShape,
-    this.lineShape,
+    this.jShape,
+    this.iShape,
     this.tShape,
     this.zShape,
     this.sShape,
@@ -115,16 +114,15 @@ export class ShapeGenerator {
 
   getRandomShapeID(): ShapeType {
     if (this.currentBagOfShapeIDs.length > 0) {
-      return this.currentBagOfShapeIDs.splice(
-        Math.floor(p5Sketch.random(0, this.currentBagOfShapeIDs.length)),
-        1
-      )[0];
+      return this.currentBagOfShapeIDs[
+        Math.floor(p5Sketch.random(0, this.currentBagOfShapeIDs.length))
+      ];
     } else {
       this.currentBagOfShapeIDs = [
-        this.squareShape,
+        this.oShape,
         this.lShape,
-        this.reverseLShape,
-        this.lineShape,
+        this.jShape,
+        this.iShape,
         this.tShape,
         this.zShape,
         this.sShape,
