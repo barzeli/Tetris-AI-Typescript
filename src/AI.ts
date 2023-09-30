@@ -244,18 +244,21 @@ export class AI {
   getBestEndPosition(startingShape: Shape | null, blockMatrix_: BlockMatrix) {
     let endPositions = this.getAllEndPositions(startingShape, blockMatrix_);
     //now lets count all the holes for each shape option and pick the lowest hole count
-    let minShapeCost = 100000;
-    let minShapeCostIndex = 0;
-    for (let i = 0; i < endPositions.length; i++) {
-      let shapeCost = this.calculateShapeCost(endPositions[i], blockMatrix_);
-      if (shapeCost < minShapeCost) {
-        minShapeCost = shapeCost;
-        minShapeCostIndex = i;
-      }
-    }
+    const endPositionsWithCosts = endPositions.map((endPosition) => ({
+      endPosition,
+      cost: this.calculateShapeCost(endPosition, blockMatrix_),
+    }));
+
+    const minShapeCost = Math.min(
+      ...endPositionsWithCosts.map(({ cost }) => cost)
+    );
+
+    const shapeWithMinCost = endPositionsWithCosts.find(
+      ({ cost }) => cost === minShapeCost
+    )!.endPosition;
 
     return {
-      bestShape: endPositions[minShapeCostIndex],
+      bestShape: shapeWithMinCost,
       shapeCost: minShapeCost,
     };
   }

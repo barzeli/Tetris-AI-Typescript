@@ -323,21 +323,23 @@ class AI {
     );
 
     //now lets count all the holes for each shape option and pick the lowest hole count
-    let minShapeCost = 100000;
-    let minShapeCostIndex = 0;
-    for (let i = 0; i < this.possibleEndPositions.length; i++) {
-      let shapeCost = this.calculateShapeCost(
-        this.possibleEndPositions[i],
-        blockMatrix_
-      );
-      if (shapeCost < minShapeCost) {
-        minShapeCost = shapeCost;
-        minShapeCostIndex = i;
-      }
-    }
+    const endPositionsWithCosts = this.possibleEndPositions.map(
+      (endPosition) => ({
+        endPosition,
+        cost: this.calculateShapeCost(endPosition, blockMatrix_),
+      })
+    );
+
+    const minShapeCost = Math.min(
+      ...endPositionsWithCosts.map(({ cost }) => cost)
+    );
+
+    const shapeWithMinCost = endPositionsWithCosts.find(
+      ({ cost }) => cost === minShapeCost
+    )!.endPosition;
 
     return {
-      bestShape: this.possibleEndPositions[minShapeCostIndex],
+      bestShape: shapeWithMinCost,
       shapeCost: minShapeCost,
     };
   }
