@@ -612,17 +612,9 @@ class AI {
   }
 
   countNumberOfBlocksInRightmostLane(shape: Shape) {
-    let blockPositions = [];
-    let blocksInRightLaneCounter = 0;
-    for (let block of shape.blocks) {
-      blockPositions.push(p5.Vector.add(shape.currentPos, block.gridPos));
-    }
-    for (let pos of blockPositions) {
-      if (pos.x === this.gameWidth - 1) {
-        blocksInRightLaneCounter++;
-      }
-    }
-    return blocksInRightLaneCounter;
+    return shape.blocks
+      .map((block) => p5.Vector.add(shape.currentPos, block.gridPos))
+      .filter((blockPosition) => blockPosition.x === this.gameWidth - 1).length;
   }
 }
 

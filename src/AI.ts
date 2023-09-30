@@ -384,20 +384,6 @@ export class AI {
     return endPositions;
   }
 
-  countNumberOfBlocksInRightmostLane(shape: Shape) {
-    let blockPositions = [];
-    let blocksInRightLaneCounter = 0;
-    for (let block of shape.blocks) {
-      blockPositions.push(p5.Vector.add(shape.currentPos, block.gridPos));
-    }
-    for (let pos of blockPositions) {
-      if (pos.x === this.game.gameWidth - 1) {
-        blocksInRightLaneCounter++;
-      }
-    }
-    return blocksInRightLaneCounter;
-  }
-
   convertEndPositionsToMatrices(
     endPositions: Shape[],
     currentMatrix: BlockMatrix,
