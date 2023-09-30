@@ -342,7 +342,7 @@ export class AI {
           }
         }
       } else {
-        if (this.game.canMoveInDirection(shape, x, y, blockMatrix)) {
+        if (this.game.canMoveShapeInDirection(shape, x, y, blockMatrix)) {
           let movedShape = shape.clone();
           this.game.moveShape(movedShape, x, y, blockMatrix);
 
@@ -374,7 +374,7 @@ export class AI {
       let shape = queue.splice(0, 1)[0];
 
       //if the shape cannot move down then it is a possible end position
-      if (!this.game.canMoveDown(shape, blockMatrix)) {
+      if (!this.game.canMoveShapeDown(shape, blockMatrix)) {
         endPositions.push(shape.clone());
       }
 

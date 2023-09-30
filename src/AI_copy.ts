@@ -444,7 +444,7 @@ class AI {
           queue.push(rotatedShape);
         }
       } else {
-        if (game.canMoveInDirection(shape, x, y)) {
+        if (game.canMoveShapeInDirection(shape, x, y)) {
           let movedShape = shape.clone();
           game.moveShape(movedShape, x, y);
 
@@ -467,7 +467,7 @@ class AI {
       let shape = queue.splice(0, 1)[0];
 
       //if the shape cannot move down then it is a possible end position
-      if (!game.canMoveDown(shape)) {
+      if (!game.canMoveShapeDown(shape)) {
         this.possibleEndPositions.push(shape.clone());
       }
 
@@ -495,7 +495,7 @@ class AI {
           this.checkAllPositionsReachableFrom(rotatedShape);
         }
       } else {
-        if (game.canMoveInDirection(startingShape, x, y)) {
+        if (game.canMoveShapeInDirection(startingShape, x, y)) {
           let movedShape = startingShape.clone();
           game.moveShape(movedShape, x, y);
 
@@ -510,7 +510,7 @@ class AI {
       }
     };
 
-    if (!game.canMoveDown(startingShape)) {
+    if (!game.canMoveShapeDown(startingShape)) {
       this.possibleEndPositions.push(startingShape.clone());
     }
 

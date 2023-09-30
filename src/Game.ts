@@ -52,7 +52,7 @@ export class Game {
   }
 
   moveShapeDown(resetAfterShapeDeath?: boolean) {
-    this.moveDown(this.currentShape, resetAfterShapeDeath);
+    this.moveCurrentShapeDown(this.currentShape, resetAfterShapeDeath);
 
     if (this.currentShape.isDead && resetAfterShapeDeath) {
       this.currentShape.isDead = false;
@@ -73,7 +73,7 @@ export class Game {
 
       //if the new block is stuck then the game resets
       if (
-        !this.canMoveInDirection(this.currentShape, 0, 0) ||
+        !this.canMoveShapeInDirection(this.currentShape, 0, 0) ||
         this.score > 500
       ) {
         this.isDead = true;
@@ -82,15 +82,15 @@ export class Game {
     }
   }
 
-  moveDown(shape: Shape, resetAfterDeath?: boolean) {
-    if (this.canMoveDown(shape)) {
+  moveCurrentShapeDown(shape: Shape, resetAfterDeath?: boolean) {
+    if (this.canMoveShapeDown(shape)) {
       shape.currentPos.y += 1;
     } else {
       this.killShape(shape, resetAfterDeath);
     }
   }
 
-  canMoveDown(shape: Shape, blockMatrix?: BlockMatrix) {
+  canMoveShapeDown(shape: Shape, blockMatrix?: BlockMatrix) {
     return shape.blocks.every((block) => {
       let futureBlockPosition = p5.Vector.add(
         shape.currentPos,
@@ -126,19 +126,19 @@ export class Game {
 
   moveShape(shape: Shape, x: number, y: number, blockMatrix?: BlockMatrix) {
     if (blockMatrix) {
-      if (this.canMoveInDirection(shape, x, y, blockMatrix)) {
+      if (this.canMoveShapeInDirection(shape, x, y, blockMatrix)) {
         shape.currentPos.x += x;
         shape.currentPos.y += y;
         shape.moveHistory.addDirectionalMove(x, y);
       }
-    } else if (this.canMoveInDirection(shape, x, y)) {
+    } else if (this.canMoveShapeInDirection(shape, x, y)) {
       shape.currentPos.x += x;
       shape.currentPos.y += y;
       shape.moveHistory.addDirectionalMove(x, y);
     }
   }
 
-  canMoveInDirection(
+  canMoveShapeInDirection(
     shape: Shape,
     x: number,
     y: number,
