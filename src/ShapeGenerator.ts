@@ -112,22 +112,17 @@ export class ShapeGenerator {
     return new Shape(this.getRandomShapeID(), position);
   }
 
-  getRandomShapeID(): ShapeType {
+  getRandomShapeID() {
     if (this.currentBagOfShapeIDs.length > 0) {
       return this.currentBagOfShapeIDs[
         Math.floor(p5Sketch.random(0, this.currentBagOfShapeIDs.length))
       ];
-    } else {
-      this.currentBagOfShapeIDs = [
-        this.oShape,
-        this.lShape,
-        this.jShape,
-        this.iShape,
-        this.tShape,
-        this.zShape,
-        this.sShape,
-      ];
-      return this.getRandomShapeID();
-    }
+    } else
+      return {
+        blockPositions: [],
+        color: p5Sketch.color(0, 0, 0),
+        name: "",
+        rotationPoint: p5Sketch.createVector(0),
+      };
   }
 }
