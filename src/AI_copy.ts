@@ -385,21 +385,22 @@ class AI {
     }
   }
 
-  hasShapesPositionBeenChecked(shape: Shape) {
-    return this.checkedPositionsArray.hasPositionBeenChecked(
-      shape.currentPos.x,
-      shape.currentPos.y,
-      shape.currentRotationCount % 4
-    );
-  }
-
-  setCheckedPositionsArrayValueAtShapesPosition(shape: Shape, value: boolean) {
-    this.checkedPositionsArray.setCheckedPositionsArrayValue(
+  getShapeIndexFields(shape: Shape) {
+    return [
       shape.currentPos.x,
       shape.currentPos.y,
       shape.currentRotationCount % 4,
-      value
-    );
+    ];
+  }
+
+  hasShapesPositionBeenChecked(shape: Shape) {
+    const [x, y, r] = this.getShapeIndexFields(shape);
+    return this.checkedPositionsArray.hasPositionBeenChecked(x, y, r);
+  }
+
+  setCheckedPositionsArrayValueAtShapesPosition(shape: Shape, value: boolean) {
+    const [x, y, r] = this.getShapeIndexFields(shape);
+    this.checkedPositionsArray.setCheckedPositionsArrayValue(x, y, r, value);
   }
 
   checkInDirection(
