@@ -5,6 +5,7 @@ import { CheckedPositionsArray } from "./CheckedPositionsArray";
 import { Shape } from "./Shape";
 import { Brain } from "./Brain";
 import { Game } from "./Game";
+import { uniqWith } from "lodash";
 
 export class AI {
   movementPlan = new MoveHistory();
@@ -214,38 +215,6 @@ export class AI {
     // print(this.movementPlan.moveHistoryList);
   }
 
-  //not in JS arrays are passed by reference
-  removeRepeatsInPossibleEndPositions(endPositions: Shape[]) {
-    for (let i = 0; i < endPositions.length; i++) {
-      for (let j = i + 1; j < endPositions.length; j++) {
-        //comparing block i to block j
-
-        let shapeI = endPositions[i];
-        let shapeJ = endPositions[j];
-        let matchFound = false;
-
-        for (let blockI of shapeI.blocks) {
-          matchFound = false;
-          for (let blockJ of shapeJ.blocks) {
-            let blockIPos = p5.Vector.add(shapeI.currentPos, blockI.gridPos);
-            let blockJPos = p5.Vector.add(shapeJ.currentPos, blockJ.gridPos);
-
-            if (p5.Vector.dist(blockIPos, blockJPos) < 0.1) {
-              matchFound = true;
-            }
-          }
-          if (!matchFound) {
-            break;
-          }
-        }
-        if (matchFound) {
-          endPositions.splice(j, 1);
-          j -= 1;
-        }
-      }
-    }
-  }
-
   calculateShapeCost(shape: Shape, blockMatrix_: BlockMatrix) {
     let blockMatrix = blockMatrix_.clone();
     blockMatrix.addShapeToMatrix(shape);
@@ -266,7 +235,9 @@ export class AI {
       blockMatrix_
     );
     //since some shape can look the same when rotated we need to remove repeats
-    this.removeRepeatsInPossibleEndPositions(endPositions);
+    endPositions = uniqWith(endPositions, (firstShape, secondShape) =>
+      firstShape.isOverlapping(secondShape)
+    );
     return endPositions;
   }
 

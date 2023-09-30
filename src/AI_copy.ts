@@ -4,6 +4,7 @@ import { Shape } from "./Shape";
 import { BlockMatrix } from "./BlockMatrix";
 import { MovementType } from "./types";
 import { CheckedPositionsArray } from "./CheckedPositionsArray";
+import { uniqWith } from "lodash";
 
 class AI {
   checkedPositionsArray: CheckedPositionsArray;
@@ -24,37 +25,6 @@ class AI {
 
   resetCheckedPositions() {
     this.checkedPositionsArray.setAllPositionsToFalse();
-  }
-
-  removeRepeatsInPossibleEndPositions() {
-    for (let i = 0; i < this.possibleEndPositions.length; i++) {
-      for (let j = i + 1; j < this.possibleEndPositions.length; j++) {
-        //comparing block i to block j
-
-        let shapeI = this.possibleEndPositions[i];
-        let shapeJ = this.possibleEndPositions[j];
-        let matchFound = false;
-
-        for (let blockI of shapeI.blocks) {
-          matchFound = false;
-          for (let blockJ of shapeJ.blocks) {
-            let blockIPos = p5.Vector.add(shapeI.currentPos, blockI.gridPos);
-            let blockJPos = p5.Vector.add(shapeJ.currentPos, blockJ.gridPos);
-
-            if (p5.Vector.dist(blockIPos, blockJPos) < 0.1) {
-              matchFound = true;
-            }
-          }
-          if (!matchFound) {
-            break;
-          }
-        }
-        if (matchFound) {
-          this.possibleEndPositions.splice(j, 1);
-          j -= 1;
-        }
-      }
-    }
   }
 
   showPossibleMoveNo(moveNo: number) {
@@ -284,7 +254,10 @@ class AI {
     // this.calculateShortestPathsToAllEndPositions(startingShape);
 
     //since some shape can look the same when rotated we need to remove repeats
-    this.removeRepeatsInPossibleEndPositions();
+    this.possibleEndPositions = uniqWith(
+      this.possibleEndPositions,
+      (firstShape, secondShape) => firstShape.isOverlapping(secondShape)
+    );
 
     //now lets count all the holes for each shape option and pick the lowest hole count
     let minShapeCost = 100000;
@@ -344,7 +317,10 @@ class AI {
     this.calculateShortestPathsToAllEndPositions(startingShape);
 
     //since some shape can look the same when rotated we need to remove repeats
-    this.removeRepeatsInPossibleEndPositions();
+    this.possibleEndPositions = uniqWith(
+      this.possibleEndPositions,
+      (firstShape, secondShape) => firstShape.isOverlapping(secondShape)
+    );
 
     //now lets count all the holes for each shape option and pick the lowest hole count
     let minShapeCost = 100000;

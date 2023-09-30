@@ -84,4 +84,17 @@ export class Shape {
     newPosition.y = Math.round(newPosition.y);
     return newPosition;
   }
+
+  isOverlapping(other: Shape) {
+    return this.blocks
+      .map((block) => p5.Vector.add(this.currentPos, block.gridPos))
+      .every((firstBlockPosition) =>
+        other.blocks
+          .map((block) => p5.Vector.add(other.currentPos, block.gridPos))
+          .find(
+            (secondBlockPosition) =>
+              p5.Vector.dist(firstBlockPosition, secondBlockPosition) < 0.1
+          )
+      );
+  }
 }
