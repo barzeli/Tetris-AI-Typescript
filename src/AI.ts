@@ -180,31 +180,32 @@ export class AI {
     // let minCost = 10000000;
     // let minCostMatrix = null;
     // for (let i = 0; i < minHoleMatrices.length; i++) {
-    //
-    //
-    //     let bestEndPositionData = this.getBestEndPosition(nextShape, minHoleMatrices[i]);
-    //     let tempMatrix = minHoleMatrices[i].clone();
-    //     tempMatrix.addShapeToMatrix(bestEndPositionData.bestShape);
-    //     tempMatrix.clearFullRows();
-    //     tempMatrix.countHoles();
-    //     tempMatrix.countPillars();
-    //     tempMatrix.calculateMaximumLineHeight();
-    //     tempMatrix.calculateCost();
-    //     // print("-------------------------------------------");
-    //     // print(`matrix no ${i} first shape`);
-    //     // minHoleMatrices[i].printMatrix();
-    //     // print(`matrix no ${i} second shape`);
-    //     // tempMatrix.printMatrix();
-    //     // print(tempMatrix);
-    //     let matrixCost = bestEndPositionData.shapeCost;
-    //     if (minCost > matrixCost) {
-    //         minCost = matrixCost;
-    //         minCostMatrix = minHoleMatrices[i];
-    //     }
+    //   let bestEndPositionData = this.getBestEndPosition(
+    //     nextShape,
+    //     minHoleMatrices[i]
+    //   );
+    //   let tempMatrix = minHoleMatrices[i].clone();
+    //   tempMatrix.addShapeToMatrix(bestEndPositionData.bestShape);
+    //   tempMatrix.clearFullRows();
+    //   tempMatrix.countHoles();
+    //   tempMatrix.countPillars();
+    //   tempMatrix.calculateMaximumLineHeight();
+    //   tempMatrix.calculateCost(this.brain);
+    //   // print("-------------------------------------------");
+    //   // print(`matrix no ${i} first shape`);
+    //   // minHoleMatrices[i].printMatrix();
+    //   // print(`matrix no ${i} second shape`);
+    //   // tempMatrix.printMatrix();
+    //   // print(tempMatrix);
+    //   let matrixCost = bestEndPositionData.shapeCost;
+    //   if (minCost > matrixCost) {
+    //     minCost = matrixCost;
+    //     minCostMatrix = minHoleMatrices[i];
+    //   }
     // }
 
-    // if(minCost >= 100){
-    //     paused = true;
+    // if (minCost >= 100) {
+    //   paused = true;
     // }
     // minCostMatrix.printMatrix();
     // print(minCostMatrix);
