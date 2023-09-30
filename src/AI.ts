@@ -25,11 +25,7 @@ export class AI {
     let heldShape = this.game.heldShape ? this.game.heldShape.clone() : null;
     let nextShape = this.game.nextShape ? this.game.nextShape.clone() : null;
 
-    let blockMatrix = new BlockMatrix(
-      this.game.gameWidth,
-      this.game.gameHeight
-    );
-    blockMatrix.copyFromMatrix(this.game.deadBlocksMatrix.matrix);
+    let blockMatrix = this.game.deadBlocksMatrix.clone();
 
     let bestEndPositionForCurrentShape = this.getBestEndPosition(
       currentShape,
