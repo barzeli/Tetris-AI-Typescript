@@ -1,3 +1,4 @@
+import { chunk } from "lodash";
 import { Player } from "./Player";
 import { canvas, p5Sketch } from "./sketch";
 
@@ -60,19 +61,17 @@ export class Population {
     p5Sketch.translate(0, 50);
     p5Sketch.scale(1, (canvas.height - 50) / canvas.height);
 
-    let x = 0;
-    let y = 0;
-    let currentBatch = this.getCurrentBatchOfPlayers();
-    currentBatch.forEach((player) => {
-      p5Sketch.push();
-      p5Sketch.translate(x * this.playerWidth, y * this.playerHeight);
-      player.show();
-      x++;
-      if (x >= this.playersPerRow) {
-        x = 0;
-        y++;
-      }
-      p5Sketch.pop();
+    const currentBatch = this.getCurrentBatchOfPlayers();
+    chunk(currentBatch, this.playersPerRow).forEach((row, rowIndex) => {
+      row.forEach((player, columnIndex) => {
+        p5Sketch.push();
+        p5Sketch.translate(
+          rowIndex * this.playerWidth,
+          columnIndex * this.playerHeight
+        );
+        player.show();
+        p5Sketch.pop();
+      });
     });
 
     p5Sketch.pop();

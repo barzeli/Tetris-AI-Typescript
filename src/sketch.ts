@@ -30,7 +30,7 @@ let possibleAIMoveCounter = 0;
 
 //------------------------------------------------------------- ai learning stuff
 let population: Population;
-let populationSize = 160;
+let populationSize = 16;
 
 export let canvas: p5.Renderer;
 
@@ -43,10 +43,10 @@ const sketch = (p5: p5) => {
     canvas = p5.createCanvas(800, 800);
     canvas.parent("canvas");
 
-    // population = new Population(populationSize);
-    game = new Game(gameWidthBlocks, gameHeightBlocks);
+    population = new Population(populationSize);
+    // game = new Game(gameWidthBlocks, gameHeightBlocks);
     // ai = new AI(game);
-    // ai.calculateMovementPlan2(game.currentShape, game.heldShape, game.nextShape, game.deadBlocksMatrix);
+    // ai.calculateMovementPlan2();
     p5.frameRate(10);
     p5.textFont(font);
   };
@@ -54,15 +54,15 @@ const sketch = (p5: p5) => {
   p5.draw = function draw() {
     p5.push();
 
-    // if (!population.areAllPlayersDead()) {
-    //   population.show();
-    //   if (!paused) population.update();
-    // } else {
-    //   population.naturalSelection();
-    //   population.show();
-    //   population.update();
-    // }
-    game.draw();
+    if (!population.areAllPlayersDead()) {
+      population.show();
+      if (!paused) population.update();
+    } else {
+      population.naturalSelection();
+      population.show();
+      population.update();
+    }
+    // game.draw();
 
     // writeCurrentOptimisations();
     // writeCurrentMatrixStats();
@@ -80,12 +80,7 @@ const sketch = (p5: p5) => {
     // move the shape down at a rate of (shape Fall Rate) drops per second
     // if (!paused && p5.frameCount % p5.int(30 / shapeFallRate) === 0) {
     //   if (ai.movementPlan === null) {
-    //     ai.calculateMovementPlan2(
-    //       game.currentShape,
-    //       game.heldShape,
-    //       game.nextShape,
-    //       game.deadBlocksMatrix
-    //     );
+    //     ai.calculateMovementPlan2();
     //   }
 
     //   let nextMove = ai.getNextMove();
@@ -120,7 +115,7 @@ const sketch = (p5: p5) => {
     //       break;
     //   }
     // }
-    // p5.pop();
+    p5.pop();
   };
 
   function writeCurrentMatrixStats() {
