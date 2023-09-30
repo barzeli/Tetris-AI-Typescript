@@ -4,6 +4,7 @@ import { Multipliers } from "./types";
 
 export class Brain {
   mutationRate = 0.1;
+  mutationRange = 0.05;
   multipliers: Multipliers = {
     holeCountMultiplier: 0,
     openHoleCountMultiplier: 0,
@@ -56,8 +57,8 @@ export class Brain {
   }
 
   getMutationMultiplier() {
-    return p5Sketch.random(1.0) < this.mutationRate
-      ? p5Sketch.random(0.95, 1.05)
+    return p5Sketch.random(1) < this.mutationRate
+      ? p5Sketch.random(1 - this.mutationRange, 1 + this.mutationRange)
       : 1;
   }
 
