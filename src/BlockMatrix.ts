@@ -191,41 +191,31 @@ export class BlockMatrix {
         } else if (blockFound) {
           // this.blocksAboveHoles += numberOfBlocksFound;
 
-          if (i < this.width - 2) {
-            //check if there is 2 spaces to the right
-            if (
-              this.matrix[i + 1][j] === null &&
-              this.matrix[i + 2][j] === null
-            ) {
-              // this is not a full hole this is an open hole
-              // wait not yet, if the hole has a free block next to it and a free block below that, then it is a proper hole because you cannot fill this hole without creating a proper hole
-              if (j === this.height - 1 || this.matrix[i + 1][j + 1] != null) {
-                //if were on the bottom layer or the block 1 to the right and 1 down is a block, then we chill
-                this.openHoleCount++;
-                continue;
-              }
-            }
-          }
-
-          if (i >= 2) {
-            //check to the left
-            if (
-              this.matrix[i - 1][j] === null &&
-              this.matrix[i - 2][j] === null
-            ) {
-              // this is not a full hole this is an open hole
-              // wait not yet, if the hole has a free block next to it and a free block below that, then it is a proper hole because you cannot fill this hole without creating a proper hole
-              if (j === this.height - 1 || this.matrix[i - 1][j + 1] != null) {
-                //if were on the bottom layer or the block 1 to the left and 1 down is a block, then we chill
-                this.openHoleCount++;
-                continue;
-              }
-            }
-          }
-
-          //if reached this point then the hole is a full hole
-          //sad
-          this.holeCount++;
+          if (
+            i < this.width - 2 &&
+            // check if there is 2 spaces to the right
+            this.matrix[i + 1][j] === null &&
+            this.matrix[i + 2][j] === null &&
+            // this is not a full hole this is an open hole
+            // wait not yet, if the hole has a free block next to it and a free block below that, then it is a proper hole because you cannot fill this hole without creating a proper hole
+            (j === this.height - 1 || this.matrix[i + 1][j + 1] != null)
+            // if were on the bottom layer or the block 1 to the right and 1 down is a block, then we chill
+          )
+            this.openHoleCount++;
+          else if (
+            i >= 2 &&
+            // check to the left
+            this.matrix[i - 1][j] === null &&
+            this.matrix[i - 2][j] === null &&
+            // this is not a full hole this is an open hole
+            // wait not yet, if the hole has a free block next to it and a free block below that, then it is a proper hole because you cannot fill this hole without creating a proper hole
+            (j === this.height - 1 || this.matrix[i - 1][j + 1] != null)
+            // if were on the bottom layer or the block 1 to the left and 1 down is a block, then we chill
+          )
+            this.openHoleCount++;
+          // if reached this point then the hole is a full hole
+          // sad
+          else this.holeCount++;
         }
       }
     }
