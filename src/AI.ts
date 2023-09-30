@@ -21,32 +21,28 @@ export class AI {
   //Given the state of the matrix returns a string of instructions to get the block into position.
   calculateMovementPlan() {
     //clone all the input so we dont fuck it up
-    let clonedCurrentShape = this.game.currentShape.clone();
-    let clonedHeldShape = this.game.heldShape
-      ? this.game.heldShape.clone()
-      : null;
-    let clonedNextShape = this.game.nextShape
-      ? this.game.nextShape.clone()
-      : null;
+    let currentShape = this.game.currentShape.clone();
+    let heldShape = this.game.heldShape ? this.game.heldShape.clone() : null;
+    let nextShape = this.game.nextShape ? this.game.nextShape.clone() : null;
 
-    let clonedBlockMatrix = new BlockMatrix(
+    let blockMatrix = new BlockMatrix(
       this.game.gameWidth,
       this.game.gameHeight
     );
-    clonedBlockMatrix.copyFromMatrix(this.game.deadBlocksMatrix.matrix);
+    blockMatrix.copyFromMatrix(this.game.deadBlocksMatrix.matrix);
 
     let bestEndPositionForCurrentShape = this.getBestEndPosition(
-      clonedCurrentShape,
-      clonedBlockMatrix
+      currentShape,
+      blockMatrix
     );
 
     //check held piece and see if thats better
 
     //if there is no held shape then check the next shape instead
     let bestEndPositionForHeld =
-      clonedHeldShape == null
-        ? this.getBestEndPosition(clonedNextShape, clonedBlockMatrix)
-        : this.getBestEndPosition(clonedHeldShape, clonedBlockMatrix);
+      heldShape == null
+        ? this.getBestEndPosition(nextShape, blockMatrix)
+        : this.getBestEndPosition(heldShape, blockMatrix);
 
     //choose the piece with the best shape cost
     if (
