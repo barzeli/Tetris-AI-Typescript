@@ -28,14 +28,14 @@ export class Brain {
     this.multipliers = {
       holeCountMultiplier: 100 * p5Sketch.random(0, 2),
       openHoleCountMultiplier: 70 * p5Sketch.random(0, 2),
-      maximumLineHeightMultiplier: 1 * p5Sketch.random(0, 2),
+      maximumLineHeightMultiplier: 1 * p5Sketch.random(0, 2), // 0 in Block matrix
       addedShapeHeightMultiplier: 1 * p5Sketch.random(0, 2),
       pillarCountMultiplier: 4 * p5Sketch.random(0, 2),
       blocksInRightMostLaneMultiplier: 10 * p5Sketch.random(0, 2),
       nonTetrisClearPenalty: 20 * p5Sketch.random(0, 2),
       blocksAboveHolesMultiplier: 5 * p5Sketch.random(0, 2),
       bumpinessMultiplier: 5 * p5Sketch.random(0, 2),
-      tetrisRewardMultiplier: -10 * p5Sketch.random(0, 2),
+      tetrisRewardMultiplier: -10 * p5Sketch.random(0, 2), // negative because it reduces cost
     };
   }
 
@@ -88,6 +88,17 @@ export class Brain {
     let linesClearedWhichArentTetrises =
       blockMatrix.linesCleared > 0 && blockMatrix.linesCleared < 4 ? 1 : 0;
     let tetrises = blockMatrix.linesCleared === 4 ? 1 : 0;
+
+    // from block matrix
+    // //if shit aint going great then stop trying to tetris shit
+    // if (
+    //   this.maximumLineHeight > 10 ||
+    //   this.holeCount > 0 ||
+    //   this.pillarCount > 10
+    // ) {
+    //   nonTetrisClearPenalty = 0;
+    //   maximumLineHeightMultiplier = 1;
+    // }
 
     blockMatrix.cost =
       blockMatrix.holeCount * this.multipliers.holeCountMultiplier +
