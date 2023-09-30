@@ -300,11 +300,7 @@ class AI {
   }
 
   getShapeIndexFields(shape: Shape) {
-    return [
-      shape.currentPos.x,
-      shape.currentPos.y,
-      shape.currentRotationCount % 4,
-    ];
+    return [shape.currentPos.x, shape.currentPos.y, shape.currentRotationCount];
   }
 
   hasShapesPositionBeenChecked(shape: Shape) {

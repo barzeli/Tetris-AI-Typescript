@@ -49,7 +49,7 @@ export class CheckedPositionsArray {
       this.getIndexOfCoordinates(
         shape.currentPos.x,
         shape.currentPos.y,
-        shape.currentRotationCount % 4
+        shape.currentRotationCount
       )
     ];
   }
@@ -59,7 +59,7 @@ export class CheckedPositionsArray {
       this.getIndexOfCoordinates(
         shape.currentPos.x,
         shape.currentPos.y,
-        shape.currentRotationCount % 4
+        shape.currentRotationCount
       )
     ];
   }
@@ -68,9 +68,9 @@ export class CheckedPositionsArray {
       this.getIndexOfCoordinates(
         shape.currentPos.x,
         shape.currentPos.y,
-        shape.currentRotationCount % 4
+        shape.currentRotationCount
       )
     ] = value;
-    // this.checkedPositionShapes[this.getIndexOfCoordinates(shape.currentPos.x, shape.currentPos.y, shape.currentRotationCount % 4)] = shape;
+    // this.checkedPositionShapes[this.getIndexOfCoordinates(shape.currentPos.x, shape.currentPos.y, shape.currentRotationCount)] = shape;
   }
 }

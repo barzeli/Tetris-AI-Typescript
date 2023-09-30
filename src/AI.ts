@@ -310,7 +310,7 @@ export class AI {
         //
         //         print("ok");
         //         print(movedShape);
-        //         print(checkedPositions.getIndexOfCoordinates(movedShape.currentPos.x,movedShape.currentPos.y,movedShape.currentRotationCount%4));
+        //         print(checkedPositions.getIndexOfCoordinates(movedShape.currentPos.x,movedShape.currentPos.y,movedShape.currentRotationCount));
         //         print(checkedPositions.getShapeFromPosition(movedShape));
         //     }
         // }

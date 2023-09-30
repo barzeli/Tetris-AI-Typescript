@@ -165,6 +165,7 @@ export class Game {
           block.gridPos = newPosition;
         });
         shape.currentRotationCount += 1;
+        shape.currentRotationCount %= 4;
         shape.moveHistory.addRotationMove();
       }
     } else {
@@ -174,6 +175,7 @@ export class Game {
           block.gridPos = newPosition;
         });
         shape.currentRotationCount += 1;
+        shape.currentRotationCount %= 4;
         shape.moveHistory.addRotationMove();
       }
     }
