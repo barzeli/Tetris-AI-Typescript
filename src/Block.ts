@@ -3,20 +3,17 @@ import { BLOCK_SIZE, p5Sketch } from "./sketch";
 
 export class Block {
   isDead = false;
-  startingGridPos: p5.Vector;
   currentGridPos: p5.Vector;
   color: p5.Color;
 
   constructor(startingGridPos: p5.Vector, color: p5.Color) {
-    this.startingGridPos = startingGridPos;
     this.currentGridPos = startingGridPos;
     this.color = color;
   }
 
   clone() {
-    let clone = new Block(this.startingGridPos.copy(), this.color);
+    let clone = new Block(this.currentGridPos.copy(), this.color);
     clone.isDead = this.isDead;
-    clone.currentGridPos = this.currentGridPos.copy();
     return clone;
   }
 
