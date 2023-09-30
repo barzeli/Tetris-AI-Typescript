@@ -4,6 +4,7 @@ import { BlockMatrix } from "./BlockMatrix";
 import { Game } from "./Game";
 import { AI } from "./AI";
 import { Brain } from "./Brain";
+import { Mode } from "./types";
 
 let currentShape;
 
@@ -34,6 +35,8 @@ let populationSize = 16;
 
 export let canvas: p5.Renderer;
 
+export let mode: Mode = "AI";
+
 const sketch = (p5: p5) => {
   p5.preload = function preload() {
     font = p5.loadFont("Square.ttf");
@@ -43,10 +46,14 @@ const sketch = (p5: p5) => {
     canvas = p5.createCanvas(800, 800);
     canvas.parent("canvas");
 
-    population = new Population(populationSize);
-    // game = new Game(gameWidthBlocks, gameHeightBlocks);
-    // ai = new AI(game, new Brain());
-    // ai.calculateMovementPlan2();
+    if (mode === "POPULATION") population = new Population(populationSize);
+    else {
+      game = new Game(gameWidthBlocks, gameHeightBlocks);
+      if (mode === "AI") {
+        ai = new AI(game, new Brain());
+        ai.calculateMovementPlan2();
+      }
+    }
     p5.frameRate(10);
     p5.textFont(font);
   };
@@ -54,67 +61,75 @@ const sketch = (p5: p5) => {
   p5.draw = function draw() {
     p5.push();
 
-    if (!population.areAllPlayersDead()) {
-      population.show();
-      if (!paused) population.update();
+    if (mode === "POPULATION") {
+      if (!population.areAllPlayersDead()) {
+        population.show();
+        if (!paused) population.update();
+      } else {
+        population.naturalSelection();
+        population.show();
+        population.update();
+      }
     } else {
-      population.naturalSelection();
-      population.show();
-      population.update();
+      game.draw();
+
+      if (mode === "AI") {
+        writeCurrentOptimisations();
+        writeCurrentMatrixStats(ai.brain);
+
+        // ai.showPossibleMoveNo(possibleAIMoveCounter);
+        // if (ai.possibleEndPositions.length > 0 && frameCount % 5 === 0) {
+        //   possibleAIMoveCounter =
+        //     (possibleAIMoveCounter + 1) % ai.possibleEndPositions.length;
+        // }
+        // ai.showBestMove();
+      }
+      checkInput();
+
+      // if (game.justTetrised) {
+      //   return;
+      // }
+      // move the shape down at a rate of (shape Fall Rate) drops per second
+      if (!paused && p5.frameCount % p5.int(30 / shapeFallRate) === 0) {
+        if (mode === "AI") {
+          if (ai.movementPlan === null) {
+            ai.calculateMovementPlan2();
+          }
+
+          let nextMove = ai.getNextMove();
+
+          switch (nextMove) {
+            case "ALL DOWN":
+              let downMoveMultiplier = 2;
+              // let downMoveMultiplier = 2;
+              while (
+                ai.movementPlan.moveHistoryList.length > 0 &&
+                downMoveMultiplier > 0
+              ) {
+                ai.movementPlan.moveHistoryList.splice(0, 1);
+                game.moveShapeDown();
+                downMoveMultiplier -= 1;
+              }
+              break;
+            case "HOLD":
+              game.holdShape();
+              break;
+            case "ROTATE":
+              game.rotateShape();
+              break;
+            case "RIGHT":
+              game.moveShapeRight();
+              break;
+            case "LEFT":
+              game.moveShapeLeft();
+              break;
+            case "DOWN":
+              game.moveShapeDown();
+              break;
+          }
+        }
+      }
     }
-    // game.draw();
-
-    // writeCurrentOptimisations();
-    // writeCurrentMatrixStats(ai.brain);
-
-    // ai.showPossibleMoveNo(possibleAIMoveCounter);
-    // if (ai.possibleEndPositions.length > 0 && frameCount % 5 === 0) {
-    //     possibleAIMoveCounter = (possibleAIMoveCounter + 1) % ai.possibleEndPositions.length;
-    // }
-    // ai.showBestMove();
-    checkInput();
-
-    // if (game.justTetrised) {
-    //     return;
-    // }
-    // // move the shape down at a rate of (shape Fall Rate) drops per second
-    // if (!paused && p5.frameCount % p5.int(30 / shapeFallRate) === 0) {
-    //   if (ai.movementPlan === null) {
-    //     ai.calculateMovementPlan2();
-    //   }
-
-    //   let nextMove = ai.getNextMove();
-
-    //   switch (nextMove) {
-    //     case "ALL DOWN":
-    //       let downMoveMultiplier = 2;
-    //       // let downMoveMultiplier = 2;
-    //       while (
-    //         ai.movementPlan.moveHistoryList.length > 0 &&
-    //         downMoveMultiplier > 0
-    //       ) {
-    //         ai.movementPlan.moveHistoryList.splice(0, 1);
-    //         game.moveShapeDown();
-    //         downMoveMultiplier -= 1;
-    //       }
-    //       break;
-    //     case "HOLD":
-    //       game.holdShape();
-    //       break;
-    //     case "ROTATE":
-    //       game.rotateShape();
-    //       break;
-    //     case "RIGHT":
-    //       game.moveShapeRight();
-    //       break;
-    //     case "LEFT":
-    //       game.moveShapeLeft();
-    //       break;
-    //     case "DOWN":
-    //       game.moveShapeDown();
-    //       break;
-    //   }
-    // }
     p5.pop();
   };
 
@@ -181,16 +196,16 @@ const sketch = (p5: p5) => {
     p5.textSize(20);
     p5.noStroke();
 
-    // text("Implemented Optimisations",startingX, startingY);
+    p5.text("Implemented Optimisations", startingX, startingY);
     p5.textSize(15);
     p5.noStroke();
-    // implementedOptimisations.forEach((implementedOptimisation, index) =>
-    //   p5.text(
-    //     "---" + implementedOptimisation,
-    //     startingX,
-    //     startingY + (index + 1) * textGap
-    //   )
-    // );
+    implementedOptimisations.forEach((implementedOptimisation, index) =>
+      p5.text(
+        "---" + implementedOptimisation,
+        startingX,
+        startingY + (index + 1) * textGap
+      )
+    );
   }
 
   let leftKeyIsDown = false;

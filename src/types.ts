@@ -21,3 +21,5 @@ export interface Multipliers {
 }
 
 export type MovementType = "DOWN" | "LEFT" | "RIGHT" | "ROTATE" | "HOLD";
+
+export type Mode = "GAME" | "AI" | "POPULATION";
