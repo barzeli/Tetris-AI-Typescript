@@ -109,8 +109,8 @@ export class ShapeGenerator {
     this.sShape,
   ];
 
-  getNewRandomShape(position: p5.Vector, game: Game) {
-    return new Shape(this.getRandomShapeID(), position, game);
+  getNewRandomShape(position: p5.Vector) {
+    return new Shape(this.getRandomShapeID(), position);
   }
 
   getRandomShapeID(): ShapeType {

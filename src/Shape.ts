@@ -2,11 +2,9 @@ import p5 from "p5";
 import { Block } from "./Block";
 import { MoveHistory } from "./MoveHistory";
 import { BLOCK_SIZE, p5Sketch } from "./sketch";
-import { Game } from "./Game";
 import { ShapeType } from "./types";
 
 export class Shape {
-  game: Game;
   shapeID: ShapeType;
   currentPos: p5.Vector;
   startingPos: p5.Vector;
@@ -16,8 +14,7 @@ export class Shape {
   //vectors which control this piece into the best position
   moveHistory = new MoveHistory();
 
-  constructor(shapeID: ShapeType, startingPos: p5.Vector, game: Game) {
-    this.game = game;
+  constructor(shapeID: ShapeType, startingPos: p5.Vector) {
     this.shapeID = shapeID;
     this.currentPos = p5Sketch.createVector(startingPos.x, startingPos.y);
     this.startingPos = p5Sketch.createVector(startingPos.x, startingPos.y);
@@ -31,7 +28,7 @@ export class Shape {
   }
 
   clone() {
-    let clone = new Shape(this.shapeID, this.startingPos, this.game);
+    let clone = new Shape(this.shapeID, this.startingPos);
     clone.currentPos = this.currentPos.copy();
     clone.blocks = this.blocks.map((block) => block.clone());
     clone.isDead = this.isDead;

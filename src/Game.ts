@@ -37,13 +37,11 @@ export class Game {
     this.gameHeight = gameHeight;
 
     this.currentShape = this.shapeGenerator.getNewRandomShape(
-      p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0),
-      this
+      p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0)
     );
     this.resetBlocksMatrix();
     this.nextShape = this.shapeGenerator.getNewRandomShape(
-      p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0),
-      this
+      p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0)
     );
   }
 
@@ -69,8 +67,7 @@ export class Game {
 
       this.currentShape = this.nextShape;
       this.nextShape = this.shapeGenerator.getNewRandomShape(
-        p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0),
-        this
+        p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0)
       );
       this.needsNewMovementPlan = true;
 
@@ -235,12 +232,10 @@ export class Game {
     this.resetBlocksMatrix();
     this.deadBlocks = [];
     this.currentShape = this.shapeGenerator.getNewRandomShape(
-      p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0),
-      this
+      p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0)
     );
     this.nextShape = this.shapeGenerator.getNewRandomShape(
-      p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0),
-      this
+      p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0)
     );
     this.heldShape = null;
     this.score = 0;
@@ -424,8 +419,7 @@ export class Game {
       this.heldShape.resetPosition();
       this.currentShape = this.nextShape;
       this.nextShape = this.shapeGenerator.getNewRandomShape(
-        p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0),
-        this
+        p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0)
       );
     }
   }
