@@ -12,8 +12,8 @@ let horizontalMoveEveryXFrames = 2; // the speed the blocks move when the left o
 let horizontalMoveCounter = 0;
 let verticalMoveEveryXFrames = 1; // the speed the blocks move when the left or right key is down
 let verticalMoveCounter = 0;
-export let game: Game;
-export let BLOCK_SIZE = 35;
+let game: Game;
+export const BLOCK_SIZE = 35;
 let gameWidthBlocks = 10;
 let gameHeightBlocks = 20;
 

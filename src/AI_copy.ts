@@ -1,22 +1,23 @@
 import p5 from "p5";
-import { BLOCK_SIZE, canvas, game, p5Sketch } from "./sketch";
+import { BLOCK_SIZE, canvas, p5Sketch } from "./sketch";
 import { Shape } from "./Shape";
 import { BlockMatrix } from "./BlockMatrix";
 import { MoveHistory } from "./MoveHistory";
 import { CheckedPositionsArray } from "./CheckedPositionsArray";
 import { uniqWith } from "lodash";
+import { Game } from "./Game";
 
 class AI {
   checkedPositionsArray: CheckedPositionsArray;
-  gameWidth = game.gameWidth;
-  gameHeight = game.gameHeight;
+  game: Game;
   possibleEndPositions: Shape[] = [];
   chosenEndPosition: Shape | null = null;
   movementPlan = new MoveHistory();
   //this shit is for showing all the current moves
   endPosCounter = 0;
 
-  constructor() {
+  constructor(game: Game) {
+    this.game = game;
     this.checkedPositionsArray = new CheckedPositionsArray(
       new BlockMatrix(game.gameWidth, game.gameHeight)
     );
@@ -33,8 +34,8 @@ class AI {
     p5Sketch.push();
     {
       //translate so that the game is in the center of the canvas
-      let gameWidthInPixels = this.gameWidth * BLOCK_SIZE;
-      let gameHeightInPixels = this.gameHeight * BLOCK_SIZE;
+      let gameWidthInPixels = this.game.gameWidth * BLOCK_SIZE;
+      let gameHeightInPixels = this.game.gameHeight * BLOCK_SIZE;
       p5Sketch.translate(
         (canvas.width - gameWidthInPixels) / 2,
         (canvas.height - gameHeightInPixels) / 2
@@ -57,8 +58,8 @@ class AI {
       p5Sketch.push();
       {
         //translate so that the game is in the center of the canvas
-        let gameWidthInPixels = this.gameWidth * BLOCK_SIZE;
-        let gameHeightInPixels = this.gameHeight * BLOCK_SIZE;
+        let gameWidthInPixels = this.game.gameWidth * BLOCK_SIZE;
+        let gameHeightInPixels = this.game.gameHeight * BLOCK_SIZE;
         p5Sketch.translate(
           (canvas.width - gameWidthInPixels) / 2,
           (canvas.height - gameHeightInPixels) / 2
@@ -76,9 +77,9 @@ class AI {
     //clone the block matrix
     let clonedBlockMatrix = [];
 
-    for (let i = 0; i < game.gameWidth; i++) {
+    for (let i = 0; i < this.game.gameWidth; i++) {
       let column = [];
-      for (let j = 0; j < game.gameHeight; j++) {
+      for (let j = 0; j < this.game.gameHeight; j++) {
         if (blockMatrix.matrix[i][j]) {
           column.push(blockMatrix.matrix[i][j]!.clone());
         } else {
@@ -96,9 +97,9 @@ class AI {
     }
 
     //clear required lines
-    for (let j = 0; j < this.gameHeight; j++) {
+    for (let j = 0; j < this.game.gameHeight; j++) {
       let rowCleared = true;
-      for (let i = 0; i < this.gameWidth; i++) {
+      for (let i = 0; i < this.game.gameWidth; i++) {
         if (clonedBlockMatrix[i][j] == null) {
           rowCleared = false;
           break;
@@ -111,7 +112,7 @@ class AI {
           rowIndexToMoveDown >= 0;
           rowIndexToMoveDown--
         ) {
-          for (let i = 0; i < this.gameWidth; i++) {
+          for (let i = 0; i < this.game.gameWidth; i++) {
             if (clonedBlockMatrix[i][rowIndexToMoveDown]) {
               clonedBlockMatrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
             }
@@ -127,10 +128,10 @@ class AI {
     //holes are blank spaces with a block above it.
     let holeCount = 0;
 
-    for (let i = 0; i < this.gameWidth; i++) {
+    for (let i = 0; i < this.game.gameWidth; i++) {
       //going down each column look for a block and once found each block below is a hole
       let blockFound = false;
-      for (let j = 0; j < this.gameHeight; j++) {
+      for (let j = 0; j < this.game.gameHeight; j++) {
         if (clonedBlockMatrix[i][j] != null) {
           blockFound = true;
         } else if (blockFound) {
@@ -154,7 +155,7 @@ class AI {
         p5Sketch.round(pos.x),
         p5Sketch.round(pos.y + 1)
       );
-      if (game.isPositionVacant(posBelow)) {
+      if (this.game.isPositionVacant(posBelow)) {
         let isInCurrentShape = false;
         for (let pos2 of blockPositions) {
           if (pos2.equals(posBelow)) {
@@ -182,7 +183,7 @@ class AI {
     let noneLineShapeInRightMostLaneMultiplier = 1;
 
     let holeCount = this.calculateTotalWorldHoles(shape, blockMatrix);
-    let shapeHeight = this.gameHeight - shape.currentPos.y;
+    let shapeHeight = this.game.gameHeight - shape.currentPos.y;
 
     let pillarCount = this.countNumberAndHeightOfPillars(shape, blockMatrix);
     // let noneLineBlocksInRightmostLaneCount = shape.shapeID.name === "Line" ? 0 : this.countNumberOfBlocksInRightmostLane(shape);
@@ -385,18 +386,18 @@ class AI {
     y: number,
     r?: number
   ) {
-    if (r && game.canRotateShape(shape)) {
+    if (r && this.game.canRotateShape(shape)) {
       let rotatedShape = shape.clone();
-      game.rotateCurrentShape(rotatedShape);
+      this.game.rotateCurrentShape(rotatedShape);
 
       if (!this.hasShapesPositionBeenChecked(rotatedShape)) {
         this.setCheckedPositionsArrayValueAtShapesPosition(rotatedShape, true);
         queue.push(rotatedShape);
       }
     } else {
-      if (game.canMoveShapeInDirection(shape, x, y)) {
+      if (this.game.canMoveShapeInDirection(shape, x, y)) {
         let movedShape = shape.clone();
-        game.moveShape(movedShape, x, y);
+        this.game.moveShape(movedShape, x, y);
 
         if (!this.hasShapesPositionBeenChecked(movedShape)) {
           this.setCheckedPositionsArrayValueAtShapesPosition(movedShape, true);
@@ -417,7 +418,7 @@ class AI {
       let shape = queue.splice(0, 1)[0];
 
       //if the shape cannot move down then it is a possible end position
-      if (!game.canMoveShapeDown(shape)) {
+      if (!this.game.canMoveShapeDown(shape)) {
         this.possibleEndPositions.push(shape.clone());
       }
 
@@ -433,17 +434,17 @@ class AI {
   }
 
   checkInDirection2(startingShape: Shape, x: number, y: number, r?: number) {
-    if (r && game.canRotateShape(startingShape)) {
+    if (r && this.game.canRotateShape(startingShape)) {
       let rotatedShape = startingShape.clone();
-      game.rotateCurrentShape(rotatedShape);
+      this.game.rotateCurrentShape(rotatedShape);
       if (!this.hasShapesPositionBeenChecked(rotatedShape)) {
         this.setCheckedPositionsArrayValueAtShapesPosition(rotatedShape, true);
         this.checkAllPositionsReachableFrom(rotatedShape);
       }
     } else {
-      if (game.canMoveShapeInDirection(startingShape, x, y)) {
+      if (this.game.canMoveShapeInDirection(startingShape, x, y)) {
         let movedShape = startingShape.clone();
-        game.moveShape(movedShape, x, y);
+        this.game.moveShape(movedShape, x, y);
 
         if (!this.hasShapesPositionBeenChecked(movedShape)) {
           this.setCheckedPositionsArrayValueAtShapesPosition(movedShape, true);
@@ -454,7 +455,7 @@ class AI {
   }
 
   checkAllPositionsReachableFrom(startingShape: Shape) {
-    if (!game.canMoveShapeDown(startingShape)) {
+    if (!this.game.canMoveShapeDown(startingShape)) {
       this.possibleEndPositions.push(startingShape.clone());
     }
 
@@ -481,9 +482,9 @@ class AI {
     }
 
     //clear required lines
-    for (let j = 0; j < this.gameHeight; j++) {
+    for (let j = 0; j < this.game.gameHeight; j++) {
       let rowCleared = true;
-      for (let i = 0; i < this.gameWidth; i++) {
+      for (let i = 0; i < this.game.gameWidth; i++) {
         if (clonedBlockMatrix.matrix[i][j] == null) {
           rowCleared = false;
           break;
@@ -496,7 +497,7 @@ class AI {
           rowIndexToMoveDown >= 0;
           rowIndexToMoveDown--
         ) {
-          for (let i = 0; i < this.gameWidth; i++) {
+          for (let i = 0; i < this.game.gameWidth; i++) {
             if (clonedBlockMatrix.matrix[i][rowIndexToMoveDown]) {
               clonedBlockMatrix.matrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
             }
@@ -512,11 +513,11 @@ class AI {
 
     let pillarCount = 0;
 
-    for (let i = 0; i < this.gameWidth; i++) {
+    for (let i = 0; i < this.game.gameWidth; i++) {
       //going up each column look for 3 blocks in a row with nothing to the left
       let currentPillarHeightL = 0;
       let currentPillarHeightR = 0;
-      for (let j = this.gameHeight - 1; j >= 0; j--) {
+      for (let j = this.game.gameHeight - 1; j >= 0; j--) {
         //if this positions has a block and there is no block to the left then this is potentially part of a pillar
         if (
           i > 0 &&
@@ -536,7 +537,7 @@ class AI {
         //check to the right
         //note dont check the spot 2 spots back from the right because we want them tetrises
         if (
-          i < this.gameWidth - 1 &&
+          i < this.game.gameWidth - 1 &&
           clonedBlockMatrix.matrix[i][j] != null &&
           clonedBlockMatrix.matrix[i + 1][j] === null
         ) {
@@ -566,7 +567,8 @@ class AI {
   countNumberOfBlocksInRightmostLane(shape: Shape) {
     return shape.blocks
       .map((block) => p5.Vector.add(shape.currentPos, block.gridPos))
-      .filter((blockPosition) => blockPosition.x === this.gameWidth - 1).length;
+      .filter((blockPosition) => blockPosition.x === this.game.gameWidth - 1)
+      .length;
   }
 }
 
