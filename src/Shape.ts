@@ -52,7 +52,7 @@ export class Shape {
     const sumY =
       this.blocks.reduce((sum, block) => sum + block.gridPos.y, 0) +
       this.blocks.length / 2;
-    let midpoint = p5Sketch.createVector(
+    const midpoint = p5Sketch.createVector(
       sumX / this.blocks.length,
       sumY / this.blocks.length
     );
@@ -70,16 +70,16 @@ export class Shape {
   }
 
   getBlockPositionAfterShapeIsRotated(block: Block) {
-    let startingPos = block.gridPos;
-    let rotationPoint = this.shapeID.rotationPoint;
-    let startingPosRelativeToRotationPoint = p5.Vector.sub(
+    const startingPos = block.gridPos;
+    const rotationPoint = this.shapeID.rotationPoint;
+    const startingPosRelativeToRotationPoint = p5.Vector.sub(
       startingPos,
       rotationPoint
     );
-    let rotatedRelativePoint = startingPosRelativeToRotationPoint.rotate(
+    const rotatedRelativePoint = startingPosRelativeToRotationPoint.rotate(
       Math.PI / 2
     );
-    let newPosition = p5.Vector.add(rotationPoint, rotatedRelativePoint);
+    const newPosition = p5.Vector.add(rotationPoint, rotatedRelativePoint);
     newPosition.x = Math.round(newPosition.x);
     newPosition.y = Math.round(newPosition.y);
     return newPosition;
