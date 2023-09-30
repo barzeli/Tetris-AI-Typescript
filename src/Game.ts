@@ -75,7 +75,10 @@ export class Game {
       this.needsNewMovementPlan = true;
 
       //if the new block is stuck then the game resets
-      if (!this.currentShape.canMoveInDirection(0, 0) || this.score > 500) {
+      if (
+        !this.canMoveInDirection(this.currentShape, 0, 0) ||
+        this.score > 500
+      ) {
         this.isDead = true;
         // this.resetGame();
       }
@@ -122,6 +125,106 @@ export class Game {
           block;
       });
     }
+  }
+
+  moveShape(shape: Shape, x: number, y: number, blockMatrix?: BlockMatrix) {
+    if (blockMatrix) {
+      if (this.canMoveInDirection(shape, x, y, blockMatrix)) {
+        shape.currentPos.x += x;
+        shape.currentPos.y += y;
+        shape.moveHistory.addDirectionalMove(x, y);
+      }
+    } else if (this.canMoveInDirection(shape, x, y)) {
+      shape.currentPos.x += x;
+      shape.currentPos.y += y;
+      shape.moveHistory.addDirectionalMove(x, y);
+    }
+  }
+
+  canMoveInDirection(
+    shape: Shape,
+    x: number,
+    y: number,
+    blockMatrix?: BlockMatrix
+  ) {
+    //look at the future position of each block in the shape and if all those positions are vacant then we good
+    return shape.blocks.every((block) => {
+      let futureBlockPosition = p5.Vector.add(
+        shape.currentPos,
+        block.currentGridPos
+      );
+      futureBlockPosition.y += y;
+      futureBlockPosition.x += x;
+
+      //if a block matrix is passed into the function then look at that instead of the game
+      if (blockMatrix) {
+        if (!blockMatrix.isPositionVacant(futureBlockPosition)) {
+          return false;
+        }
+      } else {
+        if (!this.isPositionVacant(futureBlockPosition)) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }
+
+  rotateCurrentShape(
+    shape: Shape,
+    isClockwise: boolean,
+    blockMatrix?: BlockMatrix
+  ) {
+    if (blockMatrix) {
+      if (this.canRotateShape(shape, isClockwise, blockMatrix)) {
+        shape.blocks.forEach((block) => {
+          let newPosition = shape.getBlockPositionAfterShapeIsRotated(
+            block,
+            isClockwise
+          );
+          block.currentGridPos = newPosition;
+        });
+        shape.currentRotationCount += 1;
+        shape.moveHistory.addRotationMove();
+      }
+    } else {
+      if (this.canRotateShape(shape, isClockwise)) {
+        shape.blocks.forEach((block) => {
+          let newPosition = shape.getBlockPositionAfterShapeIsRotated(
+            block,
+            isClockwise
+          );
+          block.currentGridPos = newPosition;
+        });
+        shape.currentRotationCount += 1;
+        shape.moveHistory.addRotationMove();
+      }
+    }
+  }
+
+  canRotateShape(
+    shape: Shape,
+    isClockwise: boolean,
+    blockMatrix?: BlockMatrix
+  ) {
+    return shape.blocks.every((block) => {
+      let newPosition = shape.getBlockPositionAfterShapeIsRotated(
+        block,
+        isClockwise
+      );
+      let newAbsolutePosition = p5.Vector.add(newPosition, shape.currentPos);
+      //if a block matrix is passed into the function then look at that instead of the game
+      if (blockMatrix) {
+        if (!blockMatrix.isPositionVacant(newAbsolutePosition)) {
+          return false;
+        }
+      } else {
+        if (!this.isPositionVacant(newAbsolutePosition)) {
+          return false;
+        }
+      }
+      return true;
+    });
   }
 
   getTetrisRate() {
@@ -204,15 +307,15 @@ export class Game {
   }
 
   moveShapeLeft() {
-    this.currentShape.moveShape(-1, 0);
+    this.moveShape(this.currentShape, -1, 0);
   }
 
   moveShapeRight() {
-    this.currentShape.moveShape(1, 0);
+    this.moveShape(this.currentShape, 1, 0);
   }
 
   rotateShape() {
-    this.currentShape.rotateShape(true);
+    this.rotateCurrentShape(this.currentShape, true);
   }
 
   draw() {

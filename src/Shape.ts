@@ -3,7 +3,6 @@ import { Block } from "./Block";
 import { MoveHistory } from "./MoveHistory";
 import { BLOCK_SIZE, p5Sketch } from "./sketch";
 import { Game } from "./Game";
-import { BlockMatrix } from "./BlockMatrix";
 import { ShapeType } from "./types";
 
 export class Shape {
@@ -75,70 +74,11 @@ export class Shape {
     p5Sketch.pop();
   }
 
-  moveShape(x: number, y: number, blockMatrix?: BlockMatrix) {
-    if (blockMatrix) {
-      if (this.canMoveInDirection(x, y, blockMatrix)) {
-        this.currentPos.x += x;
-        this.currentPos.y += y;
-        this.moveHistory.addDirectionalMove(x, y);
-      }
-    } else if (this.canMoveInDirection(x, y)) {
-      this.currentPos.x += x;
-      this.currentPos.y += y;
-      this.moveHistory.addDirectionalMove(x, y);
-    }
-  }
-
   resetPosition() {
     this.currentPos = p5Sketch.createVector(
       this.startingPos.x,
       this.startingPos.y
     );
-  }
-
-  canMoveInDirection(x: number, y: number, blockMatrix?: BlockMatrix) {
-    //look at the future position of each block in the shape and if all those positions are vacant then we good
-    return this.blocks.every((block) => {
-      let futureBlockPosition = p5.Vector.add(
-        this.currentPos,
-        block.currentGridPos
-      );
-      futureBlockPosition.y += y;
-      futureBlockPosition.x += x;
-
-      //if a block matrix is passed into the function then look at that instead of the game
-      if (blockMatrix) {
-        if (!blockMatrix.isPositionVacant(futureBlockPosition)) {
-          return false;
-        }
-      } else {
-        if (!this.game.isPositionVacant(futureBlockPosition)) {
-          return false;
-        }
-      }
-      return true;
-    });
-  }
-
-  canRotateShape(isClockwise: boolean, blockMatrix?: BlockMatrix) {
-    return this.blocks.every((block) => {
-      let newPosition = this.getBlockPositionAfterShapeIsRotated(
-        block,
-        isClockwise
-      );
-      let newAbsolutePosition = p5.Vector.add(newPosition, this.currentPos);
-      //if a block matrix is passed into the function then look at that instead of the game
-      if (blockMatrix) {
-        if (!blockMatrix.isPositionVacant(newAbsolutePosition)) {
-          return false;
-        }
-      } else {
-        if (!this.game.isPositionVacant(newAbsolutePosition)) {
-          return false;
-        }
-      }
-      return true;
-    });
   }
 
   getBlockPositionAfterShapeIsRotated(block: Block, isClockwise: boolean) {
@@ -155,33 +95,5 @@ export class Shape {
     newPosition.x = Math.round(newPosition.x);
     newPosition.y = Math.round(newPosition.y);
     return newPosition;
-  }
-
-  rotateShape(isClockwise: boolean, blockMatrix?: BlockMatrix) {
-    if (blockMatrix) {
-      if (this.canRotateShape(isClockwise, blockMatrix)) {
-        this.blocks.forEach((block) => {
-          let newPosition = this.getBlockPositionAfterShapeIsRotated(
-            block,
-            isClockwise
-          );
-          block.currentGridPos = newPosition;
-        });
-        this.currentRotationCount += 1;
-        this.moveHistory.addRotationMove();
-      }
-    } else {
-      if (this.canRotateShape(isClockwise)) {
-        this.blocks.forEach((block) => {
-          let newPosition = this.getBlockPositionAfterShapeIsRotated(
-            block,
-            isClockwise
-          );
-          block.currentGridPos = newPosition;
-        });
-        this.currentRotationCount += 1;
-        this.moveHistory.addRotationMove();
-      }
-    }
   }
 }
