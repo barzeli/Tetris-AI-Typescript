@@ -308,6 +308,53 @@ export class AI {
     }
   }
 
+  checkInDirection(
+    blockMatrix: BlockMatrix,
+    queue: Shape[],
+    shape: Shape,
+    x: number,
+    y: number,
+    r?: number
+  ) {
+    let checkedPositions = new CheckedPositionsArray(blockMatrix);
+    if (r) {
+      if (this.game.canRotateShape(shape, blockMatrix)) {
+        let rotatedShape = shape.clone();
+        this.game.rotateCurrentShape(rotatedShape, blockMatrix);
+
+        if (!checkedPositions.hasShapesPositionBeenChecked(rotatedShape)) {
+          checkedPositions.setCheckedPositionsArrayValueAtShapesPosition(
+            rotatedShape,
+            true
+          );
+          queue.push(rotatedShape);
+        }
+      }
+    } else {
+      if (this.game.canMoveShapeInDirection(shape, x, y, blockMatrix)) {
+        let movedShape = shape.clone();
+        this.game.moveShape(movedShape, x, y, blockMatrix);
+
+        if (!checkedPositions.hasShapesPositionBeenChecked(movedShape)) {
+          checkedPositions.setCheckedPositionsArrayValueAtShapesPosition(
+            movedShape,
+            true
+          );
+          queue.push(movedShape);
+        }
+        // else{
+        //     if(y == 1){
+        //
+        //         print("ok");
+        //         print(movedShape);
+        //         print(checkedPositions.getIndexOfCoordinates(movedShape.currentPos.x,movedShape.currentPos.y,movedShape.currentRotationCount%4));
+        //         print(checkedPositions.getShapeFromPosition(movedShape));
+        //     }
+        // }
+      }
+    }
+  }
+
   //returns a list of all the possible end positions from this starting shape
   getShortestPathsToAllEndPositions(
     startingShape: Shape | null,
@@ -315,51 +362,6 @@ export class AI {
   ) {
     let counter = 0;
     let endPositions = [];
-    let checkedPositions = new CheckedPositionsArray(blockMatrix);
-    let checkInDirection = (
-      queue: Shape[],
-      shape: Shape,
-      x: number,
-      y: number,
-      r?: number
-    ) => {
-      if (r) {
-        if (this.game.canRotateShape(shape, blockMatrix)) {
-          let rotatedShape = shape.clone();
-          this.game.rotateCurrentShape(rotatedShape, blockMatrix);
-
-          if (!checkedPositions.hasShapesPositionBeenChecked(rotatedShape)) {
-            checkedPositions.setCheckedPositionsArrayValueAtShapesPosition(
-              rotatedShape,
-              true
-            );
-            queue.push(rotatedShape);
-          }
-        }
-      } else {
-        if (this.game.canMoveShapeInDirection(shape, x, y, blockMatrix)) {
-          let movedShape = shape.clone();
-          this.game.moveShape(movedShape, x, y, blockMatrix);
-
-          if (!checkedPositions.hasShapesPositionBeenChecked(movedShape)) {
-            checkedPositions.setCheckedPositionsArrayValueAtShapesPosition(
-              movedShape,
-              true
-            );
-            queue.push(movedShape);
-          }
-          // else{
-          //     if(y == 1){
-          //
-          //         print("ok");
-          //         print(movedShape);
-          //         print(checkedPositions.getIndexOfCoordinates(movedShape.currentPos.x,movedShape.currentPos.y,movedShape.currentRotationCount%4));
-          //         print(checkedPositions.getShapeFromPosition(movedShape));
-          //     }
-          // }
-        }
-      }
-    };
 
     let queue: Shape[] = [];
     if (startingShape) queue.push(startingShape);
@@ -375,10 +377,10 @@ export class AI {
 
       //check if you can move this shape in each way, if you can move it then add it to the back of the queue
 
-      checkInDirection(queue, shape, -1, 0); //check left
-      checkInDirection(queue, shape, 1, 0); //check right
-      checkInDirection(queue, shape, 0, 0, 1); //check rotation
-      checkInDirection(queue, shape, 0, 1); //check down
+      this.checkInDirection(blockMatrix, queue, shape, -1, 0); //check left
+      this.checkInDirection(blockMatrix, queue, shape, 1, 0); //check right
+      this.checkInDirection(blockMatrix, queue, shape, 0, 0, 1); //check rotation
+      this.checkInDirection(blockMatrix, queue, shape, 0, 1); //check down
     }
 
     return endPositions;
