@@ -45,7 +45,7 @@ const sketch = (p5: p5) => {
 
     // population = new Population(populationSize);
     game = new Game(gameWidthBlocks, gameHeightBlocks);
-    // ai = new AI(gameWidthBlocks, gameHeightBlocks);
+    // ai = new AI(game);
     // ai.calculateMovementPlan2(game.currentShape, game.heldShape, game.nextShape, game.deadBlocksMatrix);
     p5.frameRate(10);
     p5.textFont(font);

@@ -3,19 +3,17 @@ import { BlockMatrix } from "./BlockMatrix";
 import { MoveHistory } from "./MoveHistory";
 import { CheckedPositionsArray } from "./CheckedPositionsArray";
 import { Shape } from "./Shape";
-import { Block } from "./Block";
 import { Brain } from "./Brain";
+import { Game } from "./Game";
 
 export class AI {
   movementPlan = new MoveHistory();
-  gameWidth: number;
-  gameHeight: number;
-  brain: Brain;
-  chosenEndPosition: Shape;
+  game: Game;
+  brain: Brain | undefined;
+  chosenEndPosition: Shape | null = null;
 
-  constructor(gameWidth: number, gameHeight: number, brain?: Brain) {
-    this.gameWidth = gameWidth;
-    this.gameHeight = gameHeight;
+  constructor(game: Game, brain?: Brain) {
+    this.game = game;
     this.brain = brain;
   }
 
@@ -32,8 +30,11 @@ export class AI {
     let heldShape = heldShape_ ? heldShape_.clone() : null;
     let nextShape = nextShape_ ? nextShape_.clone() : null;
 
-    let blockMatrix = new BlockMatrix(this.gameWidth, this.gameHeight);
-    blockMatrix.copyFromMatrix(blockMatrix_);
+    let blockMatrix = new BlockMatrix(
+      this.game.gameWidth,
+      this.game.gameHeight
+    );
+    blockMatrix.copyFromMatrix(blockMatrix_.matrix);
 
     let bestEndPositionForCurrentShape = this.getBestEndPosition(
       currentShape,
@@ -63,18 +64,16 @@ export class AI {
   }
 
   //ok so this ones going to look at the next shape to see what were working with
-  calculateMovementPlan2(
-    currentShape_: Shape,
-    heldShape_: Shape | null,
-    nextShape_: Shape,
-    blockMatrix_: (Block | null)[][]
-  ) {
+  calculateMovementPlan2() {
     //clone all the input so we dont fuck it up
-    let currentShape = currentShape_.clone();
-    let heldShape = heldShape_ ? heldShape_.clone() : null;
-    let nextShape = nextShape_ ? nextShape_.clone() : null;
-    let blockMatrix = new BlockMatrix(this.gameWidth, this.gameHeight);
-    blockMatrix.copyFromMatrix(blockMatrix_);
+    let currentShape = this.game.currentShape.clone();
+    let heldShape = this.game.heldShape ? this.game.heldShape.clone() : null;
+    let nextShape = this.game.nextShape ? this.game.nextShape.clone() : null;
+    let blockMatrix = new BlockMatrix(
+      this.game.gameWidth,
+      this.game.gameHeight
+    );
+    blockMatrix.copyFromMatrix(this.game.deadBlocksMatrix);
 
     //first we get all the possible end positions for the current and held pieces
 
@@ -399,7 +398,7 @@ export class AI {
       );
     }
     for (let pos of blockPositions) {
-      if (pos.x === this.gameWidth - 1) {
+      if (pos.x === this.game.gameWidth - 1) {
         blocksInRightLaneCounter++;
       }
     }

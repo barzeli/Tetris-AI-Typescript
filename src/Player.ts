@@ -24,29 +24,15 @@ export class Player {
     this.windowHeight = windowHeight;
     this.brain = new Brain(firstPlayer);
 
-    this.ai = new AI(
-      this.currentGame.gameWidth,
-      this.currentGame.gameHeight,
-      this.brain
-    );
-    this.ai.calculateMovementPlan2(
-      this.currentGame.currentShape,
-      this.currentGame.heldShape,
-      this.currentGame.nextShape,
-      this.currentGame.deadBlocksMatrix
-    );
+    this.ai = new AI(this.currentGame, this.brain);
+    this.ai.calculateMovementPlan2();
     this.windowHeight = canvas.height / 2;
     this.windowWidth = canvas.width / 2;
   }
 
   calculateMovementPlan() {
     this.ai.brain = this.brain; //just incase
-    this.ai.calculateMovementPlan2(
-      this.currentGame.currentShape,
-      this.currentGame.heldShape,
-      this.currentGame.nextShape,
-      this.currentGame.deadBlocksMatrix
-    );
+    this.ai.calculateMovementPlan2();
   }
 
   calculateFitness() {
@@ -79,12 +65,7 @@ export class Player {
 
     // move the shape down at a rate of (shape Fall Rate) drops per second
     if (this.currentGame.needsNewMovementPlan) {
-      this.ai.calculateMovementPlan2(
-        this.currentGame.currentShape,
-        this.currentGame.heldShape,
-        this.currentGame.nextShape,
-        this.currentGame.deadBlocksMatrix
-      );
+      this.ai.calculateMovementPlan2();
       this.currentGame.needsNewMovementPlan = false;
     }
 
