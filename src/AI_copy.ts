@@ -469,42 +469,36 @@ class AI {
     p5Sketch.print("counter is " + counter);
   }
 
-  checkAllPositionsReachableFrom(startingShape: Shape) {
-    let checkInDirection = (x: number, y: number, r?: number) => {
-      if (r && game.canRotateShape(startingShape)) {
-        let rotatedShape = startingShape.clone();
-        game.rotateCurrentShape(rotatedShape);
-        if (!this.hasShapesPositionBeenChecked(rotatedShape)) {
-          this.setCheckedPositionsArrayValueAtShapesPosition(
-            rotatedShape,
-            true
-          );
-          this.checkAllPositionsReachableFrom(rotatedShape);
-        }
-      } else {
-        if (game.canMoveShapeInDirection(startingShape, x, y)) {
-          let movedShape = startingShape.clone();
-          game.moveShape(movedShape, x, y);
+  checkInDirection2(startingShape: Shape, x: number, y: number, r?: number) {
+    if (r && game.canRotateShape(startingShape)) {
+      let rotatedShape = startingShape.clone();
+      game.rotateCurrentShape(rotatedShape);
+      if (!this.hasShapesPositionBeenChecked(rotatedShape)) {
+        this.setCheckedPositionsArrayValueAtShapesPosition(rotatedShape, true);
+        this.checkAllPositionsReachableFrom(rotatedShape);
+      }
+    } else {
+      if (game.canMoveShapeInDirection(startingShape, x, y)) {
+        let movedShape = startingShape.clone();
+        game.moveShape(movedShape, x, y);
 
-          if (!this.hasShapesPositionBeenChecked(movedShape)) {
-            this.setCheckedPositionsArrayValueAtShapesPosition(
-              movedShape,
-              true
-            );
-            this.checkAllPositionsReachableFrom(movedShape);
-          }
+        if (!this.hasShapesPositionBeenChecked(movedShape)) {
+          this.setCheckedPositionsArrayValueAtShapesPosition(movedShape, true);
+          this.checkAllPositionsReachableFrom(movedShape);
         }
       }
-    };
+    }
+  }
 
+  checkAllPositionsReachableFrom(startingShape: Shape) {
     if (!game.canMoveShapeDown(startingShape)) {
       this.possibleEndPositions.push(startingShape.clone());
     }
 
-    checkInDirection(0, 1);
-    checkInDirection(-1, 0);
-    checkInDirection(1, 0);
-    checkInDirection(0, 0, 1);
+    this.checkInDirection2(startingShape, 0, 1);
+    this.checkInDirection2(startingShape, -1, 0);
+    this.checkInDirection2(startingShape, 1, 0);
+    this.checkInDirection2(startingShape, 0, 0, 1);
   }
 
   resetPossibleEndPositions() {
