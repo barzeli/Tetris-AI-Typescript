@@ -21,13 +21,13 @@ export class AI {
   //Given the state of the matrix returns a string of instructions to get the block into position.
   calculateMovementPlan() {
     //clone all the input so we dont fuck it up
-    let currentShape = this.game.currentShape.clone();
-    let heldShape = this.game.heldShape ? this.game.heldShape.clone() : null;
-    let nextShape = this.game.nextShape ? this.game.nextShape.clone() : null;
+    const currentShape = this.game.currentShape.clone();
+    const heldShape = this.game.heldShape ? this.game.heldShape.clone() : null;
+    const nextShape = this.game.nextShape.clone();
 
-    let blockMatrix = this.game.deadBlocksMatrix.clone();
+    const blockMatrix = this.game.deadBlocksMatrix.clone();
 
-    let bestEndPositionForCurrentShape = this.getBestEndPosition(
+    const bestEndPositionForCurrentShape = this.getBestEndPosition(
       currentShape,
       blockMatrix
     );
@@ -35,7 +35,7 @@ export class AI {
     //check held piece and see if thats better
 
     //if there is no held shape then check the next shape instead
-    let bestEndPositionForHeld =
+    const bestEndPositionForHeld =
       heldShape == null
         ? this.getBestEndPosition(nextShape, blockMatrix)
         : this.getBestEndPosition(heldShape, blockMatrix);
@@ -57,40 +57,29 @@ export class AI {
   //ok so this ones going to look at the next shape to see what were working with
   calculateMovementPlan2() {
     //clone all the input so we dont fuck it up
-    let currentShape = this.game.currentShape.clone();
-    let heldShape = this.game.heldShape ? this.game.heldShape.clone() : null;
-    let nextShape = this.game.nextShape ? this.game.nextShape.clone() : null;
-    let blockMatrix = new BlockMatrix(
-      this.game.gameWidth,
-      this.game.gameHeight
-    );
-    blockMatrix.copyFromMatrix(this.game.deadBlocksMatrix.matrix);
+    const currentShape = this.game.currentShape.clone();
+    const heldShape = this.game.heldShape ? this.game.heldShape.clone() : null;
+    const nextShape = this.game.nextShape.clone();
+    const blockMatrix = this.game.deadBlocksMatrix.clone();
 
     //first we get all the possible end positions for the current and held pieces
 
-    let endPositionsForCurrentShape = this.getAllEndPositions(
+    const endPositionsForCurrentShape = this.getAllEndPositions(
       currentShape,
       blockMatrix
     );
-    let possibleEndBlockMatricesForCurrentShape =
+    const possibleEndBlockMatricesForCurrentShape =
       this.convertEndPositionsToMatrices(
         endPositionsForCurrentShape,
         blockMatrix,
         false
       );
 
-    let endPositionsForHeldShape;
-    if (heldShape == null) {
-      endPositionsForHeldShape = this.getAllEndPositions(
-        nextShape,
-        blockMatrix
-      );
-    } else {
-      endPositionsForHeldShape = this.getAllEndPositions(
-        heldShape,
-        blockMatrix
-      );
-    }
+    const endPositionsForHeldShape = this.getAllEndPositions(
+      heldShape ?? nextShape,
+      blockMatrix
+    );
+
     let possibleEndBlockMatricesForHeldShape =
       this.convertEndPositionsToMatrices(
         endPositionsForHeldShape,
@@ -220,7 +209,7 @@ export class AI {
     return clonedBlockMatrix.cost;
   }
 
-  getAllEndPositions(startingShape: Shape | null, blockMatrix: BlockMatrix) {
+  getAllEndPositions(startingShape: Shape, blockMatrix: BlockMatrix) {
     //so now we need to run a loop to hit all the possible positions
     let endPositions = this.getShortestPathsToAllEndPositions(
       startingShape,
@@ -233,7 +222,7 @@ export class AI {
     return endPositions;
   }
 
-  getBestEndPosition(startingShape: Shape | null, blockMatrix: BlockMatrix) {
+  getBestEndPosition(startingShape: Shape, blockMatrix: BlockMatrix) {
     let endPositions = this.getAllEndPositions(startingShape, blockMatrix);
     //now lets count all the holes for each shape option and pick the lowest hole count
     const endPositionsWithCosts = endPositions.map((endPosition) => ({
@@ -320,14 +309,14 @@ export class AI {
 
   //returns a list of all the possible end positions from this starting shape
   getShortestPathsToAllEndPositions(
-    startingShape: Shape | null,
+    startingShape: Shape,
     blockMatrix: BlockMatrix
   ) {
     let counter = 0;
     let endPositions = [];
 
     let queue: Shape[] = [];
-    if (startingShape) queue.push(startingShape);
+    queue.push(startingShape);
     while (queue.length > 0) {
       counter++;
       //grab a shape off the front of the queue
