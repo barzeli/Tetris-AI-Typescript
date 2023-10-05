@@ -179,10 +179,10 @@ class AI {
   //Given the state of the matrix returns a string of instructions to get the block into position.
   calculateMovementPlanByConsideringNextShape() {
     //clone all the input so we dont fuck it up
-    let currentShape = this.game.currentShape.clone();
-    let heldShape = this.game.heldShape ? this.game.heldShape.clone() : null;
-    let nextShape = this.game.nextShape.clone();
-    let blockMatrix = this.game.deadBlocksMatrix.clone();
+    const currentShape = this.game.currentShape.clone();
+    const heldShape = this.game.heldShape ? this.game.heldShape.clone() : null;
+    const nextShape = this.game.nextShape.clone();
+    const blockMatrix = this.game.deadBlocksMatrix.clone();
 
     //populate the array with falses since we haven't found any yet
     this.resetCheckedPositions();
