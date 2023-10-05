@@ -223,7 +223,7 @@ export class AI {
   }
 
   getBestEndPosition(startingShape: Shape, blockMatrix: BlockMatrix) {
-    let endPositions = this.getAllEndPositions(startingShape, blockMatrix);
+    const endPositions = this.getAllEndPositions(startingShape, blockMatrix);
     //now lets count all the holes for each shape option and pick the lowest hole count
     const endPositionsWithCosts = endPositions.map((endPosition) => ({
       endPosition,
@@ -268,10 +268,10 @@ export class AI {
     y: number,
     r?: number
   ) {
-    let checkedPositions = new CheckedPositionsArray(blockMatrix);
+    const checkedPositions = new CheckedPositionsArray(blockMatrix);
     if (r) {
       if (this.game.canRotateShape(shape, blockMatrix)) {
-        let rotatedShape = shape.clone();
+        const rotatedShape = shape.clone();
         this.game.rotateCurrentShape(rotatedShape, blockMatrix);
 
         if (!checkedPositions.hasShapesPositionBeenChecked(rotatedShape)) {
@@ -284,7 +284,7 @@ export class AI {
       }
     } else {
       if (this.game.canMoveShapeInDirection(shape, x, y, blockMatrix)) {
-        let movedShape = shape.clone();
+        const movedShape = shape.clone();
         this.game.moveShape(movedShape, x, y, blockMatrix);
 
         if (!checkedPositions.hasShapesPositionBeenChecked(movedShape)) {
@@ -313,14 +313,13 @@ export class AI {
     blockMatrix: BlockMatrix
   ) {
     let counter = 0;
-    let endPositions = [];
+    const endPositions = [];
 
-    let queue: Shape[] = [];
-    queue.push(startingShape);
+    const queue: Shape[] = [startingShape];
     while (queue.length > 0) {
       counter++;
       //grab a shape off the front of the queue
-      let shape = queue.splice(0, 1)[0];
+      const shape = queue.splice(0, 1)[0];
 
       //if the shape cannot move down then it is a possible end position
       if (!this.game.canMoveShapeDown(shape, blockMatrix)) {
@@ -344,7 +343,7 @@ export class AI {
     hasHeld: boolean
   ) {
     return endPositions.map((shape) => {
-      let newMatrix = currentMatrix.clone();
+      const newMatrix = currentMatrix.clone();
       newMatrix.addShapeToMatrix(shape);
       newMatrix.clearFullRows();
       newMatrix.countHoles();
