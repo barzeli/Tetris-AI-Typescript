@@ -35,10 +35,10 @@ export class AI {
     //check held piece and see if thats better
 
     //if there is no held shape then check the next shape instead
-    const bestEndPositionForHeld =
-      heldShape == null
-        ? this.getBestEndPosition(nextShape, blockMatrix)
-        : this.getBestEndPosition(heldShape, blockMatrix);
+    const bestEndPositionForHeld = this.getBestEndPosition(
+      heldShape ?? nextShape,
+      blockMatrix
+    );
 
     //choose the piece with the best shape cost
     if (
@@ -80,14 +80,14 @@ export class AI {
       blockMatrix
     );
 
-    let possibleEndBlockMatricesForHeldShape =
+    const possibleEndBlockMatricesForHeldShape =
       this.convertEndPositionsToMatrices(
         endPositionsForHeldShape,
         blockMatrix,
         true
       );
 
-    let allPossibleEndBlockMatrices = [
+    const allPossibleEndBlockMatrices = [
       ...possibleEndBlockMatricesForCurrentShape,
       ...possibleEndBlockMatricesForHeldShape,
     ];
@@ -103,14 +103,14 @@ export class AI {
 
     //get the minimum number of holes in the matrices
 
-    let minNumberOfHoles = Math.min(
+    const minNumberOfHoles = Math.min(
       ...allPossibleEndBlockMatrices.map(
         (endBlockMatrix) => endBlockMatrix.holeCount
       )
     );
 
     //now add all matrices which  have the min number of holes to a new list
-    let minHoleMatrices = allPossibleEndBlockMatrices.filter(
+    const minHoleMatrices = allPossibleEndBlockMatrices.filter(
       (endBlockMatrix) => endBlockMatrix.holeCount === minNumberOfHoles
     );
     // minHoleMatrices.forEach(() => {
