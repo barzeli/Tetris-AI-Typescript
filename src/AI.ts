@@ -315,7 +315,7 @@ export class AI {
     let counter = 0;
     const endPositions = [];
 
-    const queue: Shape[] = [startingShape];
+    const queue = [startingShape];
     while (queue.length > 0) {
       counter++;
       //grab a shape off the front of the queue

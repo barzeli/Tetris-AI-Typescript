@@ -34,8 +34,8 @@ class AI {
     p5Sketch.push();
     {
       //translate so that the game is in the center of the canvas
-      let gameWidthInPixels = this.game.gameWidth * BLOCK_SIZE;
-      let gameHeightInPixels = this.game.gameHeight * BLOCK_SIZE;
+      const gameWidthInPixels = this.game.gameWidth * BLOCK_SIZE;
+      const gameHeightInPixels = this.game.gameHeight * BLOCK_SIZE;
       p5Sketch.translate(
         (canvas.width - gameWidthInPixels) / 2,
         (canvas.height - gameHeightInPixels) / 2
@@ -58,8 +58,8 @@ class AI {
       p5Sketch.push();
       {
         //translate so that the game is in the center of the canvas
-        let gameWidthInPixels = this.game.gameWidth * BLOCK_SIZE;
-        let gameHeightInPixels = this.game.gameHeight * BLOCK_SIZE;
+        const gameWidthInPixels = this.game.gameWidth * BLOCK_SIZE;
+        const gameHeightInPixels = this.game.gameHeight * BLOCK_SIZE;
         p5Sketch.translate(
           (canvas.width - gameWidthInPixels) / 2,
           (canvas.height - gameHeightInPixels) / 2
@@ -96,14 +96,14 @@ class AI {
       p5.Vector.add(shape.currentPos, block.gridPos)
     );
 
-    for (let pos of blockPositions) {
-      let posBelow = p5Sketch.createVector(
+    for (const pos of blockPositions) {
+      const posBelow = p5Sketch.createVector(
         p5Sketch.round(pos.x),
         p5Sketch.round(pos.y + 1)
       );
       if (this.game.isPositionVacant(posBelow)) {
         let isInCurrentShape = false;
-        for (let pos2 of blockPositions) {
+        for (const pos2 of blockPositions) {
           if (pos2.equals(posBelow)) {
             isInCurrentShape = true;
             break;
@@ -119,22 +119,22 @@ class AI {
 
   calculateShapeCost(shape: Shape, blockMatrix: BlockMatrix) {
     // let holeCountMultiplier = 100;
-    let holeCountMultiplier = 100;
-    let shapeHeightMultiplier = 1;
+    const holeCountMultiplier = 100;
+    const shapeHeightMultiplier = 1;
     // let shapeHeightMultiplier = 0;
-    let pillarCountMultiplier = 2;
+    const pillarCountMultiplier = 2;
     // let pillarCountMultiplier = 0;
     //let gridHeightMultiplier = 1;
 
-    let noneLineShapeInRightMostLaneMultiplier = 1;
+    const noneLineShapeInRightMostLaneMultiplier = 1;
 
-    let holeCount = this.calculateTotalWorldHoles(shape, blockMatrix);
-    let shapeHeight = this.game.gameHeight - shape.currentPos.y;
+    const holeCount = this.calculateTotalWorldHoles(shape, blockMatrix);
+    const shapeHeight = this.game.gameHeight - shape.currentPos.y;
 
-    let pillarCount = this.countNumberAndHeightOfPillars(shape, blockMatrix);
+    const pillarCount = this.countNumberAndHeightOfPillars(shape, blockMatrix);
     // let noneLineBlocksInRightmostLaneCount = shape.shapeID.name === "Line" ? 0 : this.countNumberOfBlocksInRightmostLane(shape);
 
-    let costOfShape =
+    const costOfShape =
       holeCount * holeCountMultiplier +
       shapeHeight * shapeHeightMultiplier +
       pillarCount * pillarCountMultiplier;
@@ -145,12 +145,12 @@ class AI {
   //Given the state of the matrix returns a string of instructions to get the block into position.
   calculateMovementPlan() {
     //clone all the input so we dont fuck it up
-    let currentShape = this.game.currentShape.clone();
-    let heldShape = this.game.heldShape ? this.game.heldShape.clone() : null;
-    let nextShape = this.game.nextShape.clone();
-    let blockMatrix = this.game.deadBlocksMatrix.clone();
+    const currentShape = this.game.currentShape.clone();
+    const heldShape = this.game.heldShape ? this.game.heldShape.clone() : null;
+    const nextShape = this.game.nextShape.clone();
+    const blockMatrix = this.game.deadBlocksMatrix.clone();
 
-    let bestEndPositionForCurrentShape = this.getBestEndPosition(
+    const bestEndPositionForCurrentShape = this.getBestEndPosition(
       currentShape,
       blockMatrix
     );
@@ -158,9 +158,10 @@ class AI {
     //check held piece and see if thats better
 
     //if there is no held shape then check the next shape instead
-    let bestEndPositionForHeld = heldShape
-      ? this.getBestEndPosition(heldShape, blockMatrix)
-      : this.getBestEndPosition(nextShape, blockMatrix);
+    const bestEndPositionForHeld = this.getBestEndPosition(
+      heldShape ?? nextShape,
+      blockMatrix
+    );
 
     //choose the piece with the best shape cost
     if (
@@ -219,7 +220,7 @@ class AI {
     //---------------------
     // old shit
 
-    let bestEndPositionForCurrentShape = this.getBestEndPosition(
+    const bestEndPositionForCurrentShape = this.getBestEndPosition(
       currentShape,
       blockMatrix
     );
@@ -227,7 +228,7 @@ class AI {
     //check held piece and see if thats better
 
     //if there is no held shape then check the next shape instead
-    let bestEndPositionForHeld = heldShape
+    const bestEndPositionForHeld = heldShape
       ? this.getBestEndPosition(heldShape!, blockMatrix)
       : this.getBestEndPosition(nextShape, blockMatrix);
 
@@ -321,7 +322,7 @@ class AI {
     r?: number
   ) {
     if (r && this.game.canRotateShape(shape)) {
-      let rotatedShape = shape.clone();
+      const rotatedShape = shape.clone();
       this.game.rotateCurrentShape(rotatedShape);
 
       if (!this.hasShapesPositionBeenChecked(rotatedShape)) {
@@ -330,7 +331,7 @@ class AI {
       }
     } else {
       if (this.game.canMoveShapeInDirection(shape, x, y)) {
-        let movedShape = shape.clone();
+        const movedShape = shape.clone();
         this.game.moveShape(movedShape, x, y);
 
         if (!this.hasShapesPositionBeenChecked(movedShape)) {
@@ -344,12 +345,11 @@ class AI {
   calculateShortestPathsToAllEndPositions(startingShape: Shape) {
     let counter = 0;
 
-    let queue = [];
-    queue.push(startingShape);
+    const queue = [startingShape];
     while (queue.length > 0) {
       counter++;
       //grab a shape off the front of the queue
-      let shape = queue.splice(0, 1)[0];
+      const shape = queue.splice(0, 1)[0];
 
       //if the shape cannot move down then it is a possible end position
       if (!this.game.canMoveShapeDown(shape)) {
@@ -369,7 +369,7 @@ class AI {
 
   checkInDirection2(startingShape: Shape, x: number, y: number, r?: number) {
     if (r && this.game.canRotateShape(startingShape)) {
-      let rotatedShape = startingShape.clone();
+      const rotatedShape = startingShape.clone();
       this.game.rotateCurrentShape(rotatedShape);
       if (!this.hasShapesPositionBeenChecked(rotatedShape)) {
         this.setCheckedPositionsArrayValueAtShapesPosition(rotatedShape, true);
@@ -377,7 +377,7 @@ class AI {
       }
     } else {
       if (this.game.canMoveShapeInDirection(startingShape, x, y)) {
-        let movedShape = startingShape.clone();
+        const movedShape = startingShape.clone();
         this.game.moveShape(movedShape, x, y);
 
         if (!this.hasShapesPositionBeenChecked(movedShape)) {
@@ -406,7 +406,7 @@ class AI {
   //a pillar is an area which is reliant on a line piece, i.e. a formation of 3 or more blocks high with and empty space next to each
   //note will probably allow it for pillars on the right side so you can get some sweet tetrises
   countNumberAndHeightOfPillars(shape: Shape, blockMatrix: BlockMatrix) {
-    let clonedBlockMatrix = blockMatrix.clone();
+    const clonedBlockMatrix = blockMatrix.clone();
 
     clonedBlockMatrix.addShapeToMatrix(shape);
 
