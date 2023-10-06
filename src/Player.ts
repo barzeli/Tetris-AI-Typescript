@@ -11,6 +11,7 @@ export class Player {
   score = 0;
   tetrisRate = 0;
   currentGame = new Game(10, 20);
+  brain: Brain;
   ai: AI;
   isDead = false;
 
@@ -21,12 +22,14 @@ export class Player {
   ) {
     this.windowWidth = windowWidth ?? canvas.width / 2;
     this.windowHeight = windowHeight ?? canvas.height / 2;
+    this.brain = new Brain(firstPlayer);
 
-    this.ai = new AI(this.currentGame, new Brain(firstPlayer));
+    this.ai = new AI(this.currentGame, this.brain);
     this.ai.calculateMovementPlan2();
   }
 
   calculateMovementPlan() {
+    this.ai.brain = this.brain; //just incase
     this.ai.calculateMovementPlan2();
   }
 
@@ -38,7 +41,8 @@ export class Player {
   clone() {
     let clone = new Player();
     clone.currentGame.needsNewMovementPlan = true;
-    clone.ai.brain = this.ai.brain.clone();
+    clone.brain = this.brain.clone();
+    clone.ai.brain = clone.brain;
     return clone;
   }
 
@@ -50,7 +54,7 @@ export class Player {
       this.windowHeight / canvas.height
     );
     this.currentGame.draw();
-    this.ai.brain.writeMultipliers(600, 300);
+    this.brain.writeMultipliers(600, 300);
     p5Sketch.pop();
   }
 
