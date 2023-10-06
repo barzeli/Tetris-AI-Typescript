@@ -105,7 +105,7 @@ export class BlockMatrix {
   //Checks for cleared rows and removes them
   clearFullRows() {
     this.linesCleared = 0;
-    zip(...this.matrix).forEach((row) =>
+    zip(...this.matrix).forEach((row, rowIndex) =>
       //check if this row has been cleared
       {
         if (row.every((block) => block)) {
@@ -113,7 +113,7 @@ export class BlockMatrix {
           this.linesCleared++;
           //for each row above the cleared row move them down
           for (
-            let rowIndexToMoveDown = j - 1;
+            let rowIndexToMoveDown = rowIndex - 1;
             rowIndexToMoveDown >= 0;
             rowIndexToMoveDown--
           ) {
