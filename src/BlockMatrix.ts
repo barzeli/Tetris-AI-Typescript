@@ -104,13 +104,14 @@ export class BlockMatrix {
 
   //Checks for cleared rows and removes them
   clearFullRows() {
-    this.linesCleared = 0;
+    this.linesCleared = zip(...this.matrix).filter((row) =>
+      row.every((block) => block)
+    ).length;
     zip(...this.matrix).forEach((row, rowIndex) =>
       //check if this row has been cleared
       {
         if (row.every((block) => block)) {
           //if it has them remove it and move all layers above it down.
-          this.linesCleared++;
           //for each row above the cleared row move them down
           for (
             let rowIndexToMoveDown = rowIndex - 1;
