@@ -229,7 +229,9 @@ export class Game {
   }
 
   checkForClearedLines() {
-    let linesClearedThisShape = 0;
+    const linesClearedThisShape = zip(...this.deadBlocksMatrix.matrix).filter(
+      (row) => row.every((block) => block)
+    ).length;
     for (let j = 0; j < this.gameHeight; j++) {
       let rowCleared = true;
       for (let i = 0; i < this.gameWidth; i++) {
@@ -240,7 +242,6 @@ export class Game {
       }
       if (rowCleared) {
         this.score += 1;
-        linesClearedThisShape++;
         //deactivate row
         for (let i = 0; i < this.gameWidth; i++) {
           if (this.deadBlocksMatrix.matrix[i][j])
