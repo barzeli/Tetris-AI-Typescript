@@ -232,25 +232,18 @@ export class Game {
     const linesClearedThisShape = zip(...this.deadBlocksMatrix.matrix).filter(
       (row) => row.every((block) => block)
     ).length;
-    for (let j = 0; j < this.gameHeight; j++) {
-      let rowCleared = true;
-      for (let i = 0; i < this.gameWidth; i++) {
-        if (this.deadBlocksMatrix.matrix[i][j] == null) {
-          rowCleared = false;
-          break;
-        }
-      }
-      if (rowCleared) {
+    zip(...this.deadBlocksMatrix.matrix).forEach((row, rowIndex) => {
+      if (row.every((block) => block)) {
         this.score += 1;
         //deactivate row
         for (let i = 0; i < this.gameWidth; i++) {
-          if (this.deadBlocksMatrix.matrix[i][j])
-            this.deadBlocksMatrix.matrix[i][j]!.isDead = true;
+          if (this.deadBlocksMatrix.matrix[i][rowIndex])
+            this.deadBlocksMatrix.matrix[i][rowIndex]!.isDead = true;
         }
 
         //for each row above the cleared row move them down
         for (
-          let rowIndexToMoveDown = j - 1;
+          let rowIndexToMoveDown = rowIndex - 1;
           rowIndexToMoveDown >= 0;
           rowIndexToMoveDown--
         ) {
@@ -266,7 +259,7 @@ export class Game {
           }
         }
       }
-    }
+    });
     if (linesClearedThisShape > 0) {
       this.totalLineClears++;
     }
