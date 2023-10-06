@@ -236,10 +236,7 @@ export class Game {
       if (row.every((block) => block)) {
         this.score += 1;
         //deactivate row
-        for (let i = 0; i < this.gameWidth; i++) {
-          if (this.deadBlocksMatrix.matrix[i][rowIndex])
-            this.deadBlocksMatrix.matrix[i][rowIndex]!.isDead = true;
-        }
+        row.forEach((block) => block && (block.isDead = true));
 
         //for each row above the cleared row move them down
         for (
