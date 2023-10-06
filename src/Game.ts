@@ -97,7 +97,7 @@ export class Game {
           return false;
         }
       } else {
-        if (!this.isPositionVacant(futureBlockPosition)) {
+        if (!this.deadBlocksMatrix.isPositionVacant(futureBlockPosition)) {
           return false;
         }
       }
@@ -149,7 +149,7 @@ export class Game {
           return false;
         }
       } else {
-        if (!this.isPositionVacant(futureBlockPosition)) {
+        if (!this.deadBlocksMatrix.isPositionVacant(futureBlockPosition)) {
           return false;
         }
       }
@@ -191,7 +191,7 @@ export class Game {
           return false;
         }
       } else {
-        if (!this.isPositionVacant(newAbsolutePosition)) {
+        if (!this.deadBlocksMatrix.isPositionVacant(newAbsolutePosition)) {
           return false;
         }
       }
@@ -506,23 +506,5 @@ export class Game {
     );
 
     p5Sketch.pop();
-  }
-
-  isPositionVacant(position: p5.Vector) {
-    //if the position is within the grid of the game
-    if (
-      position.y >= -2 &&
-      position.y < this.gameHeight &&
-      position.x >= 0 &&
-      position.x < this.gameWidth
-    ) {
-      //if the position is not null in the matrix
-      if (this.deadBlocksMatrix.matrix[position.x][position.y] != null) {
-        return false;
-      }
-    } else {
-      return false;
-    }
-    return true;
   }
 }

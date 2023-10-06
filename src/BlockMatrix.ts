@@ -90,6 +90,7 @@ export class BlockMatrix {
 
   isPositionVacant(position: p5.Vector) {
     //check the position is within the matrix, for example -1,4 is not in the matrix and therefore is not vacant
+    //if the position is within the grid of the game
     if (
       position.y >= 0 &&
       position.y < this.height &&

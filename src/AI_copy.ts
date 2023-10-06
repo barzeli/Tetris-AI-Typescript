@@ -101,7 +101,7 @@ class AI {
         p5Sketch.round(pos.x),
         p5Sketch.round(pos.y + 1)
       );
-      if (this.game.isPositionVacant(posBelow)) {
+      if (this.game.deadBlocksMatrix.isPositionVacant(posBelow)) {
         let isInCurrentShape = false;
         for (const pos2 of blockPositions) {
           if (pos2.equals(posBelow)) {
