@@ -107,35 +107,33 @@ export class BlockMatrix {
     this.linesCleared = zip(...this.matrix).filter((row) =>
       row.every((block) => block)
     ).length;
-    zip(...this.matrix).forEach((row, rowIndex) =>
+    zip(...this.matrix).forEach((row, rowIndex) => {
       //check if this row has been cleared
-      {
-        if (row.every((block) => block)) {
-          //if it has them remove it and move all layers above it down.
-          //for each row above the cleared row move them down
-          for (
-            let rowIndexToMoveDown = rowIndex - 1;
-            rowIndexToMoveDown >= 0;
-            rowIndexToMoveDown--
-          ) {
-            //for each row above the to be removed row
-            for (let i = 0; i < this.width; i++) {
-              //for each block in that row
+      if (row.every((block) => block)) {
+        //if it has them remove it and move all layers above it down.
+        //for each row above the cleared row move them down
+        for (
+          let rowIndexToMoveDown = rowIndex - 1;
+          rowIndexToMoveDown >= 0;
+          rowIndexToMoveDown--
+        ) {
+          //for each row above the to be removed row
+          for (let i = 0; i < this.width; i++) {
+            //for each block in that row
 
-              //if its not null then change the position of the block
-              if (this.matrix[i][rowIndexToMoveDown]) {
-                this.matrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
-              }
-
-              //move this block into the lower row and set the blocks previous row position to null
-              this.matrix[i][rowIndexToMoveDown + 1] =
-                this.matrix[i][rowIndexToMoveDown];
-              this.matrix[i][rowIndexToMoveDown] = null;
+            //if its not null then change the position of the block
+            if (this.matrix[i][rowIndexToMoveDown]) {
+              this.matrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
             }
+
+            //move this block into the lower row and set the blocks previous row position to null
+            this.matrix[i][rowIndexToMoveDown + 1] =
+              this.matrix[i][rowIndexToMoveDown];
+            this.matrix[i][rowIndexToMoveDown] = null;
           }
         }
       }
-    );
+    });
   }
 
   printMatrix() {
