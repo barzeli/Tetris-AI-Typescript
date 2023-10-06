@@ -105,42 +105,36 @@ export class BlockMatrix {
   //Checks for cleared rows and removes them
   clearFullRows() {
     this.linesCleared = 0;
-    for (let j = 0; j < this.height; j++) {
+    zip(...this.matrix).forEach((row) =>
       //check if this row has been cleared
-      let rowCleared = true;
-      for (let i = 0; i < this.width; i++) {
-        if (this.matrix[i][j] == null) {
-          rowCleared = false;
-          break;
-        }
-      }
+      {
+        if (row.every((block) => block)) {
+          //if it has them remove it and move all layers above it down.
+          this.linesCleared++;
+          //for each row above the cleared row move them down
+          for (
+            let rowIndexToMoveDown = j - 1;
+            rowIndexToMoveDown >= 0;
+            rowIndexToMoveDown--
+          ) {
+            //for each row above the to be removed row
+            for (let i = 0; i < this.width; i++) {
+              //for each block in that row
 
-      //if it has them remove it and move all layers above it down.
-      if (rowCleared) {
-        this.linesCleared++;
-        //for each row above the cleared row move them down
-        for (
-          let rowIndexToMoveDown = j - 1;
-          rowIndexToMoveDown >= 0;
-          rowIndexToMoveDown--
-        ) {
-          //for each row above the to be removed row
-          for (let i = 0; i < this.width; i++) {
-            //for each block in that row
+              //if its not null then change the position of the block
+              if (this.matrix[i][rowIndexToMoveDown]) {
+                this.matrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
+              }
 
-            //if its not null then change the position of the block
-            if (this.matrix[i][rowIndexToMoveDown]) {
-              this.matrix[i][rowIndexToMoveDown]!.gridPos.y += 1;
+              //move this block into the lower row and set the blocks previous row position to null
+              this.matrix[i][rowIndexToMoveDown + 1] =
+                this.matrix[i][rowIndexToMoveDown];
+              this.matrix[i][rowIndexToMoveDown] = null;
             }
-
-            //move this block into the lower row and set the blocks previous row position to null
-            this.matrix[i][rowIndexToMoveDown + 1] =
-              this.matrix[i][rowIndexToMoveDown];
-            this.matrix[i][rowIndexToMoveDown] = null;
           }
         }
       }
-    }
+    );
   }
 
   printMatrix() {
