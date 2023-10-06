@@ -91,20 +91,15 @@ export class BlockMatrix {
   isPositionVacant(position: p5.Vector) {
     //check the position is within the matrix, for example -1,4 is not in the matrix and therefore is not vacant
     //if the position is within the grid of the game
-    if (
+    //if the position is null then its vacant
+    //if the position is out of bounds or has a block in its place then return false
+    return (
       position.y >= 0 &&
       position.y < this.height &&
       position.x >= 0 &&
-      position.x < this.width
-    ) {
-      //if the position is null then its vacant
-      if (this.matrix[position.x][position.y] === null) {
-        return true;
-      }
-    }
-
-    //if the position is out of bounds or has a block in its place then return false
-    return false;
+      position.x < this.width &&
+      this.matrix[position.x][position.y] === null
+    );
   }
 
   //Checks for cleared rows and removes them
