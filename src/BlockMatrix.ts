@@ -114,6 +114,32 @@ export class BlockMatrix {
     );
   }
 
+  canMoveShapeInDirection(
+    shape: Shape,
+    x: number,
+    y: number,
+    blockMatrix?: BlockMatrix
+  ) {
+    //look at the future position of each block in the shape and if all those positions are vacant then we good
+    return shape.blocks.every((block) => {
+      let futureBlockPosition = p5.Vector.add(shape.currentPos, block.gridPos);
+      futureBlockPosition.y += y;
+      futureBlockPosition.x += x;
+
+      //if a block matrix is passed into the function then look at that instead of the game
+      if (blockMatrix) {
+        if (!blockMatrix.isPositionVacant(futureBlockPosition)) {
+          return false;
+        }
+      } else {
+        if (!this.isPositionVacant(futureBlockPosition)) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }
+
   //Checks for cleared rows and removes them
   clearFullRows() {
     this.linesCleared = zip(...this.matrix).filter((row) =>

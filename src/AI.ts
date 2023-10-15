@@ -283,7 +283,7 @@ export class AI {
         }
       }
     } else {
-      if (this.game.canMoveShapeInDirection(shape, x, y, blockMatrix)) {
+      if (blockMatrix.canMoveShapeInDirection(shape, x, y)) {
         const movedShape = shape.clone();
         this.game.moveShape(movedShape, x, y, blockMatrix);
 

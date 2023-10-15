@@ -78,7 +78,11 @@ export class Game {
 
       //if the new block is stuck then the game resets
       if (
-        !this.canMoveShapeInDirection(this.currentShape, 0, 0) ||
+        !this.deadBlocksMatrix.canMoveShapeInDirection(
+          this.currentShape,
+          0,
+          0
+        ) ||
         this.score > 500
       ) {
         this.isDead = true;
@@ -101,42 +105,16 @@ export class Game {
 
   moveShape(shape: Shape, x: number, y: number, blockMatrix?: BlockMatrix) {
     if (blockMatrix) {
-      if (this.canMoveShapeInDirection(shape, x, y, blockMatrix)) {
+      if (blockMatrix.canMoveShapeInDirection(shape, x, y)) {
         shape.currentPos.x += x;
         shape.currentPos.y += y;
         shape.moveHistory.addDirectionalMove(x, y);
       }
-    } else if (this.canMoveShapeInDirection(shape, x, y)) {
+    } else if (this.deadBlocksMatrix.canMoveShapeInDirection(shape, x, y)) {
       shape.currentPos.x += x;
       shape.currentPos.y += y;
       shape.moveHistory.addDirectionalMove(x, y);
     }
-  }
-
-  canMoveShapeInDirection(
-    shape: Shape,
-    x: number,
-    y: number,
-    blockMatrix?: BlockMatrix
-  ) {
-    //look at the future position of each block in the shape and if all those positions are vacant then we good
-    return shape.blocks.every((block) => {
-      let futureBlockPosition = p5.Vector.add(shape.currentPos, block.gridPos);
-      futureBlockPosition.y += y;
-      futureBlockPosition.x += x;
-
-      //if a block matrix is passed into the function then look at that instead of the game
-      if (blockMatrix) {
-        if (!blockMatrix.isPositionVacant(futureBlockPosition)) {
-          return false;
-        }
-      } else {
-        if (!this.deadBlocksMatrix.isPositionVacant(futureBlockPosition)) {
-          return false;
-        }
-      }
-      return true;
-    });
   }
 
   rotateCurrentShape(shape: Shape, blockMatrix?: BlockMatrix) {

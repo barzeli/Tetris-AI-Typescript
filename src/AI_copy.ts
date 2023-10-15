@@ -330,7 +330,7 @@ class AI {
         queue.push(rotatedShape);
       }
     } else {
-      if (this.game.canMoveShapeInDirection(shape, x, y)) {
+      if (this.game.deadBlocksMatrix.canMoveShapeInDirection(shape, x, y)) {
         const movedShape = shape.clone();
         this.game.moveShape(movedShape, x, y);
 
@@ -376,7 +376,9 @@ class AI {
         this.checkAllPositionsReachableFrom(rotatedShape);
       }
     } else {
-      if (this.game.canMoveShapeInDirection(startingShape, x, y)) {
+      if (
+        this.game.deadBlocksMatrix.canMoveShapeInDirection(startingShape, x, y)
+      ) {
         const movedShape = startingShape.clone();
         this.game.moveShape(movedShape, x, y);
 
