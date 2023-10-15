@@ -1,5 +1,3 @@
-import p5 from "p5";
-import { Block } from "./Block";
 import { Shape } from "./Shape";
 import { ShapeGenerator } from "./ShapeGenerator";
 import { BLOCK_SIZE, canvas, p5Sketch } from "./sketch";
@@ -13,7 +11,6 @@ export class Game {
   justTetrised = false;
 
   shapeGenerator = new ShapeGenerator();
-  deadBlocks: Block[] = [];
   deadBlocksMatrix: BlockMatrix;
 
   heldShape: Shape | null = null;
@@ -97,7 +94,6 @@ export class Game {
       shape.blocks.forEach((block) => {
         //the block becomes disconnected from the shape and therefore the current grid position is no longer relative to the shape
         block.gridPos.add(shape.currentPos);
-        this.deadBlocks.push(block);
         this.deadBlocksMatrix.matrix[block.gridPos.x][block.gridPos.y] = block;
       });
     }
@@ -109,7 +105,6 @@ export class Game {
 
   resetGame() {
     this.resetBlocksMatrix();
-    this.deadBlocks = [];
     this.currentShape = this.shapeGenerator.getNewRandomShape(
       p5Sketch.createVector(p5Sketch.int(this.gameWidth / 2), 0)
     );
@@ -218,9 +213,12 @@ export class Game {
       //draw the grid
       this.drawGrid();
       //draw the blocks which have already been placed
-      this.deadBlocks.forEach((block) =>
-        block.draw(this.justTetrised, this.linesToBeCleared)
-      );
+      this.deadBlocksMatrix.matrix
+        .flat()
+        .forEach(
+          (block) =>
+            block && block.draw(this.justTetrised, this.linesToBeCleared)
+        );
 
       //draw Tetris font
       p5Sketch.textSize(30);
