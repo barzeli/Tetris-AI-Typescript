@@ -135,6 +135,30 @@ export class BlockMatrix {
     });
   }
 
+  rotateCurrentShape(shape: Shape, blockMatrix?: BlockMatrix) {
+    if (blockMatrix) {
+      if (blockMatrix.canRotateShape(shape)) {
+        shape.blocks.forEach((block) => {
+          let newPosition = shape.getBlockPositionAfterShapeIsRotated(block);
+          block.gridPos = newPosition;
+        });
+        shape.currentRotationCount += 1;
+        shape.currentRotationCount %= 4;
+        shape.moveHistory.addRotationMove();
+      }
+    } else {
+      if (this.canRotateShape(shape)) {
+        shape.blocks.forEach((block) => {
+          let newPosition = shape.getBlockPositionAfterShapeIsRotated(block);
+          block.gridPos = newPosition;
+        });
+        shape.currentRotationCount += 1;
+        shape.currentRotationCount %= 4;
+        shape.moveHistory.addRotationMove();
+      }
+    }
+  }
+
   //Checks for cleared rows and removes them
   clearFullRows() {
     this.linesCleared = zip(...this.matrix).filter((row) =>
