@@ -126,6 +126,24 @@ export class BlockMatrix {
     });
   }
 
+  canRotateShape(shape: Shape, blockMatrix?: BlockMatrix) {
+    return shape.blocks.every((block) => {
+      let newPosition = shape.getBlockPositionAfterShapeIsRotated(block);
+      let newAbsolutePosition = p5.Vector.add(newPosition, shape.currentPos);
+      //if a block matrix is passed into the function then look at that instead of the game
+      if (blockMatrix) {
+        if (!blockMatrix.isPositionVacant(newAbsolutePosition)) {
+          return false;
+        }
+      } else {
+        if (!this.isPositionVacant(newAbsolutePosition)) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }
+
   //Checks for cleared rows and removes them
   clearFullRows() {
     this.linesCleared = zip(...this.matrix).filter((row) =>

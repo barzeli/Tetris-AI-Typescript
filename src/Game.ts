@@ -119,7 +119,7 @@ export class Game {
 
   rotateCurrentShape(shape: Shape, blockMatrix?: BlockMatrix) {
     if (blockMatrix) {
-      if (this.canRotateShape(shape, blockMatrix)) {
+      if (blockMatrix.canRotateShape(shape)) {
         shape.blocks.forEach((block) => {
           let newPosition = shape.getBlockPositionAfterShapeIsRotated(block);
           block.gridPos = newPosition;
@@ -129,7 +129,7 @@ export class Game {
         shape.moveHistory.addRotationMove();
       }
     } else {
-      if (this.canRotateShape(shape)) {
+      if (this.deadBlocksMatrix.canRotateShape(shape)) {
         shape.blocks.forEach((block) => {
           let newPosition = shape.getBlockPositionAfterShapeIsRotated(block);
           block.gridPos = newPosition;
@@ -139,24 +139,6 @@ export class Game {
         shape.moveHistory.addRotationMove();
       }
     }
-  }
-
-  canRotateShape(shape: Shape, blockMatrix?: BlockMatrix) {
-    return shape.blocks.every((block) => {
-      let newPosition = shape.getBlockPositionAfterShapeIsRotated(block);
-      let newAbsolutePosition = p5.Vector.add(newPosition, shape.currentPos);
-      //if a block matrix is passed into the function then look at that instead of the game
-      if (blockMatrix) {
-        if (!blockMatrix.isPositionVacant(newAbsolutePosition)) {
-          return false;
-        }
-      } else {
-        if (!this.deadBlocksMatrix.isPositionVacant(newAbsolutePosition)) {
-          return false;
-        }
-      }
-      return true;
-    });
   }
 
   getTetrisRate() {

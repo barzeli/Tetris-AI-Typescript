@@ -321,7 +321,7 @@ class AI {
     y: number,
     r?: number
   ) {
-    if (r && this.game.canRotateShape(shape)) {
+    if (r && this.game.deadBlocksMatrix.canRotateShape(shape)) {
       const rotatedShape = shape.clone();
       this.game.rotateCurrentShape(rotatedShape);
 
@@ -368,7 +368,7 @@ class AI {
   }
 
   checkInDirection2(startingShape: Shape, x: number, y: number, r?: number) {
-    if (r && this.game.canRotateShape(startingShape)) {
+    if (r && this.game.deadBlocksMatrix.canRotateShape(startingShape)) {
       const rotatedShape = startingShape.clone();
       this.game.rotateCurrentShape(rotatedShape);
       if (!this.hasShapesPositionBeenChecked(rotatedShape)) {
