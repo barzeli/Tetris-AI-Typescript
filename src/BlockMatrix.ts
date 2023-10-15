@@ -90,7 +90,10 @@ export class BlockMatrix {
 
   canMoveShapeDown(shape: Shape) {
     return shape.blocks.every((block) => {
-      let futureBlockPosition = p5.Vector.add(shape.currentPos, block.gridPos);
+      const futureBlockPosition = p5.Vector.add(
+        shape.currentPos,
+        block.gridPos
+      );
       futureBlockPosition.y += 1;
       //if a block matrix is passed into the function then look at that instead of the game
       return this.isPositionVacant(futureBlockPosition);
