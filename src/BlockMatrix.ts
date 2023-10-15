@@ -131,10 +131,7 @@ export class BlockMatrix {
       let newPosition = shape.getBlockPositionAfterShapeIsRotated(block);
       let newAbsolutePosition = p5.Vector.add(newPosition, shape.currentPos);
       //if a block matrix is passed into the function then look at that instead of the game
-      if (!this.isPositionVacant(newAbsolutePosition)) {
-        return false;
-      }
-      return true;
+      return this.isPositionVacant(newAbsolutePosition);
     });
   }
 
