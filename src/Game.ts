@@ -103,20 +103,6 @@ export class Game {
     }
   }
 
-  moveShape(shape: Shape, x: number, y: number, blockMatrix?: BlockMatrix) {
-    if (blockMatrix) {
-      if (blockMatrix.canMoveShapeInDirection(shape, x, y)) {
-        shape.currentPos.x += x;
-        shape.currentPos.y += y;
-        shape.moveHistory.addDirectionalMove(x, y);
-      }
-    } else if (this.deadBlocksMatrix.canMoveShapeInDirection(shape, x, y)) {
-      shape.currentPos.x += x;
-      shape.currentPos.y += y;
-      shape.moveHistory.addDirectionalMove(x, y);
-    }
-  }
-
   getTetrisRate() {
     return (this.totalTetrises / Math.max(1, this.totalLineClears)) * 100;
   }
@@ -186,11 +172,11 @@ export class Game {
   }
 
   moveShapeLeft() {
-    this.moveShape(this.currentShape, -1, 0);
+    this.deadBlocksMatrix.moveShape(this.currentShape, -1, 0);
   }
 
   moveShapeRight() {
-    this.moveShape(this.currentShape, 1, 0);
+    this.deadBlocksMatrix.moveShape(this.currentShape, 1, 0);
   }
 
   rotateShape() {

@@ -332,7 +332,7 @@ class AI {
     } else {
       if (this.game.deadBlocksMatrix.canMoveShapeInDirection(shape, x, y)) {
         const movedShape = shape.clone();
-        this.game.moveShape(movedShape, x, y);
+        this.game.deadBlocksMatrix.moveShape(movedShape, x, y);
 
         if (!this.hasShapesPositionBeenChecked(movedShape)) {
           this.setCheckedPositionsArrayValueAtShapesPosition(movedShape, true);
@@ -380,7 +380,7 @@ class AI {
         this.game.deadBlocksMatrix.canMoveShapeInDirection(startingShape, x, y)
       ) {
         const movedShape = startingShape.clone();
-        this.game.moveShape(movedShape, x, y);
+        this.game.deadBlocksMatrix.moveShape(movedShape, x, y);
 
         if (!this.hasShapesPositionBeenChecked(movedShape)) {
           this.setCheckedPositionsArrayValueAtShapesPosition(movedShape, true);

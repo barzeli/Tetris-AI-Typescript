@@ -285,7 +285,7 @@ export class AI {
     } else {
       if (blockMatrix.canMoveShapeInDirection(shape, x, y)) {
         const movedShape = shape.clone();
-        this.game.moveShape(movedShape, x, y, blockMatrix);
+        blockMatrix.moveShape(movedShape, x, y);
 
         if (!checkedPositions.hasShapesPositionBeenChecked(movedShape)) {
           checkedPositions.setCheckedPositionsArrayValueAtShapesPosition(
