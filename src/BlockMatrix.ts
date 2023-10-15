@@ -147,14 +147,8 @@ export class BlockMatrix {
     }
   }
 
-  moveShape(shape: Shape, x: number, y: number, blockMatrix?: BlockMatrix) {
-    if (blockMatrix) {
-      if (blockMatrix.canMoveShapeInDirection(shape, x, y)) {
-        shape.currentPos.x += x;
-        shape.currentPos.y += y;
-        shape.moveHistory.addDirectionalMove(x, y);
-      }
-    } else if (this.canMoveShapeInDirection(shape, x, y)) {
+  moveShape(shape: Shape, x: number, y: number) {
+    if (this.canMoveShapeInDirection(shape, x, y)) {
       shape.currentPos.x += x;
       shape.currentPos.y += y;
       shape.moveHistory.addDirectionalMove(x, y);
