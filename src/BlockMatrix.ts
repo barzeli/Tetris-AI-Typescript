@@ -126,19 +126,13 @@ export class BlockMatrix {
     });
   }
 
-  canRotateShape(shape: Shape, blockMatrix?: BlockMatrix) {
+  canRotateShape(shape: Shape) {
     return shape.blocks.every((block) => {
       let newPosition = shape.getBlockPositionAfterShapeIsRotated(block);
       let newAbsolutePosition = p5.Vector.add(newPosition, shape.currentPos);
       //if a block matrix is passed into the function then look at that instead of the game
-      if (blockMatrix) {
-        if (!blockMatrix.isPositionVacant(newAbsolutePosition)) {
-          return false;
-        }
-      } else {
-        if (!this.isPositionVacant(newAbsolutePosition)) {
-          return false;
-        }
+      if (!this.isPositionVacant(newAbsolutePosition)) {
+        return false;
       }
       return true;
     });
