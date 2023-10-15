@@ -62,8 +62,7 @@ export class Game {
     } else if (this.currentShape.isDead) {
       this.hasHeldThisShape = false;
       this.checkForTetris();
-      if (this.justTetrised) {
-      } else {
+      if (!this.justTetrised) {
         this.checkForClearedLines();
       }
 
