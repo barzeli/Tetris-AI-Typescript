@@ -88,19 +88,13 @@ export class BlockMatrix {
     );
   }
 
-  canMoveShapeDown(shape: Shape, blockMatrix?: BlockMatrix) {
+  canMoveShapeDown(shape: Shape) {
     return shape.blocks.every((block) => {
       let futureBlockPosition = p5.Vector.add(shape.currentPos, block.gridPos);
       futureBlockPosition.y += 1;
       //if a block matrix is passed into the function then look at that instead of the game
-      if (blockMatrix) {
-        if (!blockMatrix.isPositionVacant(futureBlockPosition)) {
-          return false;
-        }
-      } else {
-        if (!this.isPositionVacant(futureBlockPosition)) {
-          return false;
-        }
+      if (!this.isPositionVacant(futureBlockPosition)) {
+        return false;
       }
       return true;
     });
