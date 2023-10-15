@@ -352,7 +352,7 @@ class AI {
       const shape = queue.splice(0, 1)[0];
 
       //if the shape cannot move down then it is a possible end position
-      if (!this.game.canMoveShapeDown(shape)) {
+      if (!this.game.deadBlocksMatrix.canMoveShapeDown(shape)) {
         this.possibleEndPositions.push(shape.clone());
       }
 
@@ -389,7 +389,7 @@ class AI {
   }
 
   checkAllPositionsReachableFrom(startingShape: Shape) {
-    if (!this.game.canMoveShapeDown(startingShape)) {
+    if (!this.game.deadBlocksMatrix.canMoveShapeDown(startingShape)) {
       this.possibleEndPositions.push(startingShape.clone());
     }
 

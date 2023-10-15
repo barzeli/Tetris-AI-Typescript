@@ -322,7 +322,7 @@ export class AI {
       const shape = queue.splice(0, 1)[0];
 
       //if the shape cannot move down then it is a possible end position
-      if (!this.game.canMoveShapeDown(shape, blockMatrix)) {
+      if (!blockMatrix.canMoveShapeDown(shape)) {
         endPositions.push(shape.clone());
       }
 
