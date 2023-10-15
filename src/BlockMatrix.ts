@@ -122,10 +122,7 @@ export class BlockMatrix {
       futureBlockPosition.x += x;
 
       //if a block matrix is passed into the function then look at that instead of the game
-      if (!this.isPositionVacant(futureBlockPosition)) {
-        return false;
-      }
-      return true;
+      return this.isPositionVacant(futureBlockPosition);
     });
   }
 
