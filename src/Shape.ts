@@ -46,15 +46,9 @@ export class Shape {
   //draws the shape with its CENTER at 0,0
   drawAtOrigin() {
     //get the midpoint of the shape
-    const sumX =
-      this.blocks.reduce((sum, block) => sum + block.gridPos.x, 0) +
-      this.blocks.length / 2;
-    const sumY =
-      this.blocks.reduce((sum, block) => sum + block.gridPos.y, 0) +
-      this.blocks.length / 2;
     const midpoint = p5Sketch.createVector(
-      sumX / this.blocks.length,
-      sumY / this.blocks.length
+      (Math.max(...this.blocks.map((block) => block.gridPos.x)) + 1) / 2,
+      (Math.max(...this.blocks.map((block) => block.gridPos.y)) + 1) / 2
     );
     p5Sketch.push();
 
