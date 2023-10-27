@@ -1,4 +1,3 @@
-import { BlockMatrix } from "./BlockMatrix";
 import { p5Sketch } from "./sketch";
 import { Multipliers } from "./types";
 
