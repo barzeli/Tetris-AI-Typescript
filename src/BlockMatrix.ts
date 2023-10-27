@@ -350,7 +350,33 @@ export class BlockMatrix {
 
   //assumes a shape has been added, the lines have been cleared, the holes are counted and the pillars are counted
   calculateCost(brain: Brain) {
-    this.cost = brain.getCostOfMatrix(this);
+    let linesClearedWhichArentTetrises =
+      this.linesCleared > 0 && this.linesCleared < 4 ? 1 : 0;
+    let tetrises = this.linesCleared === 4 ? 1 : 0;
+
+    // from block matrix
+    //if shit aint going great then stop trying to tetris shit
+    // if (
+    //   this.maximumLineHeight > 10 ||
+    //   this.holeCount > 0 ||
+    //   this.pillarCount > 10
+    // ) {
+    //   brain.multipliers.nonTetrisClearPenalty = 0;
+    //   brain.multipliers.maximumLineHeightMultiplier = 1;
+    // }
+
+    this.cost =
+      this.holeCount * brain.multipliers.holeCountMultiplier +
+      this.openHoleCount * brain.multipliers.openHoleCountMultiplier +
+      this.blocksAboveHoles * brain.multipliers.blocksAboveHolesMultiplier +
+      linesClearedWhichArentTetrises * brain.multipliers.nonTetrisClearPenalty +
+      tetrises * brain.multipliers.tetrisRewardMultiplier +
+      this.maximumLineHeight * brain.multipliers.maximumLineHeightMultiplier +
+      this.addedShapeHeight * brain.multipliers.addedShapeHeightMultiplier +
+      this.pillarCount * brain.multipliers.pillarCountMultiplier +
+      this.blocksInRightLane *
+        brain.multipliers.blocksInRightMostLaneMultiplier +
+      this.bumpiness * brain.multipliers.bumpinessMultiplier;
   }
 }
 

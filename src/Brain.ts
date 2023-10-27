@@ -83,40 +83,6 @@ export class Brain {
     return clone;
   }
 
-  getCostOfMatrix(blockMatrix: BlockMatrix) {
-    let linesClearedWhichArentTetrises =
-      blockMatrix.linesCleared > 0 && blockMatrix.linesCleared < 4 ? 1 : 0;
-    let tetrises = blockMatrix.linesCleared === 4 ? 1 : 0;
-
-    // from block matrix
-    // //if shit aint going great then stop trying to tetris shit
-    // if (
-    //   this.maximumLineHeight > 10 ||
-    //   this.holeCount > 0 ||
-    //   this.pillarCount > 10
-    // ) {
-    //   nonTetrisClearPenalty = 0;
-    //   maximumLineHeightMultiplier = 1;
-    // }
-
-    return (
-      blockMatrix.holeCount * this.multipliers.holeCountMultiplier +
-      blockMatrix.openHoleCount * this.multipliers.openHoleCountMultiplier +
-      blockMatrix.blocksAboveHoles *
-        this.multipliers.blocksAboveHolesMultiplier +
-      linesClearedWhichArentTetrises * this.multipliers.nonTetrisClearPenalty +
-      tetrises * this.multipliers.tetrisRewardMultiplier +
-      blockMatrix.maximumLineHeight *
-        this.multipliers.maximumLineHeightMultiplier +
-      blockMatrix.addedShapeHeight *
-        this.multipliers.addedShapeHeightMultiplier +
-      blockMatrix.pillarCount * this.multipliers.pillarCountMultiplier +
-      blockMatrix.blocksInRightLane *
-        this.multipliers.blocksInRightMostLaneMultiplier +
-      blockMatrix.bumpiness * this.multipliers.bumpinessMultiplier
-    );
-  }
-
   writeMultipliers(startingX: number, startingY: number) {
     p5Sketch.push();
 
